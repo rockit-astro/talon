@@ -1,0 +1,43 @@
+***  Installation Started 05/23/00 9:48  ***
+Title: Apogee Camera Control API Source Installation
+Source: G:\APGSRC.EXE
+File Copy: C:\WINDOWS\Util32.dll
+File Copy: C:\WINDOWS\Util16.dll
+Made Dir: C:\Program Files\ApgSrc
+File Copy: C:\Program Files\ApgSrc\Util32.h
+File Copy: C:\Program Files\ApgSrc\apgdoc.zip
+Made Dir: C:\Program Files\ApgSrc\Win32
+Made Dir: C:\Program Files\ApgSrc\Win32\Apogee32
+File Copy: C:\Program Files\ApgSrc\Win32\Apogee32\Apogee32.def
+File Copy: C:\Program Files\ApgSrc\Win32\Apogee32\Apogee32.dsp
+Made Dir: C:\Program Files\ApgSrc\Win32\APItest
+File Copy: C:\Program Files\ApgSrc\Win32\APItest\Apitest.dsp
+File Copy: C:\Program Files\ApgSrc\Win32\APItest\apitest.c
+File Copy: C:\Program Files\ApgSrc\Win32\Win32.dsw
+File Copy: C:\Program Files\ApgSrc\Win32\APItest\Apogee40.bas
+File Copy: C:\Program Files\ApgSrc\Win32\APItest\apitest.frm
+File Copy: C:\Program Files\ApgSrc\Win32\APItest\apitest.vbp
+Made Dir: C:\Program Files\ApgSrc\Win16
+File Copy: C:\Program Files\ApgSrc\Win16\Apogee.def
+File Copy: C:\Program Files\ApgSrc\Win16\Apogee.mak
+File Copy: C:\Program Files\ApgSrc\Win16\Apitest.mak
+File Copy: C:\Program Files\ApgSrc\Win16\Apitest.c
+File Copy: C:\Program Files\ApgSrc\Win16\Util16.lib
+File Copy: C:\Program Files\ApgSrc\Apppi.h
+File Copy: C:\Program Files\ApgSrc\ntio.exe
+File Copy: C:\Program Files\ApgSrc\aperr.h
+File Copy: C:\Program Files\ApgSrc\SrcNotes.txt
+File Copy: C:\Program Files\ApgSrc\ReadMe.txt
+File Copy: C:\Program Files\ApgSrc\Apapi.c
+File Copy: C:\Program Files\ApgSrc\Apccd.h
+File Copy: C:\Program Files\ApgSrc\Apdata.c
+File Copy: C:\Program Files\ApgSrc\Apdata.h
+File Copy: C:\Program Files\ApgSrc\Apglob.h
+File Copy: C:\Program Files\ApgSrc\Apini.c
+File Copy: C:\Program Files\ApgSrc\apppi.c
+File Copy: C:\Program Files\ApgSrc\Aplow.c
+File Copy: C:\Program Files\ApgSrc\Aplow.h
+File Copy: C:\Program Files\ApgSrc\Config.c
+File Copy: C:\Program Files\ApgSrc\Config.h
+File Copy: C:\Program Files\ApgSrc\VerInfo.rc
+File Copy: C:\Program Files\ApgSrc\Win32\Util32.lib

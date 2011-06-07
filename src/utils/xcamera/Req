@@ -1,0 +1,92 @@
+"image coords" are wrt state.fimage
+"window coords" are wrt to state.ximagep
+
+load initial:
+
+    save current AOI size in window coords
+    (re)create the drawing area this size
+    create pm the size of the current AOI
+    fill pm with portion of current image within AOI
+    if have WCS
+	save RA/Dec of UL corner
+	set usewcs = true
+    else
+	usewcs = false
+
+load additional:
+
+    create pm the size of the saved AOI
+    if resetAOI
+	if usewcs
+	    if have WCS
+		set AOI to same RA/Dec
+	    else
+		complain
+	else
+	    set AOI to saved AOI
+    fill pm with portion of current image within AOI
+
+
+
+Dialog:
+
+1: dskljf jk fjskd j
+
+
+
+
+
+  [    XXX ]     [Bounce]
+
+Add  Run  Step  New  Close
+=============================================================================
+
+
+read disk file
+
+    setFName(filename)	fname <- file name
+    showHeader()	update header with fname
+    setSaveName()	save_name/dir <- fname
+    addHistory()	add fname to history
+    presentNewImage()	display image
+
+manual save
+
+    getSaveName()	fname <- save_name/dir
+    writeImage()	save fname to disk
+    addHistory()	add fname to history
+    showHeader()	update header with fname
+
+start exposure:
+
+    if (given a filename)
+	newfn <- given		set from given
+    else if (autosave is on)
+	mkTemplateName(newfn)	make one from template
+    else
+    	getSaveName (newfn)	set from save dialog
+
+exposure timer pops:
+
+    setFName(newfn)	fname <- newfn
+    showHeader()	update header with fname
+    presentNewImage()	display image
+
+    if (correction complete) or (auto save is on)
+	writeImage()	save fname to disk
+	addHistory()	add fname to history
+
+
+
+
+
+ Directory:
+ [                           ]
+ File name:
+ [                           ]
+  Template:
+ [                           ]
+ 
+	 [] Auto save
+  
+  [ Save ] [ Scan ] [ Close ]

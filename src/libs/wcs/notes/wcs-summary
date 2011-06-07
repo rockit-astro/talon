@@ -1,0 +1,20 @@
+Top level (command line) program:  tools/wcs/wcs.c
+
+Top level program calls setWCSFITS
+
+The camera version GUI/camera/wcs.c also calls setWCSFITS
+
+setWCSFITS:  identify image stars from fits file, then call spiralToFit
+
+spiralToFit:  true location of image in sky is unknown; so start from an
+   initially guessed location (RA,dec) and see if it can be matched to the
+   image; continue trying locations, spiralling outwards from the initially
+   guessed location, to try to find a match; at each location, call tryOneLoc
+
+tryOneLoc:  extract (from online catalogue database) catalogue stars centred
+   on the location where you're currently searching for a match; call
+   findRegistration to see if image and catalogue stars can be matched, thus
+   determining a 5-parameter WCS solution
+
+findRegistration:  use similar triangle method to search for match; new
+   version to use distance method

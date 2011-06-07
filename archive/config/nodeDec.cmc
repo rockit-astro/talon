@@ -1,0 +1,16 @@
+// HA axis input bit connections
+homebit = 0x1;
+nlimit = 0x2;
+plimit = 0x4;
+
+olevel=1;
+
+// Damping factor
+kv     = 2000;
+
+// these are just until telescoped starts
+maxvel = 7500;
+maxacc = 20000;
+limacc = 100000;
+esteps = 18233400;
+msteps = 8000000;

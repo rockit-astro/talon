@@ -1,0 +1,4 @@
+./test: invalid character 49 in exportstr for 192.168.0.11
+testhack.c:9: parse error before `fooclock'
+testhack.c:9: warning: type defaults to `int' in declaration of `fooclock'
+testhack.c:9: warning: data definition has no type or storage class

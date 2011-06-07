@@ -1,0 +1,21 @@
+This library contains the basic ephemeris code.
+
+Earth satellite orbit propagation is based on the NORAD SGP4/SDP4 code, as
+converted from the orginal FORTRAN to C by Magnus Backstrom. The paper
+"Spacetrack Report Number 3: Models for Propagation of NORAD Element Sets"
+describes the calculations.
+See http://www.celestrak.com/NORAD/documentation/spacetrk.pdf.
+He following files implement this package:
+    actan.c
+    deep.c
+    deepconst.h
+    satlib.h
+    satspec.h
+    sattypes.h
+    sdp4.c
+    sgp4.c
+    thetag.c
+    vector.h
+
+! For RCS Only -- Do Not Edit
+! @(#) $RCSfile: README,v $ $Date: 2001/04/19 21:12:13 $ $Revision: 1.1.1.1 $ $Name:  $

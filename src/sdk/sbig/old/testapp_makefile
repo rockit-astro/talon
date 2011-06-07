@@ -1,0 +1,42 @@
+####################################################################################
+# The testapp_makefile of LPT/USB testing application.
+# Author: Jan Soldan, 251 65 Ondrejov 236, Czech Republic
+#         Matt Longmire, SBIG
+####################################################################################
+# How to run this script:
+# 1) change directory to 'sbig'
+# 2) make -f testapp_makefile
+# Note: Linker uses shared libraries and do not forget to put
+# *.so libraries to the /usr/local/lib directory and 
+# setenv LD_LIBRARY_PATH to this path. See README.txt for details. 
+####################################################################################
+APP_NAME   = testapp
+S_APP      = testmain.cpp csbigcam.cpp csbigimg.cpp
+O_APP      = testmain.o csbigcam.o csbigimg.o
+####################################################################################
+APP_SRC    = $(S_APP)
+APP_OBJ    = $(O_APP)
+INCLUDE    = -I .
+LIBRARY    = -L .
+APP_CFLAGS = -O2 $(INCLUDE) $(LIBRARY) -Wall 
+APP_CC     = g++
+####################################################################################
+all: $(APP_NAME)
+####################################################################################
+# APP_NAME
+####################################################################################
+$(APP_NAME): $(APP_OBJ)
+	  $(APP_CC) $(APP_CFLAGS) -o $(APP_NAME) $(APP_OBJ) -lsbigudrv -lm
+	  chmod a+x $(APP_NAME)
+
+testmain.o : testmain.cpp csbigcam.h csbigimg.h
+	  $(APP_CC) $(APP_CFLAGS) -o testmain.o -c testmain.cpp
+
+csbigcam.o : csbigcam.h csbigcam.h csbigimg.h
+	  $(APP_CC) $(APP_CFLAGS) -o csbigcam.o -c csbigcam.cpp
+
+csbigimg.o : csbigimg.cpp csbigimg.h
+	  $(APP_CC) $(APP_CFLAGS) -o csbigimg.o -c csbigimg.cpp
+####################################################################################
+
+

@@ -1,0 +1,634 @@
+/* support for sky view annotation.
+ */
+
+#include <stdio.h>
+#include <ctype.h>
+#include <math.h>
+#include <time.h>
+
+#if defined(__STDC__)
+#include <stdlib.h>
+#include <string.h>
+#endif
+
+#include <Xm/Xm.h>
+#include <Xm/Form.h>
+#include <Xm/Frame.h>
+#include <Xm/Label.h>
+#include <Xm/PushB.h>
+#include <Xm/RowColumn.h>
+#include <Xm/ToggleB.h>
+#include <Xm/Text.h>
+#include <Xm/TextF.h>
+#include <Xm/Separator.h>
+
+#include "P_.h"
+#include "astro.h"
+#include "circum.h"
+#include "preferences.h"
+
+extern Widget toplevel_w;
+extern Colormap xe_cm;
+extern XtAppContext xe_app;
+
+typedef enum {PA_XY, PA_RADEC, PA_ALTAZ} PointAt;
+typedef enum {TD_H, TD_V} TextDir;
+typedef enum {H_ARROW, H_CIRCLE, H_BOX, H_BLANK} HeadType;
+typedef struct {
+    double c0, c1;	/* coordinates, meaning as per PointAt */
+    XmString str;	/* text */
+    int hide;		/* 1 to hide */
+    PointAt pa;		/* coordinates meaning */
+    TextDir td;		/* text direction */
+    HeadType ht;	/* leader line head type */
+} Annot;
+
+extern FILE *fopenh P_((char *name, char *how));
+extern Now *mm_get_now P_((void));
+extern char *syserrstr P_((void));
+extern void fs_sexa P_((char *out, double a, int w, int fracbase));
+extern void hlp_dialog P_((char *tag, char *deflt[], int ndeflt));
+extern void obj_set P_((Obj *op, int dbidx));
+extern void prompt_map_cb P_((Widget w, XtPointer client, XtPointer call));
+extern void set_something P_((Widget w, char *resource, XtArgVal value));
+extern void set_xmstring P_((Widget w, char *resource, char *txt));
+extern void sv_id P_((Obj *op));
+extern void sv_point P_((Obj *op));
+extern void wtip P_((Widget w, char *tip));
+extern void xe_msg P_((char *msg, int app_modal));
+
+static void sa_create P_((void));
+static void sah_help_cb P_((Widget w, XtPointer client, XtPointer call));
+static void sah_unmap_cb P_((Widget w, XtPointer client, XtPointer call));
+static void sah_close_cb P_((Widget w, XtPointer client, XtPointer call));
+
+static Widget sa_w;		/* main form dialog */
+
+/* create then toggle the sky annotation dialog */
+void
+sa_manage ()
+{
+	if (!sa_w)
+	    sa_create();
+
+	if (XtIsManaged(sa_w))
+	    XtUnmanageChild (sa_w);
+	else
+	    XtManageChild (sa_w);
+}
+
+/* called to put up or remove the watch cursor.  */
+void
+sa_cursor (c)
+Cursor c;
+{
+	Window win;
+
+	if (sa_w && (win = XtWindow(sa_w)) != 0) {
+	    Display *dsp = XtDisplay(sa_w);
+	    if (c)
+		XDefineCursor (dsp, win, c);
+	    else
+		XUndefineCursor (dsp, win);
+	}
+}
+
+/* create the sky annotation dialog, sa_h */
+static void
+sa_create()
+{
+	Widget sep_w;
+	Widget w;
+	Arg args[20];
+	int n;
+
+	/* create form */
+	n = 0;
+	XtSetArg (args[n], XmNautoUnmanage, False); n++;
+	XtSetArg (args[n], XmNdefaultPosition, False); n++;
+	XtSetArg (args[n], XmNresizePolicy, XmRESIZE_NONE); n++;
+	XtSetArg (args[n], XmNmarginHeight, 10); n++;
+	XtSetArg (args[n], XmNmarginWidth, 10); n++;
+	XtSetArg (args[n], XmNverticalSpacing, 10); n++;
+	XtSetArg (args[n], XmNhorizontalSpacing, 5); n++;
+	XtSetArg (args[n], XmNcolormap, xe_cm); n++;
+	sa_w = XmCreateFormDialog (toplevel_w, "SkyAnnot", args, n);
+	set_something (sah_w, XmNcolormap, (XtArgVal)xe_cm);
+	XtAddCallback (sah_w, XmNmapCallback, prompt_map_cb, 0);
+	XtAddCallback (sah_w, XmNhelpCallback, sa_help_cb, 0);
+        XtAddCallback (sah_w, XmNunmapCallback, sa_unmap_cb, 0);
+
+	/* set some stuff in the parent DialogShell.
+	 * setting XmNdialogTitle in the Form didn't work..
+	 */
+	n = 0;
+	XtSetArg (args[n], XmNtitle, "XEphem Sky annotation"); n++;
+	XtSetValues (XtParent(sa_w), args, n);
+
+	/* scrolled list */
+	n = 0;
+	XtSetArg (args[n], XmNtopAttachment, XmATTACH_FORM); n++;
+	XtSetArg (args[n], XmNleftAttachment, XmATTACH_FORM); n++;
+	XtSetArg (args[n], XmNrightAttachment, XmATTACH_FORM); n++;
+	scrl_w = XmCreateScrolledList (sa_h, "List", args, n);
+	wtip (scrl_w, "List of all currently defined annotations.");
+	XtManageChild (scrl_w);
+
+	/* selection TF */
+	n = 0;
+	XtSetArg (args[n], XmNtopAttachment, XmATTACH_WIDGET); n++;
+	XtSetArg (args[n], XmNtopWidget, scl_w); n++;
+	XtSetArg (args[n], XmNleftAttachment, XmATTACH_FORM); n++;
+	XtSetArg (args[n], XmNrightAttachment, XmATTACH_FORM); n++;
+	txt_w = XmCreateTextField (sa_w, "Text", args, n);
+	wtip (txt_w, "Annotation text.");
+	XtManageChild (txt_w);
+
+	/* Refresh PB */
+	n = 0;
+	XtSetArg (args[n], XmNtopAttachment, XmATTACH_WIDGET); n++;
+	XtSetArg (args[n], XmNtopWidget, dir_w); n++;
+	XtSetArg (args[n], XmNleftAttachment, XmATTACH_POSITION); n++;
+	XtSetArg (args[n], XmNleftPosition, 10); n++;
+	XtSetArg (args[n], XmNrightAttachment, XmATTACH_POSITION); n++;
+	XtSetArg (args[n], XmNrightPosition, 40); n++;
+	w = XmCreatePushButton (sah_w, "Refresh", args, n);
+	wtip (w, "Update information once from setiathome working directory.");
+	XtAddCallback (w, XmNactivateCallback, sah_refresh_cb, 0);
+	XtManageChild (w);
+
+	/* Auto refresh TB */
+	n = 0;
+	XtSetArg (args[n], XmNindicatorType, XmN_OF_MANY); n++;
+	XtSetArg (args[n], XmNvisibleWhenOff, True); n++;
+	XtSetArg (args[n], XmNtopAttachment, XmATTACH_WIDGET); n++;
+	XtSetArg (args[n], XmNtopWidget, dir_w); n++;
+	XtSetArg (args[n], XmNleftAttachment, XmATTACH_POSITION); n++;
+	XtSetArg (args[n], XmNleftPosition, 60); n++;
+	ar_w = XmCreateToggleButton (sah_w, "AutoRefresh", args, n);
+	wtip (ar_w, "Automatically update information every few seconds.");
+	XtAddCallback (ar_w, XmNvalueChangedCallback, sah_auto_cb, 0);
+	set_xmstring (ar_w, XmNlabelString, "Auto refresh");
+	XtManageChild (ar_w);
+
+	/* Sky Point PB */
+	n = 0;
+	XtSetArg (args[n], XmNtopAttachment, XmATTACH_WIDGET); n++;
+	XtSetArg (args[n], XmNtopWidget, ar_w); n++;
+	XtSetArg (args[n], XmNleftAttachment, XmATTACH_POSITION); n++;
+	XtSetArg (args[n], XmNleftPosition, 10); n++;
+	XtSetArg (args[n], XmNrightAttachment, XmATTACH_POSITION); n++;
+	XtSetArg (args[n], XmNrightPosition, 40); n++;
+	w = XmCreatePushButton (sah_w, "SP", args, n);
+	wtip (w, "Center and mark work unit on Sky View, and assign to ObjZ.");
+	XtAddCallback (w, XmNactivateCallback, sah_point_cb, 0);
+	set_xmstring (w, XmNlabelString, "Sky Point");
+	XtManageChild (w);
+
+	/* Sky Mark PB */
+	n = 0;
+	XtSetArg (args[n], XmNtopAttachment, XmATTACH_WIDGET); n++;
+	XtSetArg (args[n], XmNtopWidget, ar_w); n++;
+	XtSetArg (args[n], XmNleftAttachment, XmATTACH_POSITION); n++;
+	XtSetArg (args[n], XmNleftPosition, 60); n++;
+	XtSetArg (args[n], XmNrightAttachment, XmATTACH_POSITION); n++;
+	XtSetArg (args[n], XmNrightPosition, 90); n++;
+	w = XmCreatePushButton (sah_w, "SM", args, n);
+	wtip (w, "Mark work unit on Sky View if within field, and assign to ObjZ.");
+	XtAddCallback (w, XmNactivateCallback, sah_mark_cb, 0);
+	set_xmstring (w, XmNlabelString, "Sky Mark");
+	XtManageChild (w);
+
+	/* R/O TF */
+	n = 0;
+	XtSetArg (args[n], XmNrows, SETIROWS); n++;
+	XtSetArg (args[n], XmNcolumns, SETICOLS); n++;
+	XtSetArg (args[n], XmNeditable, False); n++;
+	XtSetArg (args[n], XmNcursorPositionVisible, False); n++;
+	XtSetArg (args[n], XmNeditMode, XmMULTI_LINE_EDIT); n++;
+	XtSetArg (args[n], XmNtopAttachment, XmATTACH_WIDGET); n++;
+	XtSetArg (args[n], XmNtopWidget, w); n++;
+	XtSetArg (args[n], XmNleftAttachment, XmATTACH_FORM); n++;
+	XtSetArg (args[n], XmNrightAttachment, XmATTACH_FORM); n++;
+	seti_w = XmCreateText (sah_w, "STF", args, n);
+	wtip (seti_w, "Info about current setiathome processing.");
+	XtManageChild (seti_w);
+
+	/* sep */
+	n = 0;
+	XtSetArg (args[n], XmNtopAttachment, XmATTACH_WIDGET); n++;
+	XtSetArg (args[n], XmNtopWidget, seti_w); n++;
+	XtSetArg (args[n], XmNleftAttachment, XmATTACH_FORM); n++;
+	XtSetArg (args[n], XmNrightAttachment, XmATTACH_FORM); n++;
+	sep_w = XmCreateSeparator (sah_w, "Sep", args, n);
+	XtManageChild (sep_w);
+
+	/* close */
+	n = 0;
+	XtSetArg (args[n], XmNtopAttachment, XmATTACH_WIDGET); n++;
+	XtSetArg (args[n], XmNtopWidget, sep_w); n++;
+	XtSetArg (args[n], XmNbottomAttachment, XmATTACH_FORM); n++;
+	XtSetArg (args[n], XmNleftAttachment, XmATTACH_POSITION); n++;
+	XtSetArg (args[n], XmNleftPosition, 10); n++;
+	XtSetArg (args[n], XmNrightAttachment, XmATTACH_POSITION); n++;
+	XtSetArg (args[n], XmNrightPosition, 40); n++;
+	w = XmCreatePushButton (sah_w, "Close", args, n);
+	XtAddCallback (w, XmNactivateCallback, sah_close_cb, 0);
+	wtip (w, "Close this dialog.");
+	XtManageChild (w);
+
+	/* help */
+	n = 0;
+	XtSetArg (args[n], XmNtopAttachment, XmATTACH_WIDGET); n++;
+	XtSetArg (args[n], XmNtopWidget, sep_w); n++;
+	XtSetArg (args[n], XmNbottomAttachment, XmATTACH_FORM); n++;
+	XtSetArg (args[n], XmNleftAttachment, XmATTACH_POSITION); n++;
+	XtSetArg (args[n], XmNleftPosition, 60); n++;
+	XtSetArg (args[n], XmNrightAttachment, XmATTACH_POSITION); n++;
+	XtSetArg (args[n], XmNrightPosition, 90); n++;
+	w = XmCreatePushButton (sah_w, "Help", args, n);
+	wtip (w, "Obtain more information about this dialog.");
+	XtAddCallback (w, XmNactivateCallback, sah_help_cb, 0);
+	XtManageChild (w);
+}
+
+/* callback from unmapping the main form */
+/* ARGSUSED */
+static void
+sah_unmap_cb (w, client, call)
+Widget w;
+XtPointer client;
+XtPointer call;
+{
+	timer_off();
+}
+
+/* callback from the Close PB */
+/* ARGSUSED */
+static void
+sah_close_cb (w, client, call)
+Widget w;
+XtPointer client;
+XtPointer call;
+{
+	XtUnmanageChild (sah_w);
+}
+
+/* callback for Help
+ */
+/* ARGSUSED */
+static void
+sah_help_cb (w, client, call)
+Widget w;
+XtPointer client;
+XtPointer call;
+{
+	static char *msg[] = {
+"Display status from info in a SETI@home directory."
+};
+
+	hlp_dialog ("SETIathome", msg, sizeof(msg)/sizeof(msg[0]));
+}
+
+/* callback from the Refresh button.
+ */
+/* ARGSUSED */
+static void
+sah_refresh_cb (w, client, call)
+Widget w;
+XtPointer client;
+XtPointer call;
+{
+	doSETI();
+}
+
+/* callback from the Sky Point button.
+ */
+/* ARGSUSED */
+static void
+sah_point_cb (w, client, call)
+Widget w;
+XtPointer client;
+XtPointer call;
+{
+	Now *np = mm_get_now();
+	Obj o, *op = &o;
+
+	zero_mem (op, sizeof(Obj));
+	strcpy (op->o_name, "SETI@home");
+	op->o_type = FIXED;
+	set_fmag (op, 0);
+	op->f_RA = hrrad(sah_ra);
+	op->f_dec = degrad(sah_dec);
+	op->f_epoch = J2000;
+	obj_cir (np, op);
+	sv_point (op);
+	obj_set (op, OBJZ);
+}
+
+/* callback from the Sky Mark button.
+ */
+/* ARGSUSED */
+static void
+sah_mark_cb (w, client, call)
+Widget w;
+XtPointer client;
+XtPointer call;
+{
+	Now *np = mm_get_now();
+	Obj o, *op = &o;
+
+	zero_mem (op, sizeof(Obj));
+	strcpy (op->o_name, "SETI@home");
+	op->o_type = FIXED;
+	set_fmag (op, 0);
+	op->f_RA = hrrad(sah_ra);
+	op->f_dec = degrad(sah_dec);
+	op->f_epoch = J2000;
+	obj_cir (np, op);
+	sv_id (op);
+	obj_set (op, OBJZ);
+}
+
+/* commence auto refresh */
+static void
+timer_on()
+{
+	if (auto_id)
+	    XtRemoveTimeOut (auto_id);
+	auto_id = XtAppAddTimeOut (xe_app, AUTOMS, timer_auto_cb, 0);
+}
+
+/* cease auto refresh */
+static void
+timer_off()
+{
+	if (auto_id) {
+	    XtRemoveTimeOut (auto_id);
+	    auto_id = (XtIntervalId)0;
+	}
+	XmToggleButtonSetState(ar_w, False, False);
+}
+
+/* callback from the auto refresh TB.
+ */
+/* ARGSUSED */
+static void
+sah_auto_cb (w, client, call)
+Widget w;
+XtPointer client;
+XtPointer call;
+{
+	/* turn on timer if want to and things are working, else turn off */
+	if (XmToggleButtonGetState(w) && doSETI() == 0)
+	    timer_on();
+	else
+	    timer_off();
+}
+
+/* called automatically during auto refresh */
+static void
+timer_auto_cb (client, id)
+XtPointer client;
+XtIntervalId *id;
+{
+	if (doSETI() < 0)
+	    timer_off();
+	else
+	    timer_on();
+}
+
+
+/* open SETI@home files in dir_w and fill seti_w with info.
+ * return 0 if ok, else issue xe_msg and return -1
+ */
+static int
+doSETI ()
+{
+#if defined (__STDC__)
+	time_t tm;
+#else
+	long tm;
+#endif
+	char seti[SETIROWS][SETICOLS];
+	char rastr[32], decstr[32];
+	String dir;
+	char buf[1024];
+	char dirbuf[1024];
+	char filebuf[1024];
+	char msgbuf[1024];
+	double cpu=0, prog=0;
+	double bs_power=0, bs_score=0;
+	double bg_power=0, bg_score=0;
+	int major_version=0, minor_version=0;
+	int nwus=0, nresults=0;
+	FILE *fp;
+	int i;
+
+	/* get dir name */
+	dir = XmTextFieldGetString (dir_w);
+	(void) strncpy (dirbuf, dir, sizeof(buf));
+	XtFree (dir);
+
+	/* open version file */
+	(void) sprintf (filebuf, "%s/%s", dirbuf, "version.txt");
+	fp = fopenh (filebuf, "r");
+	if (!fp) {
+	    (void) sprintf (msgbuf, "%s:\n%s", filebuf, syserrstr());
+	    xe_msg (msgbuf, 1);
+	    return (-1);
+	}
+
+	/* scan for version */
+	while (fgets (buf, sizeof(buf), fp)) {
+	    if (!strncmp (buf, "major_version=", 14)) {
+		major_version = atoi (buf+14);
+	    } else
+	    if (!strncmp (buf, "minor_version=", 14)) {
+		minor_version = atoi (buf+14);
+	    }
+	}
+	fclose (fp);
+	if (major_version != 1 || minor_version != 3) {
+	    xe_msg ("version.txt must report 1.3", 1);
+	    return (-1);
+	}
+
+	/* open state file */
+	(void) sprintf (filebuf, "%s/%s", dirbuf, "state.txt");
+	fp = fopenh (filebuf, "r");
+	if (!fp) {
+	    (void) sprintf (msgbuf, "%s:\n%s", filebuf, syserrstr());
+	    xe_msg (msgbuf, 1);
+	    return (-1);
+	}
+
+	/* scan for interesting stuff */
+	while (fgets (buf, sizeof(buf), fp)) {
+	    if (!strncmp (buf, "cpu=", 4)) {
+		cpu = atof (buf+4);
+	    } else
+	    if (!strncmp (buf, "prog=", 5)) {
+		prog = atof (buf+5);
+	    } else
+	    if (!strncmp (buf, "bs_power=", 9)) {
+		bs_power = atof (buf+9);
+	    } else
+	    if (!strncmp (buf, "bs_score=", 9)) {
+		bs_score = atof (buf+9);
+	    } else
+	    if (!strncmp (buf, "bg_power=", 9)) {
+		bg_power = atof (buf+9);
+	    } else
+	    if (!strncmp (buf, "bg_score=", 9)) {
+		bg_score = atof (buf+9);
+	    } else
+	    if (!strncmp (buf, "fl=", 3)) {
+		(void) sprintf (seti[17],"FFT length: %g", atof(buf+3));
+	    } else
+	    if (!strncmp (buf, "cr=", 3)) {
+		(void) sprintf (seti[18],"   Doppler: %g", atof(buf+3));
+	    }
+	}
+	fclose (fp);
+
+	/* add to seti buffer */
+	fs_sexa (msgbuf, cpu/3600., 2, 3600);	/* secs to H:M:S */
+	(void) sprintf (seti[12], "  CPU time: %s", msgbuf);
+	(void) sprintf (seti[13], "  Progress: %5.2f%%", 100*prog);
+	fs_sexa (msgbuf, cpu*(1/prog-1)/3600., 2, 3600); /* secs to H:M:S */
+	(void) sprintf (seti[14], " Remaining: %s", msgbuf);
+
+	/* open work_unit file */
+	(void) sprintf (filebuf, "%s/%s", dirbuf, "work_unit.txt");
+	fp = fopenh (filebuf, "r");
+	if (!fp) {
+	    (void) sprintf (msgbuf, "%s:\n%s", filebuf, syserrstr());
+	    xe_msg (msgbuf, 1);
+	    return (-1);
+	}
+
+	/* scan for interesting stuff */
+	while (fgets (buf, sizeof(buf), fp)) {
+	    buf[strlen(buf)-1] = '\0';
+	    if (!strncmp (buf, "start_ra=", 9)) {
+		sah_ra = atof (buf+9);
+	    } else
+	    if (!strncmp (buf, "start_dec=", 10)) {
+		sah_dec = atof (buf+10);
+	    } else
+	    if (!strncmp (buf, "time_recorded=", 14)) {
+		(void) sprintf (seti[10],"  Recorded: %s",pullDate(buf,msgbuf));
+	    } else
+	    if (!strncmp (buf, "subband_center=", 15)) {
+		(void) sprintf (seti[19], " Frequency: %.11f GHz",
+							    atof(buf+15)*1e-9);
+	    } else
+	    if (!strncmp (buf, "receiver=", 9)) {
+		(void) sprintf (seti[20], "  Receiver: %s", buf+9);
+	    } else
+	    if (!strncmp (buf, "nsamples=", 9)) {
+		(void) sprintf (seti[21], "   Samples: %s", buf+9);
+	    } else
+	    if (!strncmp (buf, "num_positions=", 14)) {
+		(void) sprintf (seti[22], " Positions: %s", buf+14);
+	    } else
+	    if (!strncmp (buf, "name=", 5)) {
+		buf[SETICOLS-5] = '\0';		/* paranoid about long names */
+		(void) sprintf (seti[9], " Work unit: %s", buf+5);
+	    }
+	}
+	fclose (fp);
+
+	/* open user_info file */
+	(void) sprintf (filebuf, "%s/%s", dirbuf, "user_info.txt");
+	fp = fopenh (filebuf, "r");
+	if (!fp) {
+	    (void) sprintf (msgbuf, "%s:\n%s", filebuf, syserrstr());
+	    xe_msg (msgbuf, 1);
+	    return (-1);
+	}
+
+	/* scan for interesting stuff */
+	while (fgets (buf, sizeof(buf), fp)) {
+	    buf[strlen(buf)-1] = '\0';
+	    if (!strncmp (buf, "name=", 5)) {
+		buf[SETICOLS+5] = '\0';	/* paranoid about long names */
+		(void) sprintf (seti[2], " User name: %s", buf+5);
+	    } else
+	    if (!strncmp (buf, "register_time=", 14)) {
+		(void) sprintf(seti[5], "Registered: %s",pullDate(buf,msgbuf));
+	    } else
+	    if (!strncmp (buf, "last_wu_time=", 13)) {
+		(void) sprintf(seti[6], "Last Recvd: %s",pullDate(buf,msgbuf));
+	    } else
+	    if (!strncmp (buf, "last_result_time=", 17)) {
+		(void) sprintf(seti[7], " Last Sent: %s",pullDate(buf,msgbuf));
+	    } else
+	    if (!strncmp (buf, "nwus=", 5)) {
+		nwus = atoi (buf+5);
+	    } else
+	    if (!strncmp (buf, "nresults=", 9)) {
+		nresults = atoi (buf+9);
+	    } else
+	    if (!strncmp (buf, "total_cpu=", 10)) {
+		int d, h, m;
+		double t = atof (buf+10);
+		d = (int)floor(t/86400.);
+		t -= d*86400.;
+		h = (int)floor(t/3600.);
+		t -= h*3600.;
+		m = (int)floor(t/60.);
+		t -= m*60.;
+		(void) sprintf (seti[3], " Total CPU: %d days + %2d:%02d:%02d",
+							    d, h, m, (int)t);
+	    }
+	}
+	fclose (fp);
+
+	/* add composite lines to seti buffer */
+	(void) sprintf (seti[15],"Spike powr: %g Score %g", bs_power, bs_score);
+	(void) sprintf (seti[16],"  Gaussian: %g Score %g", bg_power, bg_score);
+	fs_sexa (rastr, sah_ra, 2, 600);
+	fs_sexa (decstr, sah_dec, 3, 60);
+	(void) sprintf (seti[11],"  Position: RA=%s Dec=%s", rastr, decstr);
+	(void) sprintf (seti[4], "Work units: %d received %d sent", nwus,
+					nresults);
+
+	time (&tm);
+	if (pref_get(PREF_ZONE) == PREF_UTCTZ) {
+	    Now *np = mm_get_now();
+	    tm += tz*3600;
+	}
+	strcpy (msgbuf, ctime(&tm));
+	msgbuf[strlen(msgbuf)-1] = '\0';	/* no trailing \n */
+	(void) sprintf (seti[0], " Refreshed: %s", msgbuf);
+	seti[1][0] = 0;
+	seti[8][0] = 0;
+
+	/* install seti buffer in Text widget -- keep flashing to a minimum */
+	XtUnmanageChild (seti_w);
+	for (i = 0; i < SETIROWS; i++) {
+	    (void) sprintf (msgbuf, "%-*s\n", SETICOLS, seti[i]);
+	    XmTextReplace (seti_w, i*(SETICOLS+1), (i+1)*(SETICOLS+1), msgbuf);
+	}
+	XmTextShowPosition (seti_w, 0);
+	XtManageChild (seti_w);
+
+
+	return (0);
+}
+
+/* extract the date in () from in[] into out[] */
+static char *
+pullDate (in, out)
+char in[], out[];
+{
+	char *lp = strchr (in, '(');
+	char *rp = strchr (in, ')');
+	(void) sprintf (out, "%.*s", rp-lp-1, lp+1);
+	return (out);
+}
+
+/* For RCS Only -- Do Not Edit */
+static char *rcsid[2] = {(char *)rcsid, "@(#) $RCSfile: skyannot.idea,v $ $Date: 2001/04/19 21:12:01 $ $Revision: 1.1.1.1 $ $Name:  $"};

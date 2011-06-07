@@ -1,0 +1,5 @@
+add_subdirectory (daemons)
+add_subdirectory (libs)
+add_subdirectory (sdk)
+add_subdirectory (utils)
+add_subdirectory (scripts)

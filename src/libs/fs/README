@@ -1,0 +1,14 @@
+gsc.c is the source to GSCSetup() and GSCFetch() which are functions to setup
+for and read the STScI GSC V1.1 CDROM and return subsets of stars near any
+direction. The function can also make local compressed cache disk files and use
+them from then on if present.
+
+usno.c is the source to USNOSetup() and USNOFetch() which are functions to
+setup for and read the USNO SA1.0 or other compatable CDROMs and return subsets
+of stars near any direction.
+
+For test, a complete program, sadump, accepts RA/Dec/FOV on the command line and
+prints the SA?.0 fields in said region to stdout in .edb format.
+
+! For RCS Only -- Do Not Edit
+! @(#) $RCSfile: README,v $ $Date: 2001/04/19 21:12:14 $ $Revision: 1.1.1.1 $ $Name:  $

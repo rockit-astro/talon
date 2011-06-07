@@ -1,0 +1,32 @@
+Here are several scripts to convert various catalog files into xephem
+format. Contact the author if you need one or have one.
+
+tle2edb.pl is a perl script for converting the NASA "2-line" earth satellite
+format into XEphem format; see the Help on Credits from the Main menu for how
+to get timely shuttle and Space Station elements in this format.
+
+jost2edb.awk is for converting the elements that are included near the end of
+occasional comets ephemerides posted to sci.astro by Jost Jahn.
+
+encke2edb.pl is helpful when cracking ephemerides posted on
+http://encke.jpl.nasa.gov.
+
+mpcorb2edb.pl is a perl script to convert the file of asteroid elements 
+updated daily by the Minor Planet Center. Actually, the script generates two
+files: those which can ever get brighter than a certain limit, and all others.
+Run with -f and it even ftp's and explodes the correct file for you first.
+
+astorb2edb.pl does much the same, but for the Lowell database. See
+ftp://ftp.lowell.edu/pub/elgb/astorb.html. Run with -f and it even ftp's and
+explodes the correct file for you first.
+
+mpccomets.pl is a perl script to convert the file of comet elements at
+http://cfa-www.harvard.edu/iau/Ephemerides/Comets/Soft00Cmt.txt to .edb
+format. Like mpcorb2edb, it actually generates two files.
+
+extract.awk is an interesting script which tries to figure out the format
+of a comet posting on usenet and convert whatever it finds to xephem format.
+Contributed by Pawel Jochym.
+
+! For RCS Only -- Do Not Edit
+! @(#) $RCSfile: README,v $ $Date: 2001/04/19 21:12:06 $ $Revision: 1.1.1.1 $ $Name:  $

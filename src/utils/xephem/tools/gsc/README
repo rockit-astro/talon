@@ -1,0 +1,19 @@
+gscload can read an ASP GSC CDROM and save it to a local disk cache or print
+GSC stars around any region.
+
+This program loads any region of the sky from CDROM to disk as specified
+by the required arguments of RA, Dec, FOV and Mag. Or, it can print all stars
+in that region.
+
+To load the entire northern CDROM to disk, use:
+
+    gscload 0 90 194 20
+
+To load the entire southern CDROM to disk, use:
+
+    gscload 0 -90 164 20
+
+The northern disk occupies approximately 86 MB, the southern about 73 MB.
+
+! For RCS Only -- Do Not Edit
+! @(#) $RCSfile: README,v $ $Date: 2001/04/19 21:12:06 $ $Revision: 1.1.1.1 $ $Name:  $

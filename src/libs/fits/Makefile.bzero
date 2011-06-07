@@ -1,0 +1,29 @@
+CFLAGS := -O2 -ffast-math -fPIC -DSET_BZERO=0 -Wall -I../libmisc -I../libastro -I../libwcs $(CFLAGS)
+
+OBJS =	align2fits.o	\
+	fits.o		\
+	fitscorr.o	\
+	filters.o	\
+	fitsip.o
+
+libfits.so:	$(OBJS)
+	gcc -shared -o $@ $(OBJS)
+	cp $@ ../build/libs
+
+libfits.a:	$(OBJS)
+	ar rv $@ $(OBJS)
+
+install: libfits.so
+	cp libfits.so $(TELHOME)/lib/libfits.so
+
+bzero:
+	make -f Makefile.bzero clobber
+	make -f Makefile.bzero install	
+
+clean:
+	touch x.o
+	rm -f *.o libfits.a libfits.so
+	rm -f ../build/libs/libfits.so ../build/libs/libfits.a
+
+# For RCS Only -- Do Not Edit
+# @(#) $RCSfile: Makefile.bzero,v $ $Date: 2006/08/18 15:45:47 $ $Revision: 1.2 $ $Name:  $

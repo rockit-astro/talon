@@ -1,0 +1,58 @@
+telescoped: telescope control daemon.
+For use with CSIMC.
+
+Uses the following fifo pairs (.in and .out suffix are wrt us):
+
+	Tel.{in,out}
+	Filter.{in,out}
+	Focus.{in,out}
+	Dome.{in,out}
+	Lights.{in,out}
+	Powerfail.{in,out}
+
+Uses the csimcd daemon to control the stepper motors:
+
+	$(TELHOME)/bin/csimcd
+
+Assumes these functions are already loaded on the CSIMC:
+
+    /* find home in pos/neg direction, according to $way = +/-1.
+     * bounces off limits during search.
+     * prints progress messages prefixed with 1:, errors with -1:, done with 0:.
+     * N.B. assumes ipolar, homebit, plimbit and nlimbit were set up prior.
+     */
+    define findhome($way)
+
+    /* find and report encoder position of limit, according to $way = +/-1
+     * N.B. assumes ipolar, plimbit and nlimbit were set up prior.
+     */
+    define findlim($way)
+
+    /* report current clock, mpos, mvel, epos and ilevel */
+    define report()
+
+Reads parameters from:
+
+	telescoped.cfg
+	focus.cfg
+	telsched.cfg
+	dome.cfg
+
+Reads parameters from and makes updates to:
+
+	home.cfg
+	filter.cfg
+
+"Canonical" directions are used throughout to eliminate the need to know
+the signs of the actual motors. If the latter are referred to, they
+are called "raw" directions. The canonical conventions are as follows:
+
+    HA(Az):	+ccw looking down at scope from North (above) (like RA, not HA)
+    Dec(Alt):	+moving towards scope's pole (like Dec)
+    Field:	+cw rotation, looking "through" the camera
+    Focus:	+moving to shorten the optical path from primary to camera
+    Filter:	+cw rotation, looking "through" the camera
+    Dome:	+cw looking down from above
+
+! For RCS Only -- Do Not Edit
+! @(#) $RCSfile: README,v $ $Date: 2001/04/19 21:12:09 $ $Revision: 1.1.1.1 $ $Name:  $

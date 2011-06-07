@@ -1,0 +1,61 @@
+How does findreg work?
+----------------------
+
+The top level function in libwcs/findreg.c is findRegistration.
+
+This searches for a match between image and catalogue stars.  If successful,
+it determines a 5-parameter wcs solution which can then be used for
+astrometry.
+
+The 5 parameters are:
+x,y coordinates of reference pixel (taken to be at the image centre)
+x,y pixel scales (which will be very similar with the BSGC cameras, but in
+                  this wcs model they are allowed to differ)
+overall angle of rotation
+
+A 6th parameter, non-perpendicularity of x,y axes, is NOT included in this
+model.
+
+... FOLLOWING NOTES TO BE IMPROVED AND FURTHER NOTES TO BE INSERTED ...
+
+... WE ARE PLANNING TO REPLACE SIMILAR TRIANGLES METHOD BY MR URATA'S
+DISTANCE METHOD ...
+
+... PROBABLY IT WILL BE BEST IF WHEN USING THE DISTANCE METHOD FOR PATTERN
+MATCHING BETWEEN IMAGE AND CATALOGUE STARS, WE STILL DETERMINE A 5-PARAMETER
+WCS SOLUTION ... THIS WILL ALLOW AS MUCH AS POSSIBLE OF THE CURRENT
+OCAAS/TALON SOFTWARE TO REMAIN UNCHANGED
+
+... IF AS MR URATA HAS SUGGESTED 5 PARAMETERS DOES NOT GIVE SUFFICIENT
+ASTROMETRIC ACCURACY OVER A WIDE FIELD, E.G. WE NEED QUADRATIC OR CUBIC FITS
+IN BOTH X AND Y, THEN IT WILL PROBABLY BE BEST TO DO THIS AS A SEPARATE
+PROGRAM (SUBSTITUTE FOR THE findstars PROGRAM?) BECAUSE IN THIS WAY WE CAN
+CONTINUE TO HAVE A PROGRAM THAT HAS EXACTLY THE SAME FUNCTIONALITY AS THE
+CURRENT wcs PROGRAM (= DETERMINING 5 WCS PARAMETERS) ...
+
+... PURPOSE OF NEW WCS PROGRAM WILL BE TO GIVE HIGHER PROBABILITY OF FINDING
+A MATCH, NOT TO IMPROVE ASTROMETRIC ACCURACY BY HAVING EXTRA PARAMETERS IN
+MODEL (WE COULD INVESTIGATE WHETHER ASTROMETRIC ACCURACY IS IMPROVED BY
+HAVING MORE PAIRS OF STARS MATCHED, STILL IN A 5-PARAMETER MODEL, DON'T KNOW
+HOW THAT WILL BE) ...
+
+It isn't necessary for us to study details of the similar triangle method
+if we intend to use the distance method instead.  Basically, the similar
+triangle method uses no prior knowledge of orientation or pixel scale
+(regarding the latter, the current findreg, after finding a solution, checks
+for "reasonable scaling", meaning within a factor of 2 of what you told it
+the value was).  The distance method also uses no prior knowledge of
+orientation, but the pixel scale is a critical input parameter.  Since we
+intend to use the algorithm for specific telescope/camera combinations, this
+is ok, and the idea is that by simplifying the problem (i.e. by having an
+accurate idea of the pixel scale in advance), it becomes much easier (both
+quicker, and with a higher frequency of success) to find a match.  We have
+no need for a program that works in the general case where pixel scale is
+unknown.  Potentially orientation information (e.g. north always being close
+to negative y pixels) could make the search for a match more efficient, but
+we hope that the distance method will be successful enough for our purposes
+without requiring prior orientation information.
+
+In setFITSWCS (in findreg.c), "TAN" is inserted into fits header entries
+CTYPE1, CTYPE2.  This sets up tangent plane as the projection to use (case 2
+in libwcs/worldpos.c).

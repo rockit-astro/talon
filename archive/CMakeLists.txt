@@ -1,0 +1,14 @@
+cmake_minimum_required (VERSION 2.6)
+project (archive)
+
+set(ARCHIVE_DIR ${CORE_INSTALL_DIR}/archive)
+
+install(DIRECTORY comm DESTINATION ${CORE_INSTALL_DIR})
+install(DIRECTORY config DESTINATION ${ARCHIVE_DIR})
+install(DIRECTORY catalogs DESTINATION ${ARCHIVE_DIR})
+install(DIRECTORY logs DESTINATION ${ARCHIVE_DIR})
+
+install(FILES setvars DESTINATION ${CORE_INSTALL_DIR} PERMISSIONS 
+        OWNER_READ OWNER_WRITE
+        GROUP_READ
+        WORLD_READ)

@@ -1,0 +1,30 @@
+This is a simple FITS viewer.
+It only supports FITS files with SIMPLE=T, BITPIX=16 and NAXSi(i>2)==1.
+
+How to do absolute photometry:
+
+1) bring up photometry feature with Options->Enable Photometry features
+2) change to Absolute mode by clicking on "Absolute Photometry"
+3) define a reference star by clicking on "(Re)Define Reference..."
+4) enter true BVRI for a reference star in spaces provided and click "Apply".
+5) establish instrument corrections by bringing up images of the reference
+   star in each color. Turn on "Define Intrs Cor" and click on the star with the
+   right mouse button; you will see the "Instr Cor" column get filled in based
+   on the filter used to make the image. When instrument corrections have been
+   established for all colors (or those colors desired) turn "Define Instr Cor"
+   back off.
+6) bring up any image, click on any star. Its magnitude will be displayed in
+   the "Mag" column at the row which corresponds to the Filter field of the
+   image (if any). The value shown will always be corrected for distinction.
+   If the B and V instrument corrections were established for the reference
+   star then the value shown will be also be fully color corrected and a Y
+   will appear in the "B-V Cor" column; if B or V instrument corrections are
+   not known then the value will only be corrected for distinction and a "N"
+   will appear.
+7) The RA and Dec values for each star measured are saved so that the same
+   star can be visited on several images to accumulate all BVRI values. The
+   list of locations grows forever unless cleared with by clicking on "Reset
+   Star List".
+
+! For RCS Only -- Do Not Edit
+! @(#) $RCSfile: README,v $ $Date: 2001/04/19 21:11:59 $ $Revision: 1.1.1.1 $ $Name:  $

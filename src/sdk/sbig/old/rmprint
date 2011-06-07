@@ -1,0 +1,4 @@
+#!/bin/sh
+modprobe -r lp
+modprobe -r parport_pc
+modprobe -r parport

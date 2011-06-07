@@ -1,0 +1,63 @@
+Contents of libwcs/setwcsfits.c  (file dated 2001 Apr 20 06:12:14 on onem)
+-------------------------------
+
+o Various #include header files
+o Various static variables
+o Various #define quantities
+o findRegistration    (extern function declaration)
+o Declarations of all static functions defined below except starstatSortF
+o Declaration static int(*bail_fp)(void)    (pointer to function passed
+                                             as argument to setWCSFITS)
+o Function definitions:
+   setWCSFITS      (main purpose of this file)
+   spiralToFit     (static)
+   tryOneLoc       (static)
+   nailIt          (static)
+   getNominal      (static)
+   _StarInfo       (structure typedef used in starstatSortF, sortStars)
+   starstatSortF   (static, name passed as argument to qsort in sortStars)
+   sortStars       (static)
+   loadIpCfg       (static)
+
+Function references in setWCSFITS
+   loadIpCfg        this file
+   findStars        libfits/fitsip.c
+   sortStars        this file
+   starStats        libfits/fitsip.c
+   spiralToFit      this file
+
+Function references in spiralToFit
+   getNominal       this file
+   range            libastro/mjd.c,mooncolong.c
+   tryOneLoc        this file
+   nailIt           this file
+
+Function references in tryOneLoc
+   USNOFetch        libfs/usno.c
+   GSCFetch         libfs/gsc.c
+   fs_sexa          libastro/formats.c
+   sortStars        this file
+   findRegistration libwcs/findreg.c
+
+Function references in nailIt
+   getRealFITS      libfits/fits.c
+   tryOneLoc        this file
+
+Function references in getNominal
+   getStringFITS    libfits/fits.c
+   scansex          libastro/formats.c
+   getRealFITS      libfits/fits.c
+   fs_sexa          libastro/formats.c
+
+Function references in loadIpCfg
+   telfixpath       libmisc/telenv.c
+   readCfgFile      libmisc/configfile.c
+   cfgFileError     libmisc/configfile.c
+
+Files where various typedefs can be found
+   CfgEntry         libmisc/configfile.h
+   FImage           libfits/fits.h
+   CamPixel         libfits/fits.h
+   StarDfn          libfits/fits.h
+   StarStats        libfits/fits.h
+   FieldStar        libfs/fieldstar.h

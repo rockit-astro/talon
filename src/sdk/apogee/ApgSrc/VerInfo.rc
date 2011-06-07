@@ -1,0 +1,80 @@
+// Copyright (C) 1999 Gregory K. Remington
+
+#include "ver.h"
+
+#define NVER            4,2,0,10
+#define QVER        "4.2.0.10\0"
+#ifdef WIN32
+#ifdef _APG_PPI
+#define BUILD           "Win32 PPI\0"
+#else
+#ifdef _APG_NET
+#define BUILD           "Win32 NET\0"
+#else
+#define BUILD           "Win32 ISA\0"
+#endif
+#endif
+#else
+#ifdef WINUTIL
+#ifdef _APG_PPI
+#define BUILD           "Win16/32 PPI\0"
+#else
+#define BUILD           "Win16/32 ISA\0"
+#endif
+#else
+#ifdef _APG_PPI
+#define BUILD           "Win16 PPI\0"
+#else
+#define BUILD           "Win16 ISA\0"
+#endif
+#endif
+#endif
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION NVER
+ PRODUCTVERSION NVER
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x29L
+#else
+ FILEFLAGS 0x28L
+#endif
+#ifdef WIN32
+ FILEOS VOS__WINDOWS32
+#else
+ FILEOS VOS__WINDOWS16
+#endif
+ FILETYPE VFT_DLL
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+	BLOCK "040904b0"
+	BEGIN
+	    VALUE "Comments", "www.gkrcc.com\0"
+	    VALUE "CompanyName", "GKR Computer Consulting\0"
+	    VALUE "FileDescription", "Apogee Camera Control DLL\0"
+	    VALUE "FileVersion", QVER
+#ifdef WIN32
+	    VALUE "InternalName", "apogee32.dll\0"
+#else
+	    VALUE "InternalName", "apogee.dll\0"
+#endif
+	    VALUE "LegalCopyright", "Copyright 1999 GKR Computer Consulting and Apogee Instruments Inc.\0"
+	    VALUE "LegalTrademarks", "\0"
+#ifdef WIN32
+	    VALUE "OriginalFilename", "apogee32.dll\0"
+#else
+	    VALUE "OriginalFilename", "apogee.dll\0"
+#endif
+	    VALUE "PrivateBuild", BUILD
+	    VALUE "ProductName", "Apogee Camera Control DLL\0"
+	    VALUE "ProductVersion", QVER
+	    VALUE "SpecialBuild", BUILD
+	END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+	VALUE "Translation", 0x409, 1200
+    END
+END

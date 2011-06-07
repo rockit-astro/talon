@@ -1,0 +1,14 @@
+"prop" is an exerciser program that simply runs the sgp4/sdp4 as
+appropriate for some hundred points in time on every TLE that you feed it
+on stdin.  It doesn't output much.
+
+"prop2" is the program that propagates one element set and compares the
+results with propagations of future and past element sets.
+Try e g 
+
+    prop2 test.tle ref.tle
+
+and watch the output.  All TLEs in the ref.tle file are for the same
+satellite, but different epochs.
+
+B Magnus Backstrom <b@eta.chalmers.se>

@@ -1,0 +1,66 @@
+How does setwcsfits work?
+-------------------------
+
+The top level function in libwcs/setwcsfits.c is setWCSFITS.
+
+Main stages in algorithm of setWCSFITS are as follows:
+  Firstly, find all star-like things in image, using
+     findStars (in libfits/fitsip.c)
+which finds x, y & level of brightest pixel without doing sub-pixel
+centroiding; findStars excludes stars that are BURNEDOUT as defined in
+ip.cfg configuration file.
+  Then sort (stars that aren't burned out) by brightness and restrict
+to the MAXNSTARS brightest ones.  This is currently fixed as 25 in
+libwcs/setwcsfits.c and is not the same parameter as MAXISTARS in ip.cfg.
+  Then for those brightest stars use
+     starStats (in libfits/fitsip.c)
+to find centroided x,y (& other parameters of Gaussian fit).
+  Then finally control passes to
+     spiralToFit (in libwcs/setwcsfits.c)
+to look for catalogue stars to match the image stars that have been found;
+setWCSFITS calls spiralToFit with the MAXNSTARS (= 25) brightest stars or
+with fewer if few (not burned out) were found in the image.
+
+Main stages in algorithm of spiralToFit are as follows:
+  Firstly call
+     getNominal (in libwcs/setwcsfits.c)
+which finds nominal RA & dec of centre, x & y pixel scales & field of view
+(= diagonal size of image) from fits header.
+  Then step through successive hunting centres i.e. hunt for solution (fit
+between image & catalogue stars) in each successive location, starting at
+nominal position & spiralling outward.  "Spiral" means do the 1 nominal
+position, then 3*3 ring of positions surrounding nominal (= 8 new positions),
+then 5*5 ring surrounding the 3*3 (= 16 new), etc., each time adding one more
+"ring".  The hunting centres in each ring cover a rectangular area, square if
+the image is square, spacing between hunting centres being 0.33 * width of
+image in RA and 0.33 * height of image in dec (parameter HUNTFRAC currently
+fixed as 0.33 in setwcsfits.c).  Continue trying new hunting centres until
+either find solution, or reach max. hunt radius given as input to setWCSFITS
+(actually an optional input parameter when calling wcs at command line
+level).  Each (rectangular) ring in the spiral has the same no. of positions
+in RA as in dec (i.e. n*n); if image not square then the radius covered in
+dec, not RA, is compared to the input max. hunt radius.
+  At each location (hunting centre), call
+     tryOneLoc (in libwcs/setwcsfits.c)
+and when (if) successful in finding a solution, call
+     nailIt (in libwcs/setwcsfits.c)
+which calls tryOneLoc centred on the solution found.  Aim is to find a fit a
+2nd time, the differences being: (i) when hunting in the spiral, spiralToFit
+calls tryOneLoc with at most MAXISTARS (the no. in ip.cfg), but when calling
+nailIt, it uses the same no. used when setWCSFITS called spiralToFit (if
+MAXISTARS > MAXNSTARS (= 25) then the numbers are the same); and (ii) the
+catalogue area is centred exactly on the image area when nailIt is called,
+giving a better chance of having more catalogue stars that match image stars.
+
+Main stages in tryOneLoc are as follows:
+  Use functions in libfs/ to access field star data from catalogue(s),
+default GSC but command line version of wcs has option to add USNO stars
+also.  Catalogue stars are extracted that cover a circular area whose
+diameter equals the field of view.  Field of view was passed as a parameter
+from spiralToFit and as it equals the diagonal size of the image, this means
+the circular area just encompasses the rectangular image if centred exactly.
+  Find brightest MAXCSTARS (ip.cfg parameter) catalogue stars, excluding
+those brighter than BRCSTAR (ip.cfg parameter).
+  For the actual matching, tryOneLoc passes control to
+     findRegistration (in libwcs/findreg.c)
+     ================

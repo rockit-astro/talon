@@ -1,0 +1,828 @@
+! Default resources for XEphem v3.3
+
+
+! *************************************************************************
+! Time zone, location and conditions.
+!
+! XEphem always starts with the current time from the host computer. The
+! timezone name and offset are also set if possible or these may be set
+! manually using these two resources: 
+!   XEphem.TZName: Time zone name
+!   XEphem.TZone: Time zone offset behind UTC, as HH:MM:SS
+
+! Location may be set using Lat/Long/Elevation directly or via Sitename; if
+! all are given the Sitename takes priority if it exists in xephem_sites.
+! Sitename will also set automatic time zone. Long will guess a fixed time zone.
+!
+! Formats:
+!  XEphem.Lat:       d:m:s, +N
+!  XEphem.Long:      d:m:s, +W
+!  XEphem.Elevation: m or ft above sea level, depending on Units preference
+!  XEphem.Sitename:  must exactly match one in auxil/xephem_sites.
+XEphem.Sitename: Chicago, Illinois
+
+! DeltaT = TDT - UTC
+! Set to desired number of seconds, or "Turn Auto on" to use model.
+XEphem.DeltaT: Turn Auto on
+
+! Temp (degrees C or F);
+! atmospheric Pressure (mB or in of Hg);
+! N.B. the units of these values depend on the selected Units preference, set
+! farther below; these assume the default is Metric units.
+XEphem.Temp: 10
+XEphem.Pressure: 1010
+
+! RA/Dec epoch
+XEphem.Epoch: 2000
+
+! degrees sun below horizon we consider totally dark for "Dawn" and "Dusk".
+XEphem.TwilightDip: 18
+
+
+! *************************************************************************
+! time stepping control
+
+XEphem.NSteps: 1
+XEphem.Pause: 0
+
+! Initial method or time amount by which time is incremented on each step.
+! Any of the options presented in the "Step" Main menu prompt are legal here.
+
+XEphem.StepSize: RT Clock
+
+
+! *************************************************************************
+! fonts:
+
+XEphem*XmLabel.fontList: 6x13
+XEphem*XmList.fontList: 6x13
+XEphem*XmText.fontList: 6x13
+XEphem*XmTextField.fontList: 6x13
+XEphem*fontList: 6x13
+
+! plain and greek font for labeling objects in maps and graphs.
+! N.B. for best match with the postscript, use helvetica.
+XEphem.viewsFont: -*-helvetica-medium-r-*-*-14-*-*-*-*-*-*-*
+XEphem.viewsGreekFont: -*-symbol-*-*-*-*-14-*-*-*-*-*-*-*
+
+! font for labeling trails and grid -- best if not too frilly.
+! N.B. for best match with the postscript, use helvetica.
+XEphem.trailsFont: -*-helvetica-medium-r-*-*-13-*-*-*-*-*-*-*
+XEphem.SkyGridFont: -*-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*
+
+! font for labeling constellation names in Sky View
+! N.B. for best match with the postscript, use times italic
+XEphem.CnsFont: -*-times-medium-i-*-*-14-*-*-*-*-*-*-*
+
+! font for the Sky View tracking values 
+XEphem.SkyTrackFont: 6x12
+
+! used for the natural satellites designations
+XEphem.moonsFont: -*-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*
+
+! *************************************************************************
+! when to install a private colormap.
+
+! if set to guess, xephem will try to figure out whether it's really necessary;
+! if set to no, then xephem definitely will not make a new colormap;
+! if set to yes, then xephem definitely will make a new colormap.
+! can also be overridden from the command line using "-install {guess|yes|no}".
+XEphem.install: guess
+
+
+! *************************************************************************
+! some basic colors
+
+#ifdef COLOR
+XEphem.tipForeground: #11f
+XEphem.tipBackground: white
+XEphem*background: #feb
+XEphem*foreground: #500
+XEphem*XmCascadeButton.foreground: #c00
+XEphem*XmPushButton.foreground: #03d
+XEphem*XmToggleButton.foreground: #03d
+XEphem*XmText.foreground: #060
+XEphem*XmTextField.foreground: #060
+XEphem*XmList.foreground: #00a
+XEphem*XmScale.foreground: #a80
+! make the APPLICATION_MODAL dialogs distinct
+XEphem*MainPrompt*background: white
+XEphem*ObjPrompt*background: white
+XEphem*Print*background: white
+XEphem*Query*background: white
+XEphem*NetStop*background: white
+XEphem*SaveAs*background: white
+XEphem*ModalMessage*background: white
+#endif /* COLOR */
+
+
+! *************************************************************************
+! Preferences
+
+! set Equatorial.Topocentric preference to True or False
+XEphem*Equatorial.Topocentric.set: False
+
+! set Precision.Hi preference to True or False
+XEphem*Precision.Hi.set: True
+
+! set MessageBell.Off preference to True or False
+XEphem*MessageBell.Off.set: False
+
+! set PromptPreFill.No preference to True or False
+XEphem*PromptPreFill.No.set: False
+
+! set Units.English preference to True or False
+XEphem*Units.English.set: False
+
+! set TZone.Local preferences to True or False
+XEphem*TZone.Local.set: False
+
+! set Tips.No preferences to True or False
+XEphem*Tips.No.set: False
+
+! set Confirm.No preferences to True or False
+XEphem*Confirm.No.set: False
+
+! set one of DateFormats preferences to True
+XEphem*DateFormat.MDY.set: True
+XEphem*DateFormat.YMD.set: False
+XEphem*DateFormat.DMY.set: False
+
+
+! *************************************************************************
+! Directories.
+! N.B. a leading ~/ refers to $HOME
+
+! system-wide directory for xephem support files. Shared r-o among all users.
+! N.B. under this are auxil/, fifos/, fits/, and catalogs/.
+! N.B. if present, ppm.xe and the gsc base directory must be under catalogs/
+XEphem.ShareDir: .
+
+
+! *************************************************************************
+! default FITS info
+
+XEphem.FITSpattern:  *.f*ts
+XEphem*SkyFITS*Header.rows: 8
+XEphem*SkyFITS*Header.columns: 40
+XEphem*SkyFITS*UseGzip.set: True
+XEphem*SkyFITS*AutoName.set: True
+XEphem*SkyFITS*GrayMethod.HEq.set: False
+XEphem*SkyFITS*GrayMethod.Gamma.set: True
+XEphem*SkyFITS*Histogram.height: 50
+XEphem*SkyFITS*Inverse.set: False
+XEphem*SkyFITS*STScI.set: True
+XEphem*SkyFITS*ESO.set: False
+
+! Gamma scale is 100x, ie, it actually goes from 33 .. 300.
+XEphem*SkyFITS*GammaScale.value: 50
+XEphem*SkyFITS.x: 600
+XEphem*SkyFITS.y: 10
+#ifdef COLOR
+XEphem*SkyFITS*Histogram.foreground: red
+XEphem*SkyFITS*Histogram.background: #303030
+XEphem.FITSHistoColor: yellow
+XEphem.FITSMapColor: orange
+#endif
+
+
+! *************************************************************************
+! default USNO, GSC and PM Field stars setup choices
+
+XEphem*FieldStars*GSCCD.set: False
+XEphem*FieldStars*GSCCDDirectory.value: /mnt/cdrom
+XEphem*FieldStars*GSCCache.set: False
+XEphem*FieldStars*GSCCacheDirectory.value:
+XEphem*FieldStars*PPM.set: False
+XEphem*FieldStars*PPMFilename.value:
+XEphem*FieldStars*Tycho.set: False
+XEphem*FieldStars*TychoFilename.value:
+XEphem*FieldStars*USNO.set: False
+XEphem*FieldStars*USNODirectory.value:
+XEphem*FieldStars*XEphemdbdNet.set: False
+XEphem*FieldStars*XEphemdbdURL.value: /clearskyinstitute.com/cgi-bin/xephemdbd/xephemdbd.pl
+XEphem*FieldStars*ESONet.set: False
+XEphem*FieldStars*SAOHD.set: True
+XEphem*FieldStars*NoDups.set: True
+
+
+! *************************************************************************
+! default Networking setup choices
+
+XEphem*NetSetup*Direct.set: True
+XEphem*NetSetup*Proxy.set: False
+XEphem*NetSetup*ProxyHost.value: a.b.com
+XEphem*NetSetup*ProxyPort.value: 8000
+XEphem*NetSetup*SOCKS.set: False
+XEphem*NetSetup*SOCKSHost.value: x.y.com
+XEphem*NetSetup*SOCKSPort.value: 1080
+
+
+! *************************************************************************
+! DBinitialFiles may list files to read automatically upon startup, each
+! separated by one blank. These will be searched for in ShareDir/catalogs.
+XEphem.DBinitialFiles: Messier.edb YBS.edb NGC.edb STS99.edb
+
+
+! *************************************************************************
+! Printing options:
+
+! whether to save (or print);
+! Color or Gray; and
+! default command to print a postscript file given as its only arg.
+XEphem*Print*Save.set: True
+XEphem*Print*Grayscale.set: True
+XEphem*Print*PrintCmd.value: lpr
+XEphem*Print*Filename.value:
+
+
+! *************************************************************************
+! Data Table setup
+
+! set AdpDispl to desired horizon displacement, degrees above horizon.
+XEphem*AdpDispl.value: 0
+
+! set Limb.set to True to compute rise/set based on upper limb, or
+! False to compute rise/set based on object's center.
+XEphem*DataSelRisetCols*Limb.set: True
+
+! set which Data Table rows and columns are to be on initially
+XEphem*DataSelRows.Sun.set: True
+XEphem*DataSelRows.Moon.set: True
+XEphem*DataSelRows.Mercury.set: True
+XEphem*DataSelRows.Venus.set: True
+XEphem*DataSelRows.Mars.set: True
+XEphem*DataSelRows.Jupiter.set: True
+XEphem*DataSelRows.Saturn.set: True
+XEphem*DataSelRows.Uranus.set: True
+XEphem*DataSelRows.Neptune.set: True
+XEphem*DataSelRows.Pluto.set: True
+XEphem*DataSelMiscCols.Air.set: False
+XEphem*DataSelMiscCols.Alt.set: True
+XEphem*DataSelMiscCols.Az.set: True
+XEphem*DataSelMiscCols.Cns.set: False
+XEphem*DataSelMiscCols.Dec.set: False
+XEphem*DataSelMiscCols.EaDst.set: False
+XEphem*DataSelMiscCols.EaLght.set: False
+XEphem*DataSelMiscCols.Elong.set: True
+XEphem*DataSelMiscCols.GLat.set: False
+XEphem*DataSelMiscCols.GLong.set: False
+XEphem*DataSelMiscCols.HA.set: False
+XEphem*DataSelMiscCols.HeLat.set: False
+XEphem*DataSelMiscCols.HeLong.set: False
+XEphem*DataSelMiscCols.Phase.set: False
+XEphem*DataSelMiscCols.RA.set: False
+XEphem*DataSelMiscCols.Size.set: False
+XEphem*DataSelMiscCols.SnDst.set: False
+XEphem*DataSelMiscCols.SnLght.set: False
+XEphem*DataSelMiscCols.VMag.set: True
+XEphem*DataSelMiscCols.Zenith.set: False
+XEphem*DataSelMiscCols.Zenith.set: True
+XEphem*DataSelRisetCols.RisTm.set: True
+XEphem*DataSelRisetCols.RisAz.set: False
+XEphem*DataSelRisetCols.TrnTm.set: True
+XEphem*DataSelRisetCols.TrnAlt.set: True
+XEphem*DataSelRisetCols.SetTm.set: True
+XEphem*DataSelRisetCols.SetAz.set: False
+XEphem*DataSelRisetCols.HrsUp.set: False
+XEphem*DataSelSepCols.Sun.set: False
+XEphem*DataSelSepCols.Moon.set: False
+XEphem*DataSelSepCols.Mercury.set: False
+XEphem*DataSelSepCols.Venus.set: False
+XEphem*DataSelSepCols.Mars.set: False
+XEphem*DataSelSepCols.Jupiter.set: False
+XEphem*DataSelSepCols.Saturn.set: False
+XEphem*DataSelSepCols.Uranus.set: False
+XEphem*DataSelSepCols.Neptune.set: False
+XEphem*DataSelSepCols.Pluto.set: False
+
+XEphem*DataSel*Text.value:
+
+! *************************************************************************
+! info for the External file dialog
+XEphem*ExtFile*Text.value:
+
+
+! *************************************************************************
+! info for the Jupiter display
+
+XEphem*Jupiter*BrightMoons.set: False
+XEphem*Jupiter*SkyBkg.set: False
+XEphem*Jupiter*Tags.set: True
+XEphem*Jupiter*FlipTB.set: False
+XEphem*Jupiter*FlipLR.set: False
+XEphem*Jupiter*Scale.value: 50
+XEphem*Jupiter*LimMag.value: 10
+XEphem*Jupiter.geometry: 350x350
+XEphem*JupiterTV*Map.height: 300
+XEphem*JupiterStats*GRSSysIILong.value: 61
+#ifdef COLOR
+XEphem*Jupiter*Map.background: #2d2d2d
+XEphem*Jupiter*Map.foreground: #ffd39a
+XEphem.JupiterGRSColor: #f88
+#endif /* COLOR */
+
+
+! *************************************************************************
+! info for the Saturn display
+
+XEphem*Saturn*BrightMoons.set: False
+XEphem*Saturn*SkyBkg.set: False
+XEphem*Saturn*Tags.set: True
+XEphem*Saturn*FlipTB.set: False
+XEphem*Saturn*FlipLR.set: False
+XEphem*Saturn*Scale.value: 50
+XEphem*Saturn*LimMag.value: 15
+XEphem*Saturn.geometry: 350x350
+XEphem*SaturnTV*Map.height: 300
+#ifdef COLOR
+XEphem*Saturn*Map.background: #2d2d2d
+XEphem*Saturn*Map.foreground: #ffe773
+#endif /* COLOR */
+
+! *************************************************************************
+! info for the Uranus display
+
+XEphem*Uranus*BrightMoons.set: False
+XEphem*Uranus*SkyBkg.set: False
+XEphem*Uranus*Tags.set: True
+XEphem*Uranus*FlipTB.set: False
+XEphem*Uranus*FlipLR.set: False
+XEphem*Uranus*Scale.value: 50
+XEphem*Uranus*LimMag.value: 17
+XEphem*Uranus.geometry: 350x350
+XEphem*UranusTV*Map.height: 300
+#ifdef COLOR
+XEphem*Uranus*Map.background: #2d2d2d
+XEphem*Uranus*Map.foreground: #ffd39a
+#endif /* COLOR */
+
+
+! *************************************************************************
+! info for the Moon display
+
+XEphem*Moon.geometry: 600x600
+XEphem*MoonES*Earthshine.value: 4
+XEphem*Moon*Spacecraft.set: True
+XEphem*Moon*Labels.set: False
+XEphem*Moon*SkyBkg.set: False
+XEphem*Moon*Image.set: True
+XEphem*Moon*Umbra.set: True
+XEphem*Moon*FlipTB.set: False
+XEphem*Moon*FlipLR.set: False
+XEphem*Moon*Grid.set: False
+XEphem*Moon*Scale1X.set: False
+XEphem*Moon*Scale2X.set: False
+XEphem*Moon*Scale3X.set: True
+XEphem*Moon*Scale6X.set: False
+#ifdef COLOR
+XEphem.GlassBorderColor: yellow
+XEphem*Moon*MoonDA.foreground: #fffafa
+XEphem*Moon*MoonDA.background: black
+XEphem.MoonAnnotColor: #0f0
+#endif /* COLOR */
+
+
+! *************************************************************************
+! info for the Mars map
+
+XEphem*Mars.geometry: 580x650
+XEphem*Mars*Labels.set: False
+XEphem*Mars*SkyBkg.set: False
+XEphem*Mars*FlipTB.set: False
+XEphem*Mars*FlipLR.set: False
+XEphem*Mars*Grid.set: False
+XEphem*Mars*LowPrec.set: False
+XEphem*MarsStats*Seeing.minimum: 0
+XEphem*MarsStats*Seeing.maximum: 5
+XEphem*MarsStats*Seeing.value: 0
+#ifdef COLOR
+XEphem*Mars*Map.foreground: #fbae58
+XEphem*Mars*Map.background: black
+XEphem.MarsAnnotColor: #8f8
+#endif /* COLOR */
+
+
+! *************************************************************************
+! info for the Mars Moon map
+
+XEphem*MarsMoons*BrightMoons.set: False
+XEphem*MarsMoons*FlipLR.set: False
+XEphem*MarsMoons*FlipTB.set: False
+XEphem*MarsMoons*LimMag.value: 17
+XEphem*MarsMoons*Map.background: #222
+XEphem*MarsMoons*Map.foreground: #fa5
+XEphem*MarsMoons.geometry: 350x350
+XEphem*MarsMoons*Scale.value: 50
+XEphem*MarsMoons*SkyBkg.set: False
+XEphem*MarsMoons*Tags.set: True
+XEphem*MarsMoonsTV*Map.height: 300
+
+
+! *************************************************************************
+! info for the Earth map
+
+! select default Earth view mode:
+! set one of cylindrical.set or polar.set to True.
+XEphem*Earth*cylindrical.set: True
+XEphem*Earth*spherical.set: False
+XEphem*Earth*track.set: False
+XEphem*Earth*trail.set: True
+XEphem*Earth*grid.set: True
+XEphem*Earth*object.set: True
+XEphem*Earth*sites.set: True
+XEphem*Earth*sunlight.set: True
+XEphem*Earth*livedrag.set: True
+XEphem*Earth*lowprec.set: False
+XEphem*Earth.geometry: 700x350
+#ifdef COLOR
+XEphem*Earth*Map.foreground: #fffafa
+XEphem*Earth*Map.background: #242424
+XEphem.EarthGridColor: #383
+XEphem.EarthSiteColor: #ff0090
+XEphem.EarthObjColor: #ff0000
+XEphem.EarthEclipseColor: #303030
+XEphem.EarthSunColor: #ffef00
+XEphem.EarthBorderColor: #7070a0
+XEphem.EarthHereColor: #ffffff
+#endif /* COLOR */
+
+
+! *************************************************************************
+! info for the little progress meter
+
+XEphem*Progress*DA.width:200
+XEphem*Progress*DA.height:50
+#ifdef COLOR
+XEphem*Progress*DA.foreground:red
+#endif /* COLOR */
+
+
+! *************************************************************************
+! info for the Solar system display
+
+XEphem*SolarSystem*Trails.set: True
+XEphem*SolarSystem*AllObjs.set: False
+XEphem*SolarSystem*AllObjsLegs.set: False
+XEphem*SolarSystem*Ecliptic.set: True
+XEphem*SolarSystem*Labels.set: True
+XEphem*SolarSystem*Legs.set: True
+XEphem*SolarSystem*LiveDrag.set: True
+XEphem*SolarSystem*HLongScale.value: 0
+XEphem*SolarSystem*DistScale.value: 50
+XEphem*SolarSystem*HLatScale.value: 90
+XEphem*SolarSystem.geometry: 400x400
+#ifdef COLOR
+XEphem*SolarSystem*SolarDA.background: #2d2d2d
+XEphem*SolarSystem*SolarDA.foreground: #5b5
+XEphem*StereoSolarSystem*StereoDA.background: #2d2d2d
+! only the ecliptic grid is shown in the foreground color
+XEphem*StereoSolarSystem*StereoDA.foreground: #fffafa
+#endif /* COLOR */
+
+
+! *************************************************************************
+! info for the Sky View display and its supporting dialogs.
+
+! To make Alt-Az be the initial coord system:
+!   set SkyOps*AltAzMode.set to True
+!   set SkyView*AzRAScale.value to initial Az, in mult of 1/12 degrees (5').
+!   set SkyView*AltDecScale.value to initial Alt, in mult of 1/12 degrees (5')
+! To make RA-Dec be the initial coord system:
+!   set SkyOps*AltAzMode.set to False
+!   set SkyView*AzRAScale.value to initial RA, in mult of 1/180 hours (20'')
+!   set SkyView*AltDecScale.value to initial Dec, in mult of 1/12 degrees (5')
+! FOVScale is in mult of 1/12 degrees (5')
+XEphem*SkyView*AzRAScale.value: 2160
+XEphem*SkyView*AltDecScale.value: 1080
+XEphem*SkyView*FOVScale.value: 2160
+XEphem*SkyView*FOVScale.scaleMultiple: 1
+XEphem*SkyView*AltDecScale.scaleMultiple: 1
+XEphem*SkyView*AzRAScale.scaleMultiple: 1
+XEphem*SkyView.geometry: 650x650
+XEphem*SkyView*InFIFO.set: False
+XEphem*SkyView*LocFIFO.set: False
+XEphem*SkyView*Toolbar*shadowThickness: 1
+#ifdef COLOR
+XEphem.SkyEyePColor: #b33
+XEphem*SkyView*Map.background: #222
+XEphem*SkyView*Map.foreground: #7f7
+XEphem.SkyCnsFigColor: #bb3
+XEphem.SkyCnsBndColor: #b77
+XEphem.SkyCnsNamColor: #ff0
+XEphem.SkyGridColor: #595
+XEphem.SkyEqColor: #f30
+#endif /* COLOR */
+
+! Sky view Options
+XEphem*SkyOps*AltAzMode.set: True
+XEphem*SkyOps*AutoMag.set: True
+XEphem*SkyOps*CylProj.set: False
+XEphem*SkyOps*JustDots.set: True
+XEphem*SkyOps*FlipLR.set: False
+XEphem*SkyOps*FlipTB.set: False
+XEphem*SkyOps*Ecliptic.set: True
+XEphem*SkyOps*Equator.set: False
+XEphem*SkyOps*Galactic.set: True
+XEphem*SkyOps*Eyepieces.set: True
+XEphem*SkyOps*MagScale.set: True
+XEphem*SkyOps*FieldStars.set: True
+XEphem*SkyOps*LiveDrag.set: True
+XEphem*SkyOps*HznMap.set: False
+XEphem*SkyOps*Grid*Grid.set: True
+XEphem*SkyOps*Grid*Auto.set: True
+XEphem*SkyOps*Grid*Labels.set: True
+XEphem*SkyOps*Grid*AltAz.set: False
+XEphem*SkyOps*CnsBoundaries.set: False
+XEphem*SkyOps*CnsFigures.set: True
+XEphem*SkyOps*CnsNames.set: False
+XEphem*SkyOps*CnsAbbr.set: True
+XEphem*SkyOps*LblStMag.set: False
+XEphem*SkyOps*LblStName.set: True
+XEphem*SkyOps*LblSSMag.set: False
+XEphem*SkyOps*LblSSName.set: True
+XEphem*SkyOps*LblDSMag.set: False
+XEphem*SkyOps*LblDSName.set: True
+XEphem*SkyOps*LblNDeepSky.value: 3
+XEphem*SkyOps*LblNSolSys.value: 10
+XEphem*SkyOps*LblNStars.value: 10
+XEphem*SkyOps.x: 500
+XEphem*SkyOps.y: 10
+
+! initial settings of the skyview objects limiting mags if no AutoMag.
+! BMAGLIMIT and FMAGLIMIT in skyfiltmenu.c limit the extremes to -28 and 30.
+XEphem*SkyFilter*DeepSkyMag.value: 7
+XEphem*SkyFilter*StarMag.value: 5
+XEphem*SkyFilter*SolSysMag.value: 5
+XEphem*SkyFilter*MagStep.value: 1
+
+! colors used to display the symbols in the Sky View filter menu
+#ifdef COLOR
+XEphem*SkyFilter*SymbolDA.foreground: #fffafa
+XEphem*SkyFilter*SymbolDA.background: #2d2d2d
+#endif /* COLOR */
+
+! set the width of the symbol boxes in the Sky view Filter menu.
+XEphem*SkyFilter*SymbolDA.width: 25
+
+! initial location
+XEphem*SkyFilter.x: 400
+XEphem*SkyFilter.y: 10
+
+! initial types of object to display in Sky View
+XEphem*SkyFilter*Planets.set: True
+XEphem*SkyFilter*Elliptical.set: True
+XEphem*SkyFilter*Hyperbolic.set: True
+XEphem*SkyFilter*Parabolic.set: True
+XEphem*SkyFilter*EarthSat.set: True
+XEphem*SkyFilter*Pulsars.set: True
+XEphem*SkyFilter*Quasars.set: True
+XEphem*SkyFilter*Radio.set: True
+XEphem*SkyFilter*Stellar.set: True
+XEphem*SkyFilter*SNRemnants.set: True
+XEphem*SkyFilter*Undefined.set: True
+XEphem*SkyFilter*Stars.set: True
+XEphem*SkyFilter*Binary.set: True
+XEphem*SkyFilter*Double.set: True
+XEphem*SkyFilter*Multiple.set: True
+XEphem*SkyFilter*Variable.set: True
+XEphem*SkyFilter*BrightNeb.set: True
+XEphem*SkyFilter*DiffuseNeb.set: True
+XEphem*SkyFilter*DarkNeb.set: True
+XEphem*SkyFilter*PlanetaryNeb.set: True
+XEphem*SkyFilter*SpiralGal.set: True
+XEphem*SkyFilter*SphericalGal.set: True
+XEphem*SkyFilter*GalClusters.set: True
+XEphem*SkyFilter*GlobularCl.set: True
+XEphem*SkyFilter*OpenCl.set: True
+XEphem*SkyFilter*ClInNeb.set: True
+
+! Skyview eyepiece
+! Set the scale min, max, initial value, all in arc minutes.
+! Then set one of Elliptical/Rectangular and one of Solid/Outline to True.
+XEphem*SkyEyep*EyepH.maximum: 300
+XEphem*SkyEyep*EyepH.minimum: 1
+XEphem*SkyEyep*EyepH.value: 50
+XEphem*SkyEyep*EyepW.maximum: 300
+XEphem*SkyEyep*EyepW.minimum: 1
+XEphem*SkyEyep*EyepW.value: 50
+XEphem*SkyEyep*Elliptical.set: True
+XEphem*SkyEyep*Rectangular.set: False
+XEphem*SkyEyep*Solid.set: True
+XEphem*SkyEyep*Outline.set: False
+XEphem*SkyEyep*Lock.set: False
+XEphem*SkyEyep*Telrad.set: False
+
+! SkyView Auto mag table.
+! Each table entry consists of four values.
+! Values are separated by blanks, table entries by commas.
+! The values are as follows:
+!   Max FOV for this entry, in decimal degrees
+!   Faintest Magnitude limit for stars;
+!   Faintest Magnitude limit for solar system objects;
+!   Faintest Magnitude limit for deep sky objects.
+!   Mag steps per dot size
+XEphem.AutoMag: \
+	.35 16 16 18 1, \
+	.7  15 15 17 1, \
+	.9  14 14 16 1, \
+	1.4 13 13 15 1, \
+	2.8 12 12 14 1, \
+	5.6 11 11 13 1, \
+	11  10 10 12 1, \
+	22   9  9 11 1, \
+	45   8  8 10 1, \
+	90   7  7  9 1, \
+	180  5  5  7 1
+
+
+! *************************************************************************
+! Sky list
+XEphem*SkyList*Sort*Rise.set: True
+XEphem*SkyList*Format*Text.set: True
+XEphem*SkyList*EdbFilename.value:
+XEphem*SkyList*TextFilename.value:
+
+
+! *************************************************************************
+! Max range of trails counter, and default custom interval.
+
+XEphem*Trails*NTicks.maximum: 250
+XEphem*Trails*CustomInterval.value: 0:30
+
+
+! *************************************************************************
+! Night-at-a-Glance options
+XEphem*NaaGlance.geometry: 450x400
+
+
+! *************************************************************************
+! Inital Plot display options
+
+XEphem*PlotDisplay*FlipX.set: False
+XEphem*PlotDisplay*FlipY.set: False
+XEphem*PlotDisplay*Grid.set: True
+XEphem*PlotDisplay*XAsDate.set: False
+XEphem*PlotDA.width: 350
+XEphem*PlotDA.height: 350
+XEphem*Plot*Filename.value:
+#ifdef COLOR
+XEphem*PlotDA.foreground: #3f3
+XEphem*PlotDA.background: #444
+#endif /* COLOR */
+
+! colors used in plots
+#ifdef COLOR
+XEphem.plotColor0: white
+XEphem.plotColor1: #44ff44
+XEphem.plotColor2: orange
+XEphem.plotColor3: cyan
+XEphem.plotColor4: #ff44ff
+XEphem.plotColor5: #ff6666
+XEphem.plotColor6: #4444ff
+XEphem.plotColor7: wheat
+XEphem.plotColor8: gray
+XEphem.plotColor9: pink
+#endif /* COLOR */
+
+
+! *************************************************************************
+! colors used to draw the planets and stars
+
+#ifdef COLOR
+XEphem.mercuryColor: Red
+XEphem.venusColor: Green
+XEphem.marsColor: #ff8c00
+XEphem.jupiterColor: Cyan
+XEphem.saturnColor: #eee8aa
+XEphem.uranusColor: #00fa9a
+XEphem.neptuneColor: #00bfff
+XEphem.plutoColor: Orange
+XEphem.sunColor: Yellow
+XEphem.moonColor: Grey
+XEphem.hotStarColor: #b0e2ff
+XEphem.mediumStarColor: #fffacd
+XEphem.coolStarColor: #ff7f50
+XEphem.otherStellarColor: #2f5
+XEphem.solSysColor: #cfc
+XEphem.otherObjColor: #7f7
+#endif /* COLOR */
+
+
+! *************************************************************************
+! Help text scrolled text area dimensions
+
+XEphem*Help*HelpText.rows: 24
+XEphem*Help*HelpText.columns: 80
+XEphem*Help.verticalSpacing: 20
+
+
+! *************************************************************************
+! scrolled Message text scrolled text area dimensions
+
+XEphem*Message*Messages.rows: 10
+XEphem*Message*Messages.columns: 80
+XEphem*Message.verticalSpacing: 20
+
+
+! *************************************************************************
+! Close Objects menu
+
+XEphem*CloseList*Text.value:
+XEphem*CloseObjs*AutoUp.set: False
+XEphem*CloseObjs*Mag.value: 20.0
+XEphem*CloseObjs*Sep.value: 2.0
+XEphem*CloseObjs*OmitFixedPairs.set: True
+XEphem*CloseObjs*List.visibleItemCount: 10
+XEphem*CloseObjs*List.doubleClickInterval: 500
+
+
+! *************************************************************************
+! List tool
+
+XEphem*List*Filename.value:
+
+
+! *************************************************************************
+! DB manage menu
+
+XEphem*DBManage*NoDups.set: True
+
+
+! *************************************************************************
+! other dialog locations and colors
+
+XEphem*Srch*SrchFunction.rows: 5
+#ifdef COLOR
+XEphem*AboutMap.foreground: #fffafa
+XEphem*AboutMap.background: #2d2d2d
+XEphem.CalOtherMonthColor: gray50
+#endif /* COLOR */
+
+
+! *************************************************************************
+! use the following to control whether you want highlighting.
+! WARNING: don't actually turn off highlightOnEnter or traversal or you'll
+!  uncover a bug in Motif 1.2 where the menu bar cascade buttons stay pressed
+!  in forever :-(
+! XEphem*highlightThickness: 2
+! XEphem*highlightOnEnter: True
+! XEphem*highlightColor: red
+! XEphem*keyboardFocusPolicy: POINTER
+XEphem*highlightThickness: 0
+
+
+! *************************************************************************
+! AAVSO defaults
+XEphem*AAVSO*Name.value: OMI CET
+XEphem*AAVSO*Designation.value: 0214-03
+XEphem*AAVSO*StartDate.value: default
+XEphem*AAVSO*EndDate.value: latest
+
+
+! *************************************************************************
+! main menu frame layout
+
+XEphem*XephemMain*MainForm.XmFrame.marginHeight: 1
+XEphem*XephemMain*MainForm.XmFrame.marginWidth: 1
+XEphem*XephemMain*MainForm.XmFrame.topOffset: 1
+XEphem*XephemMain*MainForm.XmFrame.bottomOffset: 1
+XEphem*XephemMain*MainForm.XmFrame.leftOffset: 1
+XEphem*XephemMain*MainForm.XmFrame.rightOffset: 1
+
+
+! *************************************************************************
+! define the Update hot-key sequences
+XEphem.TopLevelShell*translations: #override \
+        Ctrl<Key>u: XeUpdate(0) \n\
+	Ctrl<Key>r: XeUpdate(1)
+XEphem*XmDialogShell*translations: #override \
+        Ctrl<Key>u: XeUpdate(0) \n\
+	Ctrl<Key>r: XeUpdate(1)
+
+
+
+! *************************************************************************
+! misc
+
+XEphem.tipFont: 6x13
+XEphem*SiteSL.visibleItemCount: 10
+XEphem*SrchRC.spacing: 5
+XEphem*PlotRC.spacing: 5
+XEphem*ListRC.spacing: 5
+XEphem.allowShellResize: True
+XEphem*marginWidth: 1
+XEphem*marginHeight: 1
+XEphem*marginRight: 1
+XEphem*marginLeft: 1
+XEphem*XmFrame.marginWidth: 0
+XEphem*XmFrame.marginHeight: 0
+XEphem*spacing: 1
+XEphem*blinkRate: 0
+XEphem.xephem_main*resizePolicy: RESIZE_ANY
+
+! This must match the value in patchlevel.c
+XEphem.Version: Pre-3.3
+
+! For RCS Only -- Do Not Edit
+! @(#) $RCSfile: XEphem.ad,v $ $Date: 2001/04/19 21:12:01 $ $Revision: 1.1.1.1 $ $Name:  $

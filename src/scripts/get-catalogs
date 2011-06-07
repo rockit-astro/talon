@@ -1,0 +1,18 @@
+#!/bin/bash
+
+URL=http://phobos.physics.uiowa.edu/~kmi/catalogs
+FILES="general.tar.gz gsc.tar.gz usno.tar.gz"
+
+DEST="$TELHOME/archive/catalogs"
+
+if [ ! -w $DEST ]; then
+    echo "You don't have write permission to $DEST"
+    exit
+fi
+
+cd $TELHOME/archive/catalogs
+for file in $FILES; do
+    wget -m -nd $URL/$file
+    tar zxvf $file
+    rm $file
+done

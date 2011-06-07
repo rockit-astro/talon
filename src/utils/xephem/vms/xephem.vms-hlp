@@ -1,0 +1,137 @@
+1 xephem
+     An interactive astronomical ephemeris for X
+ 
+     Xephem version 3.0 is an interactive astronomical ephemeris
+     program for X Windows systems with Motif. It provides many
+     graphical views as well as quantitative heliocentric,
+     geocentric and topocentric information for Earth satellites,
+     solar system and celestial objects.
+ 
+2 Getting_Started
+     Xephem contains extensive context-sensitive on-line help.
+     Virtually none of that help is duplicated here so go ahead
+     and run xephem to learn more.  In order for xephem to find
+     this help text the X resource XEphem.HELPFILE must be set
+     properly. If you are running xephem from the source
+     directory of the distribution kit this should already be set
+     to auxil/xephem.hlp.
+ 
+     When you first run xephem you may hear a beep.  This means
+     xephem has added a message to the message box menu.  This
+     menu is not shown by default.  Whether the message box is
+     displayed may be toggled by using the Messages entry in the
+     File pulldown menu off the Main menu. Whether xephem beeps
+     when it adds a message may be toggled using the Message Bell
+     option in the Preferences pulldown menu.
+ 
+2 Quick_Menu_Tour
+     The Help pulldown at the top right of the main menu provides
+     access to several categories of assistance applicable to the
+     overall operation of xephem. Those unfamiliar with xephem
+     might begin by reading the Introduction help section first
+     and reading the additional help information in the order in
+     which it is listed in the pulldown. Examples for several
+     useful operations are included as well.
+ 
+     The Main menu of xephem provides control and display of
+     three basic services: observing circumstances, looping, and
+     access to additional displays.
+ 
+     Observing circumstances includes location, time and
+     atmospheric conditions (used for the refraction model).
+     Looping refers to the ability to set up xephem so that it
+     automatically increments time at a desired step size and
+     rate.
+ 
+     Additional displays provide all of the graphical and
+     quantitative information available, and always refer to the
+     circumstances defined in the main menu.  These additional
+     displays are activated from the Views pulldown.
+ 
+     Xephem has information about the Solar system built in which
+     can be accessed without the need to access an external
+     database. Xephem can read files of additional objects into
+     memory as well. Files of objects are read in using the Load
+     and Delete button in the Objects pulldown. The definition of
+     any object in memory may be inspected and manipulated in
+     detail and assigned to so-called `user defined objects' X, Y
+     and Z using the Search and ObjXYZ button in the same
+     pulldown.
+ 
+     All of the data that xephem presents in numeric form may be
+     written to a file and later plotted; written to a file as a
+     tabular listing; or used to formulate an arbitrary
+     mathematical expression that may be solved for a maximum,
+     minimum or zero.  These facilities are accessed from the
+     Control pulldown.
+ 
+     Several options related to performance and display
+     formatting may be controlled from the Preferences pulldown.
+ 
+     The Files pulldown allows one to reset the main menu to the
+     initial resource settings; toggle whether the general
+     messages menu is displayed; and quit the program.
+ 
+2 X_Resources
+     Xephem has many X resources, some of which you will soon
+     want to tune to your taste and circumstances; many others
+     may be left unchanged. Look through the XEphem.ad sample
+     distribution for full details. If no resources are
+     available, xephem contains very conservative internal
+     fallback resources that are suitable for a black-and-white X
+     terminal.
+ 
+     Of course, in addition to all the custom resources, xephem
+     supports the usual Xt command line arguments such as
+     -display, -xrm, -synchronous, -fg and -bg.
+ 
+     As of version 2.9.1, xephem now supports a private colormap.
+     This can be specified from the command line using the -
+     install option. This option should be followed by one of the
+     following keywords:  guess, yes or no. Please see the
+     comments in the XEphem.ad file for more details.
+ 
+     The application class of xephem is XEphem.
+ 
+     A list of widgets in xephem would be enormous. If you really
+     want such a list, build xephem to use the editres protocol
+     then inspect the widget hierarchy using the standard X tool
+     editres. The necessary code to support the editres protocol
+     is already in xephem.c surrounded by #ifdef WANT_EDITRES.
+ 
+2 Time_Zones
+     If __STDC__ was defined by the compiler when xephem was
+     compiled and at runtime the gmtime() ANSI C function returns
+     non-NULL, then xephem will attempt to support time zone
+     control information from the host operating system.
+     Otherwise, xephem never attempts to automatically change the
+     time zone name or offset. In any case, the time zone offset
+     and name may always be set manually at any time from the
+     Main menu, or they may be initialized from the XEphem.TZName
+     and XEphem.TZone resources, respectively.
+ 
+2 Files_and_Fifos
+     Xephem can use and create several files and communicate via
+     several fifos.  Each is named by is own X resource file.
+     The initial default settings define everything relative to
+     the source tree directory of the xephem distribution kit.
+ 
+2 Author
+     Elwood Downey, email ecdowney@noao.edu. (Although they
+     graciously provide me with email and other network services,
+     xephem is not associated with the National Optical
+     Astronomical Observatory.)
+ 
+2 References
+     Ephem is the ancestor of xephem. It is still viable for use
+     on "dumb" 24x80 character displays running from VMS, DOS or
+     UNIX.  The latest version may be found at
+     ftp://iraf.noao.edu/contrib/xephem/ephem.
+ 
+     The latest information about xephem is maintained at
+     http://iraf.noao.edu/~ecdowney/xephem.html.
+ 
+     The online Help entry on Credits lists many of the
+     references, individuals and organizations which have
+     contributed to xephem, to all of which I am entirely
+     grateful.

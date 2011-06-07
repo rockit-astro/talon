@@ -1,0 +1,41 @@
+What is this:
+
+lx200xed is a daemon to connect XEphem to a Meade LX200 on a serial port. It
+connects between the serial port into which the telescope is plugged and
+XEphem by using its two fifos xephem_in_fifo and xephem_loc_fifo. XEphem
+expects to find these fifos in its ShareDir resource directory. lx200xed is
+told where they are with its -m and -g command line options. It is told which
+serial port to use with its -t option. Neither program creates the fifos; 
+they must be created ahead of time using mkfifo(1). XEphem does not start
+the lx200xed daemon, you must do that before activating the Telescope controls
+in the Sky View.
+
+Using ASCII art it works like this:
+
+   -----------                                                   ----------
+  |  XEphem   | ---> /usr/local/xephem/fifos/xephem_loc_fifo -> |          |
+  | Sky View  |                                                 | lx200xed |
+  |           | <--- /usr/local/xephem/fifos/xephem_in_fifo <-  |          |
+   -----------                                                   ----------
+                                                                     |
+								     |
+								     v
+                                                                 /dev/ttyS0
+
+Terms:
+
+The source code files in this directory, namely liblx200.c, liblx200.h and
+lx200xed.c, are Copyright (c) 1999, 2000 Mike Stute and Elwood Charles
+Downey and are governed by the terms of the GNU General Public License. See
+the file GPL for the complete terms of this license but basically it allows
+you to use, modify and redistribute these files freely.
+
+However, the final executable, lx200xed, links with XEphem's libastro which
+is governed by the terms of XEphem which is distinctly _not_ GPL. It only
+allows you to use and modify its code for your personal and non-commercial
+use; you may _not_ pass your changes on to anyone else (except back to me, ECD).
+
+Disclaimer:
+
+NO REPRESENTATION IS MADE ABOUT THE SUITABILITY OF THIS SOFTWARE FOR ANY
+PURPOSE. IT IS PROVIDED "AS IS" WITHOUT EXPRESS OR IMPLIED WARRANTY.

@@ -1,0 +1,1384 @@
+/* some misc fits image processing utilities */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <time.h>
+#include <errno.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/stat.h>
+
+#include "P_.h"
+#include "astro.h"
+#include "configfile.h"
+#include "telenv.h"
+#include "fits.h"
+
+/* image processing config params pulled from ipcfn whenever it changes */
+
+static char ipcfn[] = "archive/config/ip.cfg";	/* sans TELHOME */
+
+static int FSBORD;
+static int FSNSUB;
+static int FSMINPIX;
+static double FSMINSD;
+static int BURNEDOUT;
+static double TELGAIN;
+static int DEFSKYRAD;
+static int NFWHM;
+static double FWHMSD;
+static int FWHMR;
+static double FWHMRF;
+static double FWHMSF;
+static double FWHMRATIO;
+static double MINAPRAD;
+static double APGAP;
+static double APSKYX;
+static double MAXSKYPIX;
+static int MINGAUSSR;
+
+static CfgEntry ipcfg[] = {
+	{"FSBORD",	CFG_INT,	&FSBORD},
+	{"FSNSUB",	CFG_INT,	&FSNSUB},
+	{"FSMINPIX",	CFG_INT,	&FSMINPIX},
+	{"FSMINSD",	CFG_DBL,	&FSMINSD},
+	{"BURNEDOUT",	CFG_INT,	&BURNEDOUT},
+	{"TELGAIN",	CFG_DBL,	&TELGAIN},
+	{"DEFSKYRAD",	CFG_INT,	&DEFSKYRAD},
+	{"NFWHM",	CFG_INT,	&NFWHM},
+	{"FWHMSD",	CFG_DBL,	&FWHMSD},
+	{"FWHMR",	CFG_INT,	&FWHMR},
+	{"FWHMRF",	CFG_DBL,	&FWHMRF},
+	{"FWHMSF",	CFG_DBL,	&FWHMSF},
+	{"FWHMRATIO",	CFG_DBL,	&FWHMRATIO},
+	{"MINAPRAD",	CFG_DBL,	&MINAPRAD},
+	{"APGAP",	CFG_DBL,	&APGAP},
+	{"APSKYX",	CFG_DBL,	&APSKYX},
+	{"MAXSKYPIX",	CFG_DBL,	&MAXSKYPIX},
+	{"MINGAUSSR",	CFG_INT,	&MINGAUSSR},
+};
+
+#define NIPCFG   (sizeof(ipcfg)/sizeof(ipcfg[0]))
+
+extern void gaussfit (int pix[], int n, double *maxp, double *cenp,
+    double *fwhmp);
+
+static void starGauss (CamPixel *image, int w, int r, StarStats *ssp);
+static void brightSquare (CamPixel *imp, int w, int ix, int iy, int r, int *xp,
+    int *yp, CamPixel *bp);
+static int brightWalk (CamPixel *imp, int w, int x0, int y0, int maxr,
+    int *xp, int *yp, CamPixel *bp);
+
+static void bestRadius (CamPixel *image, int w, int x0, int y0, int rAp,
+    int *rp);
+static void ringCount (CamPixel *image, int w, int x0, int y0, int r, int *np,
+    int *sump);
+static void ringStats (CamPixel *image, int w, int x0, int y0, int r, int *Ep,
+    double *sigp);
+static int skyStats (CamPixel *image, int w, int h, int x0, int y0, int r, 
+    int *Ep, double *sigp);
+static void circleCount (CamPixel *image, int w, int x0, int y0, int maxr,
+    int *np, int *sump);
+static void loadIpCfg(void);
+
+/* compute stats in the give region of the image of width w pixels.
+ * N.B. we do not check bounds.
+ */
+void
+aoiStatsFITS (ip, w, x0, y0, nx, ny, ap)
+char *ip;
+int w;
+int x0, y0, nx, ny;
+AOIStats *ap;
+{
+	CamPixel *image = (CamPixel *)ip;
+	CamPixel *row;
+	int npix, npix2;
+	CamPixel maxp;
+	double sd2;
+	int x, y;
+	int wrap;
+	int i, n;
+
+	npix = nx*ny;
+	row = &image[w*y0 + x0];
+	wrap = w - nx;
+
+	memset ((void *)ap->hist, 0, sizeof(ap->hist));
+	ap->sum = ap->sum2 = 0.0;
+	maxp = 0;
+	for (y = 0; y < ny; y++) {
+	    for (x = 0; x < nx; x++) {
+		unsigned long p = (unsigned)(*row++);
+		ap->hist[p]++;
+		ap->sum += (double) (p);
+		ap->sum2 += (double)p*(double)p;
+		if (p > maxp) {
+		    maxp = p;
+		    ap->maxx = x;
+		    ap->maxy = y;
+		}
+	    }
+	    row += wrap;
+	}
+	ap->maxx += x0;
+	ap->maxy += y0;
+
+	ap->mean = (CamPixel)(ap->sum/npix + 0.5);
+	sd2 = (ap->sum2 - ap->sum * ap->sum/npix)/(npix-1);
+	ap->sd = sd2 <= 0.0 ? 0.0 : sqrt(sd2);
+
+	/* first pixel is lowest in image; last is highest */
+	for (i = 0; i < NCAMPIX; i++)
+	    if (ap->hist[i] > 0) {
+		ap->min = i;
+		break;
+	    }
+	for (i = NCAMPIX-1; i >= 0; --i)
+	    if (ap->hist[i] > 0) {
+		ap->max = i;
+		break;
+	    }
+
+	/* median pixel is one with equal counts below and above */
+	n = 0;
+	npix2 = npix/2;
+	for (i = 0; i < NCAMPIX; i++) {
+	    n += ap->hist[i];
+	    if (n >= npix2) {
+		ap->median = i;
+		break;
+	    }
+	}
+}
+/* copy the rectangular region [x,x+w-1,y,y+h-1] from fip to tip.
+ * update header accordingly, including WCS, add CROPX/Y values for the record.
+ * return 0 if ok else return -1 with a short explanation in errmsg[].
+ * N.B. we assume tip has already been properly reset or inited.
+ */
+int
+cropFITS (tip, fip, x, y, w, h, errmsg)
+FImage *tip, *fip;
+int x, y, w, h;
+char errmsg[];
+{
+	static char me[] = "cropFITS";
+	CamPixel *inp, *outp;
+	int nbytes;
+	int i, j;
+
+	/* check that the region is wholy within fip */
+	if (getNAXIS (fip, &i, &j, errmsg) < 0)
+	    return (-1);
+	if (x < 0 || x+w-1 > i) {
+	    sprintf (errmsg, "%s: Bad AOI: x=%d w=%d sw=%d", me, x, w, i);
+	    return (-1);
+	}
+	if (y < 0 || y+h-1 > j) {
+	    sprintf (errmsg, "%s: Bad AOI: y=%d h=%d sh=%d", me, y, h, j);
+	    return (-1);
+	}
+
+	/* be sure we can even get the pixel memory for tip */
+	nbytes = w * h * sizeof(CamPixel);
+	tip->image = malloc (nbytes);
+	if (!tip->image) {
+	    sprintf (errmsg, "%s: Could not malloc %d bytes for pixels", me,
+								    nbytes);
+	    return (-1);
+	}
+
+	/* copy the header then change NAXIS1/2 and add cropping fields. */
+	copyFITSHeader (tip, fip);
+	setIntFITS (tip, "NAXIS1", w, "Number columns");
+	setIntFITS (tip, "NAXIS2", h, "Number rows");
+	tip->sw = w;
+	tip->sh = h;
+	setIntFITS (tip, "CROPX", x, "X of [0,0] in original");
+	setIntFITS (tip, "CROPY", y, "Y of [0,0] in original");
+
+	/* fix up WCS too if present */
+	if (!getIntFITS(fip, "CRPIX1", &i) && !getIntFITS(fip, "CRPIX2", &j)){
+	    setIntFITS (tip, "CRPIX1", i-x, "RA reference pixel index");
+	    setIntFITS (tip, "CRPIX2", j-y, "Dec reference pixel index");
+	}
+
+	/* copy the pixel region */
+	inp = (CamPixel *) fip->image;
+	inp += y*fip->sw + x;
+	outp = (CamPixel *) tip->image;
+	for (j = 0; j < h; j++) {
+	    memcpy (outp, inp, w*sizeof(CamPixel));
+	    outp += w;
+	    inp += fip->sw;
+	}
+
+	return (0);
+}
+
+/* given an array of CamPixels, flip columns */
+void
+flipImgCols (CamPixel *img, int w, int h)
+{
+	int x, y;
+
+	for (y = 0; y < h; y++) {
+	    for (x = 0; x < w/2; x++) {
+		CamPixel *l = &img[x];
+		CamPixel *r = &img[w-x-1];
+		CamPixel tmp = *l;
+		*l = *r;
+		*r = tmp;
+	    }
+	    img += w;
+	}
+}
+
+/* given an array of CamPixels, flip rows */
+void
+flipImgRows (CamPixel *img, int w, int h)
+{
+	CamPixel tmp[8192];
+	int maxw = sizeof(tmp)/sizeof(CamPixel);
+	int y;
+
+	if (w > maxw) {
+	    printf ("flipImgRows: width must be <= %d\n", maxw);
+	    exit (1);
+	}
+
+	for (y = 0; y < h/2; y++) {
+	    CamPixel *top = &img[y*w];
+	    CamPixel *bot = &img[(h-y-1)*w];
+
+	    (void) memcpy ((void *)tmp, (void *)top, w*sizeof(CamPixel));
+	    (void) memcpy ((void *)top, (void *)bot, w*sizeof(CamPixel));
+	    (void) memcpy ((void *)bot, (void *)tmp, w*sizeof(CamPixel));
+	}
+}
+
+/* used to sort stars by various criteria */
+typedef struct {
+    int x, y;
+    CamPixel b;
+    StarStats ss;
+} BrSt;
+
+/* compare two BrSt wrt to brightness and return sorted in decreasing order
+ * as per qsort
+ */
+static int
+cmp_brst (const void *p1, const void *p2)
+{
+	BrSt *s1 = (BrSt *)p1;
+	BrSt *s2 = (BrSt *)p2;
+	int d = (int)(s2->b) - (int)(s1->b);
+
+	return (d);
+}
+
+/* compare two BrSt wrt to ss.xfwhm and return sorted in increasing order
+ * as per qsort
+ */
+static int
+cmp_xfwhm (const void *p1, const void *p2)
+{
+	BrSt *s1 = (BrSt *)p1;
+	BrSt *s2 = (BrSt *)p2;
+	double d = s1->ss.xfwhm - s2->ss.xfwhm;
+
+	return (d == 0 ? 0 : (d > 0 ? 1 : -1));
+}
+
+/* compare two BrSt wrt to ss.yfwhm and return sorted in increasing order
+ * as per qsort
+ */
+static int
+cmp_yfwhm (const void *p1, const void *p2)
+{
+	BrSt *s1 = (BrSt *)p1;
+	BrSt *s2 = (BrSt *)p2;
+	double d = s1->ss.yfwhm - s2->ss.yfwhm;
+
+	return (d == 0 ? 0 : (d > 0 ? 1 : -1));
+}
+
+/* compute the median FWHM and std dev value in each dim of the brightest
+ * NFWHM stars with SD/M > FWHMSD.
+ * return 0 if ok, else put excuse in msg[] and return -1.
+ */
+int
+fwhmFITS (im, w, h, hp, hsp, vp, vsp, msg)
+char *im;		/* CamPixel data */
+int w, h;		/* width/heigh of im array */
+double *hp, *hsp;	/* hor median FWHM and std dev, pixels */
+double *vp, *vsp;	/* vert median FWHM and std dev, pixels */
+char msg[];		/* excuse if fail */
+{
+	int *x, *y;	/* malloced lists of star locations */
+	CamPixel *b;	/* malloced list of brightest pixel in each */
+	BrSt *bs;	/* malloced copy for sorting */
+	int nbs;	/* total number of stars */
+	BrSt *goodbs;	/* malloced copies of the good ones for stats */
+	int ngoodbs;	/* actual number in goodbs[] to use */
+	StarDfn sd;
+	int i;
+
+	loadIpCfg();
+
+	/* find all the stars */
+	nbs = findStars (im, w, h, &x, &y, &b);
+	if (nbs < 0) {
+	    sprintf (msg, "Error finding stars");
+	    return (-1);
+	}
+
+	/* N.B. we are now commited to freeing x/y/b */
+
+	if (nbs == 0) {
+	    free ((char *)x);
+	    free ((char *)y);
+	    free ((char *)b);
+	    sprintf (msg, "No stars");
+	    return (-1);
+	}
+
+	/* sort by brightness */
+	bs = (BrSt *) malloc (nbs * sizeof(BrSt));
+	if (!bs) {
+	    free ((char *)x);
+	    free ((char *)y);
+	    free ((char *)b);
+	    sprintf (msg, "No mem");
+	    return (-1);
+	}
+	for (i = 0; i < nbs; i++) {
+	    BrSt *bsp = &bs[i];
+	    bsp->x = x[i];
+	    bsp->y = y[i];
+	    bsp->b = b[i];
+	}
+	qsort ((void *)bs, nbs, sizeof(BrSt), cmp_brst);
+
+	/* finished with x/y/b */
+	free ((char *)x);
+	free ((char *)y);
+	free ((char *)b);
+
+	/* use up to NFWHM brightest with SD/M > FWHMSD and x/yfwhm > 1*/
+	goodbs = (BrSt *) malloc (NFWHM * sizeof(BrSt));
+	sd.rsrch = 0;
+	sd.rAp = FWHMR;
+	sd.how = SSHOW_HERE;
+	for (i = ngoodbs = 0; i < nbs && ngoodbs < NFWHM; i++) {
+	    BrSt *bsp = &bs[i];
+	    StarStats *ssp = &bsp->ss;
+	    char buf[1024];
+
+	    if (bsp->b < BURNEDOUT &&
+		!starStats((CamPixel*)im, w, h, &sd, bsp->x, bsp->y, ssp, buf)
+				    && (ssp->p - ssp->Sky)/ssp->rmsSky > FWHMSD
+				    && ssp->xfwhm > 1 && ssp->yfwhm > 1)
+		goodbs[ngoodbs++] = *bsp;
+	}
+	if (ngoodbs <= 0) {
+	    sprintf (msg, "No suitable stars");
+	    free ((char *)bs);
+	    free ((char *)goodbs);
+	    return (-1);
+	}
+
+	/* find hor median from sort by xfwhm */
+	qsort ((void *)goodbs, ngoodbs, sizeof(BrSt), cmp_xfwhm);
+	*hp = goodbs[ngoodbs/2].ss.xfwhm;
+
+	/* find hor std dev */
+	if (ngoodbs > 1) {
+	    double sum, sum2, sd2;
+
+	    sum = sum2 = 0.0;
+	    for (i = 0; i < ngoodbs; i++) {
+		double f = goodbs[i].ss.xfwhm;
+		sum += f;
+		sum2 += f*f;
+	    }
+
+	    sd2 = (sum2 - sum*sum/ngoodbs)/(ngoodbs-1);
+	    *hsp = sd2 <= 0.0 ? 0.0 : sqrt (sd2);
+	} else
+	    *hsp = 0.0;
+
+	/* find ver median from sort by yfwhm */
+	qsort ((void *)goodbs, ngoodbs, sizeof(BrSt), cmp_yfwhm);
+	*vp = goodbs[ngoodbs/2].ss.yfwhm;
+
+	/* find ver std dev */
+	if (ngoodbs > 1) {
+	    double sum, sum2, sd2;
+
+	    sum = sum2 = 0.0;
+	    for (i = 0; i < ngoodbs; i++) {
+		double f = goodbs[i].ss.yfwhm;
+		sum += f;
+		sum2 += f*f;
+	    }
+
+	    sd2 = (sum2 - sum*sum/ngoodbs)/(ngoodbs-1);
+	    *vsp = sd2 <= 0.0 ? 0.0 : sqrt (sd2);
+	} else
+	    *vsp = 0.0;
+
+#ifdef FWHM_TRACE
+	printf ("nbs=%d ngoodbs=%d", nbs, ngoodbs);
+	printf ("H=%4.1f %4.1f ", *hp, *hsp);
+	printf ("V=%4.1f %4.1f\n", *vp, *vsp);
+#endif
+
+	free ((char *)bs);
+	free ((char *)goodbs);
+	return (0);
+}
+
+/* add image2 to fip1 after shifting image2 by dx and dy pixels.
+ */
+void
+alignAdd (fip1, image2, dx, dy)
+FImage *fip1;
+char *image2;
+int dx, dy;
+{
+	CamPixel *p1 = (CamPixel *) fip1->image;
+	CamPixel *p2 = (CamPixel *) image2;
+	CamPixel *row1, *row2;
+	int x10, y10;	/* starting coords in p1 */
+	int x20, y20;	/* starting coords in p2 */
+	int nx, ny;	/* size of overlap area */
+	int wrap;
+	int x, y;
+
+	if (dx > 0) {
+	    x10 = dx;
+	    x20 = 0;
+	    nx = fip1->sw - dx;
+	} else {
+	    x10 = 0;
+	    x20 = -dx;
+	    nx = fip1->sw + dx;
+	}
+	wrap = fip1->sw - nx;
+
+	if (dy > 0) {
+	    y10 = dy;
+	    y20 = 0;
+	    ny = fip1->sh - dy;
+	} else {
+	    y10 = 0;
+	    y20 = -dy;
+	    ny = fip1->sh + dy;
+	}
+
+#ifdef ADDTRACE
+	printf ("x10=%d y10=%d  nx=%d x20=%d y20=%d  ny=%d\n", x10, y10,
+							    nx, x20, y20, ny);
+#endif
+
+	row1 = &p1[fip1->sw*y10 + x10];
+	row2 = &p2[fip1->sw*y20 + x20];
+	for (y = 0; y < ny; y++) {
+	    for (x = 0; x < nx; x++) {
+		int sum = (int)(*row1) + (int)(*row2++);
+		*row1++ = sum > MAXCAMPIX ? MAXCAMPIX : sum;
+	    }
+	    row1 += wrap;
+	    row2 += wrap;
+	}
+}
+
+
+/* given a CamPixel array of size wXh, a StarDfn and an initial location ix/iy,
+ *   find stats of star and store in StarStats.
+ * return 0 if ssp filled in ok, else -1 and errmsg[] if trouble.
+ */
+int
+starStats (image, w, h, sdp, ix, iy, ssp, errmsg)
+CamPixel *image;		/* array of pixels */
+int w, h;			/* width and height of image */
+StarDfn *sdp;			/* star search parameters definition */
+int ix, iy;			/* initial guess of loc of star */
+StarStats *ssp;			/* what we found */
+char errmsg[];			/* disgnostic message if return -1 */
+{
+	int maxr;		/* max radius we ever touch */
+	CamPixel bp;		/* brightest pixel */
+	int bx, by;		/* location of " */
+	int N;			/* total pixels in circle */
+	int C;			/* total count of pixels in circle */
+	int E;			/* median pixel in sky annulus */
+	double rmsS;		/* rms noise estimate of sky annulus */
+	int rAp;
+	int ok;
+
+	loadIpCfg();
+
+	/* 1: confirm that we are wholly within the image */
+	maxr = sdp->rAp;
+	switch (sdp->how) {
+	case SSHOW_BRIGHTWALK:
+	case SSHOW_MAXINAREA:
+	    maxr += sdp->rsrch;
+	    break;
+	default:
+	    break;
+	}
+	if (ix - maxr < 0 || ix + maxr >= w || iy - maxr < 0 || iy + maxr >= h){
+	    sprintf (errmsg,
+	    	"Coordinates [%d,%d] + search sizes lie outside image", ix, iy);
+	    return (-1);
+	}
+
+	/* 2: find the brightest pixel, in one of several ways */
+	switch (sdp->how) {
+	case SSHOW_BRIGHTWALK:
+	    /* walk the gradient starting at ix/iy to find the brightest
+	     * pixel. we never go further than sdp->rb away.
+	     */
+	    ok = brightWalk (image, w, ix, iy, sdp->rsrch, &bx, &by, &bp) == 0;
+	    break;
+
+	case SSHOW_MAXINAREA:
+	    /* centered at ix/iy search the entire square of radius sdp->rb
+	     * for the brightest pixel
+	     */
+	    brightSquare (image, w, ix, iy, sdp->rsrch, &bx, &by, &bp);
+	    ok = 1;
+	    break;
+
+	case SSHOW_HERE:
+	    /* just use ix and iy directly */
+	    bx = ix;
+	    by = iy;
+	    bp = image[iy*w + ix];
+	    ok = 1;
+	    break;
+
+	default:
+	    printf ("Bug! Bogus SSHow code: %d\n", sdp->how);
+	    exit (1);
+	}
+
+	if (!ok) {
+	    sprintf (errmsg, "No brightest pixel found");
+	    return (-1);
+	}
+
+	ssp->bx = bx;
+	ssp->by = by;
+	ssp->p = bp;
+
+#ifdef STATS_TRACE
+	printf ("Brightest pixel is %d at [%d,%d]\n", ssp->p, bx, by);
+#endif
+
+	/* 3: if not handed an aperture radius, find one.
+	 * in any case, enforce MINAPRAD.
+	 */
+	if ((rAp = sdp->rAp) == 0) {
+	    int r = maxr < DEFSKYRAD ? maxr : DEFSKYRAD;
+	    bestRadius (image, w, bx, by, r, &rAp);
+#ifdef STATS_TRACE
+	    printf ("  Best Aperture radius = %d\n", rAp);
+	} else {
+	    printf ("  Handed Aperture radius = %d\n", rAp);
+#endif
+	}
+	if (rAp < MINAPRAD)
+	    rAp = MINAPRAD;
+
+	/* 4: find noise in thick annulus from radius rAp+APGAP out until
+	 * use PI*rAp*rAp*APSKYX pixels.
+	 */
+	if (skyStats (image, w, h, bx, by, rAp, &E, &rmsS) < 0) {
+	    sprintf (errmsg, "bad skyStats");
+	    return (-1);
+	}
+	ssp->Sky = E;
+	ssp->rmsSky = rmsS;
+	ssp->rAp = rAp;
+#ifdef STATS_TRACE
+	printf ("  Sky=%d rmsSky=%g rAp=%d\n", ssp->Sky, ssp->rmsSky, ssp->rAp);
+#endif
+
+	/* 5: find pixels in annuli out through rAp */
+	circleCount (image, w, bx, by, rAp, &N, &C);
+	ssp->Src = C - N*E;
+	ssp->rmsSrc = sqrt(N*rmsS + ssp->Src/TELGAIN);
+#ifdef STATS_TRACE
+	printf ("  Src=%d rmsSrc=%g\n", ssp->Src, ssp->rmsSrc);
+#endif
+
+	/* 6: finally, find the gaussian params too */
+	starGauss (image, w, ssp->rAp, ssp);
+
+	/* ok */
+	return (0);
+}
+
+/* find relative mag (and error estimate) of target, t, wrt reference, r.
+ * return 0 if ok, -1 if either source was actually below its noise, in which
+ * case *mp is just the brightest possible star, and *dmp is meaningless.
+ * 
+ * Based on Larry Molnar notes of 6 Dec 1996
+ */
+int
+starMag (r, t, mp, dmp)
+StarStats *r, *t;
+double *mp, *dmp;
+{
+	if (t->Src <= 0 || t->Src <= t->rmsSrc || r->Src <= r->rmsSrc) {
+	    /* can happen when doing stats from pure noise */
+	    *mp = 2.5*log10((double)r->Src / (double)t->rmsSrc);
+	    *dmp = 99.99;
+	    return (-1);
+	} else {
+	    double er = r->rmsSrc / r->Src;
+	    double et = t->rmsSrc / t->Src;
+
+	    *mp = 2.5*log10((double)r->Src / (double)t->Src);
+	    *dmp = 1.0857*sqrt(er*er + et*et);
+	    return (0);
+	}
+}
+
+/* given an image of size wXh, topmost starting position [x,y], noise floor nf,
+ *   find centroid position.
+ * N.B. we assume no holes and the shape does not curl up or down.
+ * return 0 if ok, else -1 if not a star afterall..
+ */
+static int
+findBlob (
+CamPixel *p0,		/* image corner */
+int w, int h,		/* image size */
+int x0, int y0,		/* starting pos */
+CamPixel nf,		/* noise floor */
+int *xp, int *yp,	/* centroid pos */
+int trace)		/* whether to print our actions */
+{
+	int xm = 0;			/* sum of x moments */
+	int ym = 0;			/* sum of y moments */
+	int psum = 0;			/* sum of pixels in blob */
+	int x = 0, y = 0;		/* offset from x0, y0 */
+	int npix = 0;			/* total number of pixels */
+	int xstart = 0;			/* where to start next row */
+	CamPixel *row = &p0[y0*w + x0];	/* row y at column x0 */
+
+	if (trace)
+	    printf ("%4d %4d: %5d nf=%5d\n", x0, y0, *row, nf);
+
+	/* first make sure there is nothing above us */
+	for (x = 0; x0 + x < w - FSBORD && row[x] > nf; x++)
+	    if (row[x-w] > nf)
+		return(-1);
+
+	/* work back and forth then move down until no more down */
+	do {
+	    CamPixel p;
+
+	    /* scan left to noise for save */
+	    for (x = xstart; row[x] > nf; x--)
+		if (x0 + x < FSBORD)
+		    return (-1);	/* hit left border */
+
+	    /* scan right to noise, looking for star below, keeping stats */
+	    xstart = w;			/* impossible */
+	    while ((p = row[++x]) > nf) {
+		if (x0 + x > w - FSBORD)
+		    return (-1);	/* hit right border */
+		xm += x * p;
+		ym += y * p;
+		psum += p;
+		npix++;
+		if (xstart == w && row[x+w] > nf)
+		    xstart = x;
+		if (trace)
+		    printf ("%4d %4d: %5d in Blob @ %4d %4d\n", x0, y0,
+							    p, x0+x, y0+y);
+	    }
+
+	    /* check for bottom edge */
+	    if (y0 + ++y > h - FSBORD)
+		return (-1);
+
+	    /* next row */
+	    row += w;
+
+	    /* continue unless nothing below line */
+	} while (xstart != w);
+
+	/* want abs min #, plus at least 2 rows and cols */
+	if (npix < FSMINPIX || y-y0 < 2 || npix <= 2*(y-y0))
+	    return (-1);
+
+	if (psum) {
+	    *xp = x0 + xm/psum;
+	    *yp = y0 + ym/psum;
+	    return (0);
+	}
+
+	return (-1);
+}
+
+/* compare pointers to 2 CamPixels, qsort-style */
+static int
+campix_cmpf (const void *p1, const void *p2)
+{
+
+	return ((int)(*((CamPixel*)p1)) - (int)(*((CamPixel*)p2)));
+}
+
+/* find the 2d centroid location and pixel of stars in the given image.
+ * pass back malloced arrays of x and y and b.
+ * return number of stars (might well be 0 :( ), or -1 if trouble.
+ * N.B. caller must free *xa and *ya and *ba even if we return 0 (but not -1).
+ * N.B. we ignore pixels outside FSBORD.
+ * N.B. includes undocumented ability to dump raw data around a star.
+ */
+int
+findStars (im0, w, h, xa, ya, ba)
+char *im0;
+int w, h;
+int **xa, **ya;		/* we set *xa and *ya to memory we malloc */
+CamPixel **ba;		/* we set *ba to memory we malloc */
+{
+	int dumpx, dumpy, dumpr, dumpstart;
+	int subw, subh;
+	int subx, suby;
+	int *xp, *yp;
+	CamPixel *bp;
+	CamPixel *p0;
+	CamPixel *subim;
+	int nsubim;
+	int nmalloc;
+	int nstars;
+	FILE *fp;
+
+	/* get latest params */
+	loadIpCfg();
+
+	/* start arrays so we can always use realloc */
+	nmalloc = 100;
+	xp = (int *) malloc (nmalloc*sizeof(int));
+	yp = (int *) malloc (nmalloc*sizeof(int));
+	bp = (CamPixel *) malloc (nmalloc*sizeof(CamPixel));
+
+	/* try to read file naming a region to dump. */
+	if ((fp = fopen ("x.dumpstar", "r")) != NULL) {
+	    int i = fscanf (fp,"%d %d %d %d",&dumpx,&dumpy,&dumpr,&dumpstart);
+	    if (i != 4) {
+		fclose (fp);
+		fp = NULL;
+	    }
+	}
+
+	/* break inside FSBORD into FSNSUB pieces for localized SNR */
+	nstars = 0;
+	p0 = (CamPixel *)im0;
+	subw = (w - 2*FSBORD)/FSNSUB;
+	subh = (h - 2*FSBORD)/FSNSUB;
+	nsubim = subw*subh;
+	subim = (CamPixel *) malloc (nsubim*sizeof(CamPixel));
+	for (suby = FSBORD; suby < h-FSBORD-subh; suby += subh) {
+	    for (subx = FSBORD; subx < w-FSBORD-subw; subx += subw) {
+		CamPixel *subp = &p0[suby*w + subx];
+		double sum, sum2;
+		CamPixel noise;
+		CamPixel thresh;
+		double sd;
+		int tmp;
+		int x, y;
+		int i, j;
+
+		/* collect and sort sample pixels in subimage */
+		i = 0;
+		for (y = 0; y < subh; y += 8) 
+		    for (x = 0; x < subw; x += 8) 
+			subim[i++] = subp[y*w + x];
+		qsort (subim, i, sizeof(CamPixel), campix_cmpf);
+
+		/* stats from central half */
+		sum = sum2 = 0;
+		for (j = i/4; j < 3*i/4; j++) {
+		    double p = subim[j];
+		    sum += p;
+		    sum2 += p*p;
+		}
+		noise = subim[i/2];	        	/* median */
+		sd = (sum2 - sum*sum/(i/2))/(i/2-1);	/* variance */
+		sd = sd > 0 ? sqrt(sd) : 0;	        /* now sd */
+		tmp = noise + FSMINSD*sd;
+		thresh = tmp > MAXCAMPIX ? MAXCAMPIX : tmp;
+printf ("%4d %4d: n=%d sd=%g tmp=%d thresh=%d\n",
+    subx, suby, noise, sd, tmp, thresh);
+
+		/* scan subimage for and extract blobs above the threshold */
+		for (y = suby; y < suby+subh; y++) {
+		    for (x = subx; x < subx+subw; x++) {
+			CamPixel *p = subp++;
+			int dump = (fp && x >= dumpx-dumpr && x <= dumpx+dumpr
+				       && y >= dumpy-dumpr && y <= dumpy+dumpr);
+
+			if (*p>thresh && p[-1]<thresh) {
+			    if (!findBlob (p0, w, h, x, y, thresh,&i,&j,dump)) {
+				/* Yes! */
+
+				if (nstars == nmalloc) {
+				    nmalloc += 100;
+				    xp = (int *) realloc ((void *)xp,
+							nmalloc*sizeof(int));
+				    yp = (int *) realloc ((void *)yp,
+							nmalloc*sizeof(int));
+				    bp = (CamPixel*) realloc((void *)bp,
+						    nmalloc*sizeof(CamPixel));
+				}
+				xp[nstars] = fp && dumpstart ? x : i;
+				yp[nstars] = fp && dumpstart ? y : j;
+				bp[nstars] = p0[j*w + i];
+				nstars++;
+			    }
+			} else if (dump) {
+			    printf ("%4d %4d: quick elimination of %d @ noise = %d\n",
+							    x, y, *p, thresh);
+			}
+		    }
+		    subp += w - subw;
+		}
+	    }
+	}
+
+	free ((char *)subim);
+	if (fp)
+	    fclose (fp);
+
+	*xa = xp;
+	*ya = yp;
+	*ba = bp;
+
+	return (nstars);
+}
+
+/* version of findStars() that passes back a malloced array of StarStats.
+ * only those stars above FWHMSD are included.
+ * we return number of stars (might well be 0 :-), or -1 if trouble.
+ * N.B. caller must free **sspp if we return >= 0
+ * N.B. we ignore pixels outside FSBORD.
+ */
+int
+findStatStars (im0, w, h, sspp)
+char *im0;
+int w, h;
+StarStats **sspp;
+{
+	char buf[1024];	/* some calls need it */
+	int *x, *y;	/* malloced lists of star locations */
+	CamPixel *b;	/* malloced list of brightest pixel in each */
+	StarDfn sd;	/* for getting real star stats */
+	int nfs;	/* number of raw stars from findStars() */
+	int ngs;	/* number of really good stars */
+	int i;
+
+	loadIpCfg();
+
+	/* get list */
+	nfs = findStars (im0, w, h, &x, &y, &b);
+	if (nfs < 0)
+	    return (-1);
+	if (nfs == 0) {
+	    free ((char *)x);
+	    free ((char *)y);
+	    free ((char *)b);
+	    return (-1);
+	}
+
+	/* compute stats and retain only the best */
+	*sspp = (StarStats *) malloc (nfs * sizeof(StarStats));
+	if (!*sspp) {
+	    free ((char *)x);
+	    free ((char *)y);
+	    free ((char *)b);
+	    return (-1);
+	}
+	sd.rsrch = 0;
+	sd.rAp = 0;
+	sd.how = SSHOW_HERE;
+	ngs = 0;
+	for (i = 0; i < nfs; i++) {
+	    StarStats *ssp = &(*sspp)[i];
+	    if (!starStats((CamPixel*)im0, w, h, &sd, x[i], y[i], ssp, buf)
+				&& (ssp->p - ssp->Sky)/ssp->rmsSky > FWHMSD) {
+		if (ngs < i)
+		    (*sspp)[ngs] = *ssp;
+		ngs++;
+	    }
+	}
+
+	/* ok */
+	free ((char *)x);
+	free ((char *)y);
+	free ((char *)b);
+	return (ngs);
+}
+
+/* Compute the guassian stats for a star.
+ * N.B. we assume all the other portions of ssp are already set.
+ */
+static void
+starGauss (image, w, r, ssp)
+CamPixel *image;	/* image array */
+int w;		/* width */
+int r;		/* how far to go either side of center */
+StarStats *ssp;	/* fill in x, y, fwhm and max entries */
+{
+	int a[1024];	/* "enough" room for row and col buffers */
+	CamPixel *imp;
+	double max, cen, fwhm;
+	int med = ssp->Sky;
+	int n;
+	int i;
+
+	/* don't use a ridiculously small radius */
+	if (r < MINGAUSSR)
+	    r = MINGAUSSR;
+	n = 2*r + 1;
+
+	imp = &image[w*ssp->by + ssp->bx - r]; /* left end of row */
+	for (i = 0; i < n; i++)
+	    a[i] = (int)(*imp++) - med;
+	gaussfit (a, n, &max, &cen, &fwhm);
+	ssp->xmax = max + med;
+	ssp->x = ssp->bx + cen - r;
+	ssp->xfwhm = fwhm;
+
+	imp = &image[w*(ssp->by-r) + ssp->bx]; /* top end of col */
+	for (i = 0; i < n; i++) {
+	    a[i] = (int)(*imp) - med;
+	    imp += w;
+	}
+	gaussfit (a, n, &max, &cen, &fwhm);
+	ssp->ymax = max + med;
+	ssp->y = ssp->by + cen - r;
+	ssp->yfwhm = fwhm;
+}
+
+/* given an image and a starting point, search a surrounding square for the
+ * location and value of the brightest pixel.
+ */
+static void
+brightSquare (image, w, ix, iy, r, xp, yp, bp)
+CamPixel *image;	/* image */
+int w;			/* width of image */
+int ix, iy;		/* location of square center */
+int r;			/* half-size of square to search */
+int *xp, *yp;		/* location of brightest pixel */
+CamPixel *bp;		/* value of brightest pixel */
+{
+	int x0 = ix - r;		/* left column */
+	int y0 = iy - r;		/* top row */
+	CamPixel *row = &image[y0*w+x0];/* upper left corner of box */
+	int n = 2*r + 1;		/* square size */
+	int wrap = w - n;		/* wrap from end of one row to next */
+	CamPixel b = 0;			/* candidate brightest pixel value */
+	int bx = ix, by = iy;		/* " location */
+	register int x, y;		/* coords inside box */
+
+	for (y = 0; y < n; y++) {
+	    for (x = 0; x < n; x++) {
+		CamPixel p = *row++;
+#ifdef BRIGHT_TRACE
+		printf ("p[%3dd,%3dd] = %4d\n", x+x0, y+y0, (int)p);
+#endif
+		if (p > b) {
+		    b = p;
+		    bx = x0 + x;
+		    by = y0 + y;
+		}
+	    }
+	    row += wrap;
+	}
+
+	*xp = bx;
+	*yp = by;
+	*bp = b;
+}
+
+/* given an image and a starting point, walk the gradient to the brightest
+ * pixel and return its location. we never roam more than maxr away.
+ * return 0 if find brightest pixel within maxsteps else -1.
+ */
+static int
+brightWalk (imp, w, x0, y0, maxr, xp, yp, bp)
+CamPixel *imp;
+int w;
+int x0, y0;
+int maxr;
+int *xp, *yp;
+CamPixel *bp;
+{
+#define	PXY(x,y)	(imp[(y)*w + (x)])
+	CamPixel b;
+	int x, y;
+
+	/* start by assuming seed point is brightest */
+	b = PXY(x0,y0);
+	x = x0;
+	y = y0;
+
+	/* walk towards any brighter pixel */
+	for (;;) {
+	    CamPixel tmp, newb;
+	    int newx=0, newy=0;
+
+#define	NEWB(x,y)			\
+	    tmp = PXY((x),(y));		\
+	    if (tmp > newb) {		\
+		newx = (x);		\
+		newy = (y);		\
+		newb = tmp;		\
+	    }				\
+	    
+	    newb = b;
+	    NEWB(x+1,y+1);
+	    NEWB(x,y+1);
+	    NEWB(x-1,y+1);
+	    NEWB(x+1,y);
+	    NEWB(x-1,y);
+	    NEWB(x+1,y-1);
+	    NEWB(x,y-1);
+	    NEWB(x-1,y-1);
+
+	    if (newb == b)
+		break;
+
+	    x = newx;
+	    y = newy;
+	    b = newb;
+	    if (abs(x-x0) > maxr || abs(y-y0) > maxr)
+		return (-1);
+	}
+
+	*xp = x;
+	*yp = y;
+	*bp = b;
+	return (0);
+#undef	PXY
+#undef	NEWB
+}
+
+/* find the radius of the annulus about [x0,y0] which yields the best SNR.
+ * we expect the SNR to increase with r to a max then decrease, so scan out
+ * from a radius of 0 and stop when the snr is less than that at the previous r.
+ * Based on Larry Molnar notes of 6 Dec 1996
+ */
+static void
+bestRadius (image, w, x0, y0, rAp, rp)
+CamPixel *image;                /* array of pixels */
+int w;                          /* width of image */
+int x0, y0;                     /* center of annulus */
+int rAp;			/* initial guess radius which is surely sky */
+int *rp;			/* best radius */
+{
+	double lSNR;		/* "last" snr, ie, at k-1 */
+	double Ck;		/* cumulative pixel count through radius k */
+	double Nk;		/* cumulative number of pixels through rad k */
+	double rmsS2;		/* rms count in ring of sky */
+	int E;			/* median count in ring of sky */
+	int k;			/* candidate radius */
+
+	/* get stats in annulus far enough out to surely look like sky */
+	ringStats (image, w, x0, y0, rAp, &E, &rmsS2);
+	rmsS2 *= rmsS2;
+
+#ifdef BEST_TRACE
+	printf ("Best: rAp=%d E=%d rmsS2=%g\n", rAp, E, rmsS2);
+#endif
+
+	lSNR = -1.0;
+	Ck = Nk = 0;
+	for (k = 0; k < 2*rAp && k < FSBORD; k++) {
+	    int B;		/* sum of pixels in this annulus */
+	    int M;		/* number of pixels in this annulus */
+	    double Sk;		/* source count out to this radius */
+	    double rmsSk;	/* rms out to this radius */
+	    double SNR;		/* snr out to this radius */
+
+	    ringCount (image, w, x0, y0, k, &M, &B);
+	    Ck += B;
+	    Nk += M;
+
+	    Sk = Ck - Nk*E;
+	    rmsSk = sqrt(Nk*rmsS2 + Sk/TELGAIN);
+	    SNR = Sk/rmsSk;
+
+#ifdef BEST_TRACE
+	    printf ("SNR=%5.1f Ck=%8d Nk=%5d B=%6d M=%3d k=%2d\n", SNR, Ck, Nk,
+								    B, M, k);
+#endif
+
+	    /* quit when SNR decreases */
+	    if (SNR < lSNR)
+		break;
+	    lSNR = SNR;
+	}
+
+	/* peak was at prior radius */
+	*rp = k-1;
+}
+
+
+/* find number and sum of pixels within an annulus of radius [r..r+1]
+ * about [x0,y0]
+ */
+static void
+ringCount (image, w, x0, y0, r, np, sump)
+CamPixel *image;                /* array of pixels */
+int w;                          /* width of image */
+int x0, y0;                     /* center of annulus */
+int r;                          /* radius of annulus */
+int *np;			/* n pixels in annulus */
+int *sump;			/* sum of pixels in annulus */
+{
+	int x, y;		/* scanning coordinates */
+	int inrr = r*r;		/* inner radius, squared */
+	int outrr = (r+1)*(r+1);/* outter radius, squared */
+	CamPixel *ip;		/* walks down center of box */
+	int n;			/* number of pixels encountered */
+	int sum;		/* sum of pixels encountered */
+
+	/* scan a box for pixels with radius [r .. r+1] from [x0,y0] */
+	ip = &image[w*(y0-r) + x0]; /* start at center of top row */
+	n = sum = 0;
+	for (y = -r; y <= r; y++) {
+	    int yrr = y*y;
+	    for (x = -r; x <= r; x++) {
+		int xyrr = x*x + yrr;
+		if (xyrr >= inrr && xyrr < outrr) {
+		    int p = (int)(ip[x]);
+		    sum += p;
+		    n++;
+		}
+	    }
+	    ip += w;	/* next row, still centered */
+	}
+
+	*np = n;
+	*sump = sum;
+}
+
+/* find median and rms within an annulus of radius [r..r+1] about [x0,y0] */
+static void
+ringStats (image, w, x0, y0, r, Ep, sigp)
+CamPixel *image;		/* array of pixels */
+int w;				/* width of image */
+int x0, y0;			/* center of annulus */
+int r;				/* inner radius of annulus */
+int *Ep;			/* median pixel value within annulus */
+double *sigp;			/* rms within annulus */
+{
+	int inrr = r*r;		/* inner radius, squared */
+	int outrr = (r+1)*(r+1);/* outter radius, squared */
+	int hist[NCAMPIX];	/* histogram (big, but faster than sorting) */
+	CamPixel *ip;		/* walks down center of box */
+	int x, y;		/* scanning coordinates */
+	int p16, p50, p84; 	/* pixel at 16, 50 and 84 percentiles */
+	int npix;		/* number of pixels */
+	int s16, s50, s84; 	/* 16, 50 and 84% of npix */
+	int sum;		/* running sum for stats */
+
+	/* zero the histogram */
+	(void) memset ((void *)hist, 0, sizeof(hist));
+
+	/* scan a box for pixels with radius [r .. r+1] from [x0,y0] */
+	r++; /* go to outter radius */
+	ip = &image[w*(y0-r) + x0]; /* start at center of top row */
+	npix = 0;
+	for (y = -r; y <= r; y++) {
+	    int yrr = y*y;
+	    for (x = -r; x <= r; x++) {
+		int xyrr = x*x + yrr;
+		if (xyrr >= inrr && xyrr < outrr) {
+		    int p = (int)(ip[x]);
+		    hist[p]++;
+		    npix++;
+		}
+	    }
+	    ip += w;	/* next row, still centered */
+	}
+
+	/* find the pixels at the 16, 50 and 84 percentiles */
+	p16 = p50 = p84 = 0;
+	s16 = (int)floor(npix * 0.16 + 0.5);
+	s50 = (int)floor(npix * 0.50 + 0.5);
+	s84 = (int)floor(npix * 0.84 + 0.5);
+	sum = 0;
+	for (x = 0; x < NCAMPIX; x++) {
+	    sum += hist[x];
+	    if (p16 == 0 && sum >= s16)
+		p16 = x;
+	    if (p50 == 0 && sum >= s50)
+		p50 = x;
+	    if (p84 == 0 && sum >= s84)
+		p84 = x;
+	}
+
+#ifdef RING_TRACE
+	printf ("Ring: r=%2d npix=%4d p16=%5d p50=%5d p84=%5d\n", r-1, npix,
+							    p16, p50, p84);
+#endif
+
+	*Ep = p50;
+	*sigp = (p84 - p16)/2.0;
+}
+
+/* find median and rms of a thick annulus from radius r+APGAP out until
+ * use min(PI*r*r*APSKYX,MAXSKYPIX) pixels (but no further than image edge!)
+ * return 0 if ok, else -1.
+ */
+static int
+skyStats (image, w, h, x0, y0, r, Ep, sigp)
+CamPixel *image;		/* array of pixels */
+int w;				/* width of image */
+int h;				/* height of image */
+int x0, y0;			/* center of annulus */
+int r;				/* radius of aperature */
+int *Ep;			/* median pixel value within annulus */
+double *sigp;			/* rms within annulus */
+{
+	int hist[NCAMPIX];	/* histogram (big, but faster than sorting) */
+	int x, y;		/* scanning coordinates */
+	CamPixel *ip;		/* walks down center of box */
+	int p16, p50, p84; 	/* pixel at 16, 50 and 84 percentiles */
+	int npix;		/* total number of pixels */
+	int s16, s50, s84; 	/* 16, 50 and 84% of npix */
+	int sum;		/* running sum for stats */
+	int minpix;		/* need at least this many pixels */
+	int k;			/* walking radius */
+
+	/* zero the histogram */
+	(void) memset ((void *)hist, 0, sizeof(hist));
+
+	npix = 0;
+	minpix = (int)ceil(PI*r*r*APSKYX);
+	if (minpix > MAXSKYPIX)
+	    minpix = MAXSKYPIX;
+	for (k = r+APGAP; npix < minpix; k++) {
+	    int inrr = k*k;		/* inner radius, squared */
+	    int outrr = (k+1)*(k+1);	/* outter radius, squared */
+
+	    /* guard the edge */
+	    if (x0 - k < 0 || x0 + k >= w || y0 - k < 0 || y0 + k >= h)
+		break;
+
+	    /* scan a box for pixels with radius [k .. k+1] from [x0,y0] */
+	    ip = &image[w*(y0-k) + x0]; /* start at center of top row */
+	    for (y = -k; y <= k; y++) {
+		int yy = y*y;
+		for (x = -k; x <= k; x++) {
+		    int rr = x*x + yy;
+		    if (rr >= inrr && rr < outrr) {
+			int p = (int)(ip[x]);
+			hist[p]++;
+			npix++;
+		    }
+		}
+		ip += w;	/* next row, still centered */
+	    }
+	}
+
+	if (npix < minpix)
+	    return (-1);	/* couldn't make it far enough out */
+
+	/* find the pixels at the 16, 50 and 84 percentiles */
+	p16 = p50 = p84 = 0;
+	s16 = (int)floor(npix * 0.16 + 0.5);
+	s50 = (int)floor(npix * 0.50 + 0.5);
+	s84 = (int)floor(npix * 0.84 + 0.5);
+	sum = 0;
+	for (x = 0; x < NCAMPIX; x++) {
+	    sum += hist[x];
+	    if (p16 == 0 && sum >= s16)
+		p16 = x;
+	    if (p50 == 0 && sum >= s50)
+		p50 = x;
+	    if (p84 == 0 && sum >= s84)
+		p84 = x;
+	}
+
+#ifdef SKY_TRACE
+	printf ("Sky: r=%d npix=%d p16=%d p50=%d p84=%d\n", r, npix,
+							    p16, p50, p84);
+	printf ("Sky: startr=%d finalr=%d minpix=%d\n", r+APGAP, k-1, minpix);
+#endif
+
+	*Ep = p50;
+	*sigp = (p84 - p16)/2.0;
+
+	return (0);
+}
+
+/* find the total number of pixels within a circle about [x0,y0] of radius r,
+ * and the sum of those pixels.
+ */
+static void
+circleCount (image, w, x0, y0, maxr, np, sump)
+CamPixel *image;        /* array of pixels */
+int w;                  /* width of image */
+int x0, y0;             /* center of annulus */
+int maxr;		/* max radius of circle */
+int *np;		/* total n pixels in circle */
+int *sump;		/* sum of pixels in circle */
+{
+	int k;		/* expanding radius */
+	int Ck;		/* cumulative pixel count */
+	int Nk;		/* cumulative number of pixels */
+	int B;		/* sum of pixels at radius k */
+	int M;		/* number of pixels at radius k */
+
+	Ck = Nk = 0;
+	for (k = 0; k <= maxr; k++) {
+	    ringCount (image, w, x0, y0, k, &M, &B);
+	    Ck += B;
+	    Nk += M;
+	}
+
+	*np = Nk;
+	*sump = Ck;
+}
+
+/* reload ipcfn if never loaded before or it has been modified since last load.
+ * exit if trouble.
+ */
+static void
+loadIpCfg()
+{
+	static char telfn[sizeof(ipcfn)+100];
+	static time_t lastload;
+	struct stat s;
+
+	if (!lastload)
+	    telfixpath (telfn, ipcfn);
+	if (stat (telfn, &s) < 0) {
+	    fprintf (stderr, "%s: %s\n", telfn, strerror(errno));
+	    exit(1);
+	}
+	if (s.st_mtime > lastload) {
+	    int n = readCfgFile (1, ipcfn, ipcfg, NIPCFG);
+	    if (n != NIPCFG) {
+		cfgFileError (ipcfn, n, (CfgPrFp)printf, ipcfg, NIPCFG);
+		exit (1);
+	    }
+	    lastload = s.st_mtime;
+	}
+}
+
+
+/* For RCS Only -- Do Not Edit */
+static char *rcsid[2] = {(char *)rcsid, "@(#) $RCSfile: fitsip.good4,v $ $Date: 2001/04/19 21:12:14 $ $Revision: 1.1.1.1 $ $Name:  $"};

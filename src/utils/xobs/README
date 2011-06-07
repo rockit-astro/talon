@@ -1,0 +1,8 @@
+xobs allows direct GUI control of the telescope, focus, filter wheel,
+dome and shutter. It also offers several special purpose functions to assist
+in initial telescope setup such as axis calibration and focusing and runtime
+features such as catalog access and a software paddle. For all its features,
+xobs is really just a wrapper for the real work to be performed by the daemons.
+
+! For RCS Only -- Do Not Edit
+! @(#) $RCSfile: README,v $ $Date: 2001/04/19 21:12:06 $ $Revision: 1.1.1.1 $ $Name:  $

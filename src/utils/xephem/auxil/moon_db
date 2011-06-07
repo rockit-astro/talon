@@ -1,0 +1,1255 @@
+# Lunar features database distributed with xephem v3.3. Format:
+# Name
+# | Description
+# | Latitude, degs +N
+# | Longitude, degs +E
+# | Diameter, km or if < 0 it is taken to be the year of a spacecraft landing.
+# | rjust, 1 to right-justify label, else left.
+# N.B. all lines which do not fit the above format are silently ignored.
+
+Apollo 11|Landing site|0.8|23.5|-1969|0
+Apollo 12|Landing site|-3.2|336.6|-1969|1
+Apollo (13)14|Landing site|-3.7|342.5|-1970|0
+Apollo 15|Landing site|26.0|3.6|-1971|0
+Apollo 16|Landing site|-9.0|15.6|-1972|0
+Apollo 17|Landing site|20.1|30.8|-1972|0
+
+# from http://lunar.arc.nasa.gov/history/timeline_items|0
+Luna 2|Landing site|29.1|0|-1959|0
+Luna 9|Landing site|7.08|295.63|-1966|0
+Luna 13|Landing site|18.87|297.95|-1966|0
+Luna 16|Landing site|-0.68|56.30|-1970|0
+Luna 17|Landing site|38.28|325.00|-1970|0
+Luna 20|Landing site|3.57|56.50|-1972|0
+Luna 24|Landing site|12.25|62.20|-1976|0
+Ranger 7|Landing site|-10.35|339.42|-1964|0
+Ranger 8|Landing site|2.67|24.65|-1965|0
+Ranger 9|Landing site|12.83|357.63|-1965|0
+Surveyor 1|Landing site|-2.45|316.79|-1966|1
+Surveyor 3|Landing site|-3.20|336.62|-1967|0
+Surveyor 5|Landing site|1.41|23.18|-1967|1
+Surveyor 6|Landing site|0.46|358.63|-1967|1
+Surveyor 7|Landing site|-41.01|348.59|-1968|0
+
+Abbot|Crater|5.6|54.8|10|0
+Abel|Crater|-34.5|87.3|122|0
+Abenezra|Crater|-21|11.9|42|0
+Abetti|Crater|19.9|27.7|65|0
+Abulfeda|Crater|-13.8|13.9|65|0
+Acosta|Crater|-5.6|60.1|13|0
+Adams|Crater|-31.9|68.2|66|0
+Agatharchides|Crater|-19.8|329.1|48|0
+Agrippa|Crater|4.1|10.5|44|0
+Airy|Crater|-18.1|5.7|36|0
+Akis|Crater|20|328.2|2|0
+Alan|Crater|-10.9|353.9|2|0
+Al-Bakri|Crater|14.3|20.2|12|0
+Albategnius|Crater|-11.7|4.3|114|0
+Aldrin|Crater|1.4|22.1|3|0
+Alexander|Crater|40.3|13.5|81|0
+Alfraganus|Crater|-5.4|19|20|0
+Alhazen|Crater|15.9|71.8|32|0
+Aliacensis|Crater|-30.6|5.2|79|0
+Almanon|Crater|-16.8|15.2|49|0
+Al-Marrakushi|Crater|-10.4|55.8|8|0
+Aloha|Crater|29.8|306.1|3|0
+Alpetragius|Crater|-16|355.5|39|0
+Alphonsus|Crater|-13.7|356.8|108|0
+Ameghino|Crater|3.3|57|9|0
+Ammonius|Crater|-8.5|359.2|8|0
+Amontons|Crater|-5.3|46.8|2|0
+Amundsen|Crater|-84.3|85.6|101|0
+Anaxagoras|Crater|73.4|349.9|50|0
+Anaximander|Crater|66.9|308.7|67|0
+Anaximenes|Crater|72.5|315.5|80|0
+Andel|Crater|-10.4|12.4|35|0
+Ango|Crater|20.5|327.7|1|0
+Angstrom|Crater|29.9|318.4|9|0
+Ann|Crater|25.1|359.9|3|0
+Annegrit|Crater|29.4|334.4|1|0
+Ansgarius|Crater|-12.7|79.7|94|0
+Anville|Crater|1.9|49.5|10|0
+Apianus|Crater|-26.9|7.9|63|0
+Apollonius|Crater|4.5|61.1|53|0
+Arago|Crater|6.2|21.4|26|0
+Aratus|Crater|23.6|4.5|10|0
+Archimedes|Crater|29.7|356|82|0
+Archytas|Crater|58.7|5|31|0
+Argelander|Crater|-16.5|5.8|34|0
+Ariadaeus|Crater|4.6|17.3|11|0
+Aristarchus|Crater|23.7|312.6|40|0
+Aristillus|Crater|33.9|1.2|55|0
+Aristoteles|Crater|50.2|17.4|87|0
+Armstrong|Crater|1.4|25|4|0
+Arnold|Crater|66.8|35.9|94|0
+Artemis|Crater|25|334.6|2|0
+Artsimovich|Crater|27.6|323.4|8|0
+Aryabhata|Crater|6.2|35.1|22|0
+Arzachel|Crater|-18.2|358.1|96|0
+Asada|Crater|7.3|49.9|12|0
+Asclepi|Crater|-55.1|25.4|42|0
+Aston|Crater|32.9|272.3|43|0
+Atlas|Crater|46.7|44.4|87|0
+Atwood|Crater|-5.8|57.7|29|0
+Autolycus|Crater|30.7|1.5|39|0
+Auwers|Crater|15.1|17.2|20|0
+Auzout|Crater|10.3|64.1|32|0
+Avery|Crater|-1.4|81.4|9|0
+Azophi|Crater|-22.1|12.7|47|0
+Baade|Crater|-44.8|278.2|55|0
+Babbage|Crater|59.7|302.9|143|0
+Back|Crater|1.1|80.7|35|0
+Bacon|Crater|-51|19.1|69|0
+Baillaud|Crater|74.6|37.5|89|0
+Bailly|Crater|-66.5|290.9|287|0
+Baily|Crater|49.7|30.4|26|0
+Balboa|Crater|19.1|276.8|69|0
+Ball|Crater|-35.9|351.6|41|0
+Balmer|Crater|-20.3|69.8|138|0
+Banachiewicz|Crater|5.2|80.1|92|0
+Bancroft|Crater|28|353.6|13|0
+Banting|Crater|26.6|16.4|5|0
+Barkla|Crater|-10.7|67.2|42|0
+Barnard|Crater|-29.5|85.6|105|0
+Barocius|Crater|-44.9|16.8|82|0
+Barrow|Crater|71.3|7.7|92|0
+Bartels|Crater|24.5|270.2|55|0
+Bayer|Crater|-51.6|325|47|0
+Beals|Crater|37.3|86.5|48|0
+Beaumont|Crater|-18|28.8|53|0
+Beer|Crater|27.1|350.9|9|0
+Behaim|Crater|-16.5|79.4|55|0
+Beketov|Crater|16.3|29.2|8|0
+Bela|Crater|24.7|2.3|11|0
+Bellot|Crater|-12.4|48.2|17|0
+Bernouilli|Crater|35|60.7|47|0
+Berosus|Crater|33.5|69.9|74|0
+Berzelius|Crater|36.6|50.9|50|0
+Bessarion|Crater|14.9|322.7|10|0
+Bessel|Crater|21.8|17.9|15|0
+Bettinus|Crater|-63.4|315.2|71|0
+Bianchini|Crater|48.7|325.7|38|0
+Biela|Crater|-54.9|51.3|76|0
+Bilharz|Crater|-5.8|56.3|43|0
+Billy|Crater|-13.8|309.9|45|0
+Biot|Crater|-22.6|51.1|12|0
+Birmingham|Crater|65.1|349.5|92|0
+Birt|Crater|-22.4|351.5|16|0
+Black|Crater|-9.2|80.4|18|0
+Blagg|Crater|1.3|1.5|5|0
+Blancanus|Crater|-63.8|338.6|117|0
+Blanchinus|Crater|-25.4|2.5|61|0
+Bobillier|Crater|19.6|15.5|6|0
+Bode|Crater|6.7|357.6|18|0
+Boethius|Crater|5.6|72.3|10|0
+Boguslawsky|Crater|-72.9|43.2|97|0
+Bohnenberger|Crater|-16.2|40|33|0
+Bohr|Crater|12.4|273.4|71|0
+Bombelli|Crater|5.3|56.2|10|0
+Bond, G.|Crater|32.4|36.2|20|0
+Bond, W.|Crater|65.4|355.5|156|0
+Bonpland|Crater|-8.3|342.6|60|0
+Boole|Crater|63.7|272.6|63|0
+Borda|Crater|-25.1|46.6|44|0
+Borel|Crater|22.3|26.4|4|0
+Boris|Crater|30.6|326.5|10|0
+Born|Crater|-6|66.8|14|0
+Boscovich|Crater|9.8|11.1|46|0
+Boss|Crater|45.8|89.2|47|0
+Bouguer|Crater|52.3|324.2|22|0
+Boussingault|Crater|-70.2|54.6|142|0
+Bowen|Crater|17.6|9.1|8|0
+Brackett|Crater|17.9|23.6|8|0
+Brayley|Crater|20.9|323.1|14|0
+Breislak|Crater|-48.2|18.3|49|0
+Brenner|Crater|-39|39.3|97|0
+Brewster|Crater|23.3|34.7|10|0
+Brianchon|Crater|75|273.8|134|0
+Briggs|Crater|26.5|290.9|37|0
+Brisbane|Crater|-49.1|68.5|44|0
+Brown|Crater|-46.4|342.1|34|0
+Bruce|Crater|1.1|0.4|6|0
+Buch|Crater|-38.8|17.7|53|0
+Bullialdus|Crater|-20.7|337.8|60|0
+Bunsen|Crater|41.4|274.7|52|0
+Burckhardt|Crater|31.1|56.5|56|0
+Burg|Crater|45|28.2|39|0
+Burnham|Crater|-13.9|7.3|24|0
+Busching|Crater|-38|20|52|0
+Byrd|Crater|85.3|9.8|93|0
+Byrgius|Crater|-24.7|294.7|87|0
+Cabeus|Crater|-84.9|324.5|98|0
+Cajal|Crater|12.6|31.1|9|0
+Calippus|Crater|38.9|10.7|32|0
+Cameron|Crater|6.2|45.9|10|0
+Campanus|Crater|-28|332.2|48|0
+Cannon|Crater|19.9|81.4|56|0
+Capella|Crater|-7.5|35|90|0
+Capuanus|Crater|-34.1|333.3|59|0
+Cardanus|Crater|-13.2|287.6|49|0
+Carlini|Crater|33.7|335.9|10|0
+Carlos|Crater|24.9|2.3|4|0
+Carmichael|Crater|19.6|40.4|20|0
+Carpenter|Crater|69.4|309.1|0|0
+Carpenter|Crater|69.4|309.1|59|0
+Carrel|Crater|10.7|26.7|15|0
+Carrillo|Crater|-2.2|80.9|16|0
+Carrington|Crater|44|62.1|30|0
+Cartan|Crater|4.2|59.3|15|0
+Casatus|Crater|-72.8|330.5|108|0
+Cassini|Crater|40.2|4.6|56|0
+Catalan|Crater|-45.7|272.7|25|0
+Catharina|Crater|-18.1|23.4|104|0
+Cauchy|Crater|9.6|38.6|12|0
+Cavalerius|Crater|5.1|293.2|57|0
+Cavendish|Crater|-24.5|306.3|56|0
+Caventou|Crater|29.8|330.6|3|0
+Cayley|Crater|4|15.1|14|0
+Celsius|Crater|-34.1|20.1|36|0
+Censorinus|Crater|-0.4|32.7|3|0
+Cepheus|Crater|40.8|45.8|39|0
+Chacornac|Crater|29.8|31.7|51|0
+Challis|Crater|79.5|9.2|55|0
+Chang-Ngo|Crater|-12.7|357.9|3|0
+Charles|Crater|29.9|333.6|1|0
+Chevallier|Crater|44.9|51.2|52|0
+Ching-Te|Crater|20|30|4|0
+Chladni|Crater|4|1.1|13|0
+Christel|Crater|24.5|11|2|0
+Cichus|Crater|-33.3|338.9|40|0
+Clairaut|Crater|-47.7|13.9|75|0
+Clausius|Crater|-36.9|316.2|24|0
+Clavius|Crater|-58.8|345.9|245|0
+Cleomedes|Crater|27.7|56|125|0
+Cleostratus|Crater|60.4|283|62|0
+Clerke|Crater|21.7|29.8|6|0
+Collins|Crater|1.3|23.7|2|0
+Colombo|Crater|-15.1|45.8|76|0
+Condon|Crater|1.9|60.4|34|0
+Condorcet|Crater|12.1|69.6|74|0
+Conon|Crater|21.6|2|21|0
+Cook|Crater|-17.5|48.9|46|0
+Copernicus|Crater|9.7|339.9|107|0
+Courtney|Crater|25.1|329.2|1|0
+Crile|Crater|14.2|46|9|0
+Crozier|Crater|-13.5|50.8|22|0
+Cruger|Crater|-16.7|293.2|45|0
+Curtis|Crater|14.6|56.6|2|0
+Curtius|Crater|-67.2|4.4|95|0
+Cusanus|Crater|72|70.8|63|0
+Cuvier|Crater|-50.3|9.9|75|0
+Cyrillus|Crater|-13.2|24|98|0
+Cysatus|Crater|-66.2|353.9|48|0
+Da Vinci|Crater|9.1|45|37|0
+Dag|Crater|18.7|5.3|0|0
+Daguerre|Crater|-11.9|33.6|46|0
+Dale|Crater|-9.6|82.9|22|0
+Dalton|Crater|17.1|275.7|60|0
+Daly|Crater|5.7|59.6|17|0
+Damoiseau|Crater|-4.8|298.9|36|0
+Daniell|Crater|35.3|31.1|29|0
+Darney|Crater|-14.5|336.5|15|0
+D'Arrest|Crater|2.3|14.7|30|0
+Darwin|Crater|-20.2|290.5|120|0
+Daubree|Crater|15.7|14.7|14|0
+Davy|Crater|-11.8|351.9|34|0
+Dawes|Crater|17.2|26.4|18|0
+De Gasparis|Crater|-25.9|309.3|30|0
+De La|Crater|59.1|52.3|134|0
+De Morgan|Crater|3.3|14.9|10|0
+De Sitter|Crater|80.1|39.6|64|0
+De Vico|Crater|-19.7|299.8|20|0
+Debes|Crater|29.5|51.7|30|0
+Dechen|Crater|46.1|291.8|12|0
+Delambre|Crater|-1.9|17.5|51|0
+Delaunay|Crater|-22.2|2.5|46|0
+Delia|Crater|-10.9|353.9|2|0
+Delisle|Crater|29.9|325.4|25|0
+Delmotte|Crater|27.1|60.2|32|0
+Deluc|Crater|-55|357.2|46|0
+Dembowski|Crater|2.9|7.2|26|0
+Democritus|Crater|62.3|35|39|0
+Demonax|Crater|-77.9|60.8|128|0
+Desargues|Crater|70.2|286.7|85|0
+Descartes|Crater|-11.7|15.7|48|0
+Deseilligny|Crater|21.1|20.6|6|0
+Deslandres|Crater|-33.1|355.2|256|0
+Diana|Crater|14.3|35.7|50|0
+Dionysius|Crater|2.8|17.3|18|0
+Diophantus|Crater|27.6|325.7|17|0
+Dollond|Crater|-10.4|14.4|11|0
+Donati|Crater|-20.7|5.2|36|0
+Donna|Crater|7.2|38.3|2|0
+Doppelmayer|Crater|-28.5|318.6|63|0
+Dove|Crater|-46.7|31.5|30|0
+Draper|Crater|17.6|338.3|8|0
+Drebbel|Crater|-40.9|311|30|0
+Drygalski|Crater|-79.3|275.1|149|0
+Dubyago|Crater|4.4|70|51|0
+Dunthorne|Crater|-30.1|328.4|15|0
+Eckert|Crater|17.3|58.3|2|0
+Eddington|Crater|21.3|287.8|118|0
+Egede|Crater|48.7|10.6|37|0
+Eichstadt|Crater|-22.6|281.7|49|0
+Eimmart|Crater|24|64.8|46|0
+Einstein|Crater|16.3|271.3|198|0
+Elger|Crater|-35.3|330.2|21|0
+Elmer|Crater|-10.1|84.1|16|0
+Encke|Crater|4.6|323.4|28|0
+Endymion|Crater|53.9|57|123|0
+Epigenes|Crater|67.5|355.4|55|0
+Epimenides|Crater|-40.9|329.8|27|0
+Eppinger|Crater|-9.4|334.3|6|0
+Eratosthenes|Crater|14.5|348.7|58|0
+Esclangon|Crater|21.5|42.1|15|0
+Euclides|Crater|-7.4|330.5|11|0
+Euctemon|Crater|76.4|31.3|62|0
+Eudoxus|Crater|44.3|16.3|67|0
+Euler|Crater|23.3|330.8|27|0
+Fabbroni|Crater|18.7|29.2|10|0
+Fabricius|Crater|-42.9|42|78|0
+Fahrenheit|Crater|13.1|61.7|6|0
+Falcon|Crater|20.4|30.3|0|0
+Faraday|Crater|-42.4|8.7|69|0
+Fauth|Crater|6.3|339.9|12|0
+Faye|Crater|-21.4|3.9|36|0
+Fedorov|Crater|28.2|323|6|0
+Felix|Crater|28.2|323|6|0
+Fermat|Crater|-22.6|19.8|38|0
+Fernelius|Crater|-38.1|4.9|65|0
+Feuillee|Crater|27.4|350.6|9|0
+Finsch|Crater|23.6|21.3|4|0
+Firmicus|Crater|7.3|63.4|56|0
+Flammarion|Crater|-3.4|356.3|74|0
+Flamsteed|Crater|-4.5|315.7|20|0
+Fontana|Crater|-16.1|303.4|31|0
+Fontenelle|Crater|63.4|341.1|38|0
+Foucault|Crater|50.4|320.3|23|0
+Fourier|Crater|-30.3|307|51|0
+Fra Mauro|Crater|-6.1|343|101|0
+Fracastorius|Crater|-21.5|33.2|112|0
+Franck|Crater|22.6|35.5|12|0
+Franklin|Crater|38.8|47.7|56|0
+Franz|Crater|16.6|40.2|25|0
+Fraunhofer|Crater|-39.5|59.1|56|0
+Fredholm|Crater|18.4|46.5|14|0
+Freud|Crater|25.8|307.7|2|0
+Furnerius|Crater|-36|60.6|135|0
+Galen|Crater|21.9|5|10|0
+Galilaei|Crater|10.5|297.3|15|0
+Galle|Crater|55.9|22.3|21|0
+Galvani|Crater|49.6|275.4|80|0
+Gambart|Crater|1|344.8|25|0
+Gardner|Crater|17.7|33.8|18|0
+Gartner|Crater|59.1|34.6|115|0
+Gassendi|Crater|-17.6|319.9|101|0
+Gaston|Crater|30.9|326|2|0
+Gaudibert|Crater|-10.9|37.8|34|0
+Gauricus|Crater|-33.8|347.4|79|0
+Gauss|Crater|35.7|79|177|0
+Gay-Lussac|Crater|13.9|339.2|26|0
+Geber|Crater|-19.4|13.9|44|0
+Geissler|Crater|-2.6|76.5|16|0
+Geminus|Crater|34.5|56.7|85|0
+Gemma Frisius|Crater|-34.2|13.3|87|0
+Gerard|Crater|44.5|280|90|0
+Gibbs|Crater|-18.4|84.3|76|0
+Gilbert|Crater|-3.2|76|112|0
+Gill|Crater|-63.9|75.9|66|0
+Gioja|Crater|83.3|2|41|0
+Glaisher|Crater|13.2|49.5|15|0
+Goclenius|Crater|-10|45|72|0
+Goddard|Crater|14.8|89|89|0
+Godin|Crater|1.8|10.2|34|0
+Goldschmidt|Crater|73.2|356.2|113|0
+Golgi|Crater|27.8|300|5|0
+Goodacre|Crater|-32.7|14.1|46|0
+Gould|Crater|-19.2|342.8|34|0
+Grace|Crater|14.2|35.9|1|0
+Graff|Crater|-42.4|271.4|36|0
+Greaves|Crater|13.2|52.7|13|0
+Grimaldi|Crater|-5.5|291.7|172|0
+Grove|Crater|40.3|32.9|28|0
+Gruemberger|Crater|-66.9|350|93|0
+Gruithuisen|Crater|32.9|320.3|15|0
+Guericke|Crater|-11.5|345.9|63|0
+Gum|Crater|-40.4|88.6|54|0
+Gutenberg|Crater|-8.6|41.2|74|0
+Gylden|Crater|-5.3|0.3|47|0
+Hagecius|Crater|-59.8|46.6|76|0
+Hahn|Crater|31.3|73.6|0|0
+Hahn|Crater|31.3|73.6|84|0
+Haidinger|Crater|-39.2|335|22|0
+Hainzel|Crater|-41.3|326.5|70|0
+Haldane|Crater|-1.7|84.1|37|0
+Hall|Crater|33.7|37|35|0
+Halley|Crater|-8|5.7|36|0
+Hamilton|Crater|-42.8|84.7|57|0
+Hanno|Crater|-56.3|71.2|56|0
+Hansen|Crater|14|72.5|39|0
+Hansteen|Crater|-11.5|308|44|0
+Harding|Crater|43.5|288.3|22|0
+Hargreaves|Crater|-2.2|64|16|0
+Harold|Crater|-10.9|354|2|0
+Harpalus|Crater|52.6|316.6|39|0
+Hartwig|Crater|-6.1|279.5|79|0
+Hase|Crater|-29.4|62.5|83|0
+Hausen|Crater|-65|271.9|167|0
+Hayn|Crater|64.7|85.2|87|0
+Hecataeus|Crater|-21.8|79.4|167|0
+Hedin|Crater|2|283.5|150|0
+Heinrich|Crater|24.8|344.7|6|0
+Heinsius|Crater|-39.5|342.3|64|0
+Heis|Crater|32.4|328.1|14|0
+Helicon|Crater|40.4|336.9|24|0
+Hell|Crater|-32.4|352.2|33|0
+Helmert|Crater|-7.6|87.6|26|0
+Helmholtz|Crater|-68.1|64.1|94|0
+Henry|Crater|-24|303.2|41|0
+Henry Freres|Crater|-23.5|301.1|42|0
+Heraclitus|Crater|-49.2|6.2|90|0
+Hercules|Crater|46.7|39.1|69|0
+Herigonius|Crater|-13.3|326.1|15|0
+Hermann|Crater|-0.9|303|15|0
+Hermite|Crater|86|270.1|104|0
+Herodotus|Crater|23.2|310.3|34|0
+Herschel|Crater|-5.7|357.9|40|0
+Herschel, C.|Crater|34.5|328.8|13|0
+Herschel, J.|Crater|62|318|165|0
+Hesiodus|Crater|-29.4|343.7|42|0
+Hevelius|Crater|2.2|292.4|115|0
+Hill|Crater|20.9|40.8|16|0
+Hind|Crater|-7.9|7.4|29|0
+Hippalus|Crater|-24.8|329.8|57|0
+Hipparchus|Crater|-5.1|5.2|138|0
+Holden|Crater|-19.1|62.5|47|0
+Hommel|Crater|-54.7|33.8|126|0
+Hooke|Crater|41.2|54.9|36|0
+Hornsby|Crater|23.8|12.5|3|0
+Horrebow|Crater|58.7|319.2|24|0
+Horrocks|Crater|-4|5.9|30|0
+Hortensius|Crater|6.5|332|14|0
+Houtermans|Crater|-9.4|87.2|29|0
+Hubble|Crater|22.1|86.9|80|0
+Huggins|Crater|-41.1|358.6|65|0
+Humason|Crater|30.7|303.4|4|0
+Humboldt|Crater|-27|80.9|189|0
+Huxley|Crater|20.2|355.5|4|0
+Hyginus|Crater|7.8|6.3|9|0
+Hypatia|Crater|-4.3|22.6|40|0
+Ian|Crater|25.7|359.6|1|0
+Ibn Battuta|Crater|-6.9|50.4|11|0
+Ibn-Rushd|Crater|-11.7|21.7|32|0
+Ideler|Crater|-49.2|22.3|38|0
+Ina|Crater|-49.2|22.3|38|0
+Inghirami|Crater|-47.5|291.2|91|0
+Isabel|Crater|28.2|325.9|1|0
+Isidorus|Crater|-8|33.5|42|0
+Isis|Crater|18.9|27.5|1|0
+Ivan|Crater|26.9|316.7|4|0
+Jacobi|Crater|-56.7|11.4|68|0
+Jansen|Crater|13.5|28.7|23|0
+Jansky|Crater|8.5|89.5|72|0
+Janssen|Crater|-45.4|40.3|199|0
+Jehan|Crater|20.7|328.1|5|0
+Jenkins|Crater|0.3|78.1|38|0
+Jerik|Crater|18.5|27.6|1|0
+Jomo|Crater|24.4|358.4|7|0
+Jose|Crater|-12.7|358.4|2|0
+Joy|Crater|25|6.6|5|0
+Julienne|Crater|26|3.2|2|0
+Julius Caesar|Crater|9|15.4|90|0
+Kaiser|Crater|-36.5|6.5|52|0
+Kane|Crater|63.1|26.1|54|0
+Kant|Crater|-10.6|20.1|33|0
+Kao|Crater|-6.7|87.6|34|0
+Kapteyn|Crater|-10.8|70.6|49|0
+Kastner|Crater|-6.8|78.5|108|0
+Keldysh|Crater|51.2|43.6|33|0
+Kepler|Crater|8.1|322|31|0
+Kies|Crater|-26.3|337.5|45|0
+Kiess|Crater|-6.4|84|63|0
+Kinau|Crater|-60.8|15.1|41|0
+Kirch|Crater|39.2|354.4|11|0
+Kircher|Crater|-67.1|314.7|72|0
+Kirchhoff|Crater|30.3|38.8|24|0
+Klaproth|Crater|-69.8|334|119|0
+Klein|Crater|-12|2.6|44|0
+Knox-Shaw|Crater|5.3|80.2|12|0
+Konig|Crater|-24.1|335.4|23|0
+Kopff|Crater|-17.4|270.4|41|0
+Krafft|Crater|16.6|287.4|51|0
+Krasnov|Crater|-29.9|280.4|40|0
+Kreiken|Crater|-9|84.6|23|0
+Krieger|Crater|29|314.4|22|0
+Krishna|Crater|24.5|11.3|3|0
+Krogh|Crater|9.4|65.7|19|0
+Krusenstern|Crater|-26.2|5.9|47|0
+Kuiper|Crater|-9.8|337.3|6|0
+Kundt|Crater|-11.5|348.5|10|0
+Kunowsky|Crater|3.2|327.5|18|0
+La Caille|Crater|-23.8|1.1|67|0
+La Condamine|Crater|53.4|331.8|37|0
+La Perouse|Crater|-10.7|76.3|77|0
+Lacroix|Crater|-37.9|301|37|0
+Lade|Crater|-1.3|10.1|55|0
+Lagalla|Crater|-44.6|337.5|85|0
+Lagrange|Crater|-32.3|287.2|225|0
+Lalande|Crater|-4.4|351.4|24|0
+Lallemand|Crater|-14.3|275.9|18|0
+Lamarck|Crater|-22.9|290.2|100|0
+Lambert|Crater|25.8|339|30|0
+Lame|Crater|-14.7|64.5|84|0
+Lamech|Crater|42.7|13.1|13|0
+Lamont|Crater|4.4|23.7|106|0
+Landsteiner|Crater|31.3|345.2|6|0
+Langley|Crater|51.1|273.7|59|0
+Langrenus|Crater|-8.9|61.1|127|0
+Lansberg|Crater|-0.3|333.4|38|0
+Lassell|Crater|-15.5|352.1|23|0
+Lavoisier|Crater|38.2|278.8|70|0
+Lawrence|Crater|7.4|43.2|24|0
+Le Gentil|Crater|-74.6|284.3|128|0
+Le Monnier|Crater|26.6|30.6|60|0
+Le Verrier|Crater|40.3|339.4|20|0
+Leakey|Crater|-3.2|37.4|12|0
+Lebesgue|Crater|-5.1|89|11|0
+Lee|Crater|-30.7|319.3|41|0
+Legendre|Crater|-28.9|70.2|78|0
+Lehmann|Crater|-40|304|53|0
+Lepaute|Crater|-33.3|326.4|16|0
+Letronne|Crater|-10.8|317.5|116|0
+Lexell|Crater|-35.8|355.8|62|0
+Licetus|Crater|-47.1|6.7|74|0
+Lichtenberg|Crater|31.8|292.3|20|0
+Lick|Crater|12.4|52.7|31|0
+Liebig|Crater|-24.3|311.8|37|0
+Lilius|Crater|-54.5|6.2|61|0
+Linda|Crater|30.7|326.6|1|0
+Lindbergh|Crater|-5.4|52.9|12|0
+Lindenau|Crater|-32.3|24.9|53|0
+Lindsay|Crater|-7|13|32|0
+Linne|Crater|27.7|11.8|2|0
+Liouville|Crater|2.6|73.5|16|0
+Lippershey|Crater|-25.9|349.7|6|0
+Littrow|Crater|21.5|31.4|30|0
+Lockyer|Crater|-46.2|36.7|34|0
+Loewy|Crater|-22.7|327.2|24|0
+Lohrmann|Crater|-0.5|292.8|30|0
+Lohse|Crater|-13.7|60.2|41|0
+Longomontanus|Crater|-49.6|338.2|157|0
+Louise|Crater|28.5|325.8|0|0
+Louville|Crater|44|314|36|0
+Lubbock|Crater|-3.9|41.8|13|0
+Lubiniezky|Crater|-17.8|336.2|43|0
+Lucian|Crater|14.3|36.7|7|0
+Luther|Crater|33.2|24.1|9|0
+Lyapunov|Crater|26.3|89.3|66|0
+Lyell|Crater|13.6|40.6|32|0
+Lyot|Crater|-49.8|84.5|132|0
+MacLaurin|Crater|-1.9|68|50|0
+MacLear|Crater|10.5|20.1|20|0
+MacMillan|Crater|24.2|352.2|7|0
+Macrobius|Crater|21.3|46|64|0
+Madler|Crater|-11|29.8|27|0
+Maestlin|Crater|4.9|319.4|7|0
+Magelhaens|Crater|-11.9|44.1|40|0
+Maginus|Crater|-50.5|353.7|194|0
+Main|Crater|80.8|10.1|46|0
+Mairan|Crater|41.6|316.6|40|0
+Malapert|Crater|-84.9|12.9|69|0
+Mallet|Crater|-45.4|54.2|58|0
+Manilius|Crater|14.5|9.1|38|0
+Manners|Crater|4.6|20|15|0
+Manuel|Crater|24.5|11.3|0|0
+Manzinus|Crater|-67.7|26.8|98|0
+Maraldi|Crater|19.4|34.9|39|0
+Marco Polo|Crater|15.4|358|28|0
+Marinus|Crater|-39.4|76.5|58|0
+Marius|Crater|11.9|309.2|41|0
+Markov|Crater|53.4|297.3|40|0
+Marth|Crater|-31.1|330.7|6|0
+Mary|Crater|18.9|27.4|1|0
+Maskelyne|Crater|2.2|30.1|23|0
+Mason|Crater|42.6|30.5|33|0
+Maupertuis|Crater|49.6|332.7|45|0
+Maurolycus|Crater|-42|14|114|0
+Maury|Crater|37.1|39.6|17|0
+Mavis|Crater|29.8|333.6|1|0
+Mayer, C.|Crater|63.2|17.3|38|0
+Mayer, T.|Crater|15.6|330.9|33|0
+McClure|Crater|-15.3|50.3|23|0
+McDonald|Crater|30.4|339.1|7|0
+Mee|Crater|-43.7|324.7|126|0
+Menelaus|Crater|16.3|16|26|0
+Menzel|Crater|3.4|36.9|3|0
+Mercator|Crater|-29.3|333.9|46|0
+Mercurius|Crater|46.6|66.2|67|0
+Mersenius|Crater|-21.5|310.8|84|0
+Messala|Crater|39.2|60.5|125|0
+Messier|Crater|-1.9|47.6|11|0
+Metius|Crater|-40.3|43.3|87|0
+Meton|Crater|73.6|18.8|130|0
+Michael|Crater|25.1|0.2|4|0
+Milichius|Crater|10|329.8|12|0
+Miller|Crater|-39.3|0.8|61|0
+Mitchell|Crater|49.7|20.2|30|0
+Moigno|Crater|66.4|28.9|36|0
+Moltke|Crater|-0.6|24.2|6|0
+Monge|Crater|-19.2|47.6|36|0
+Monira|Crater|-12.6|358.3|2|0
+Montanari|Crater|-45.8|339.4|76|0
+Moretus|Crater|-70.6|354.2|111|0
+Morley|Crater|-2.8|64.6|14|0
+Mosting|Crater|-0.7|354.1|24|0
+Mouchez|Crater|78.3|333.4|81|0
+Muller|Crater|-7.6|2.1|22|0
+Murchison|Crater|5.1|359.9|57|0
+Mutus|Crater|-63.6|30.1|77|0
+Naonobu|Crater|-4.6|57.8|34|0
+Nasireddin|Crater|-41|0.2|52|0
+Nasmyth|Crater|-50.5|303.8|76|0
+Natasha|Crater|20|328.7|12|0
+Naumann|Crater|35.4|298|9|0
+Neander|Crater|-31.3|39.9|50|0
+Nearch|Crater|-58.5|39.1|75|0
+Neison|Crater|68.3|25.1|53|0
+Neper|Crater|8.5|84.6|137|0
+Neumayer|Crater|-71.1|70.7|76|0
+Newcomb|Crater|29.9|43.8|41|0
+Newton|Crater|-76.7|343.1|78|0
+Nicholson|Crater|-26.2|274.9|38|0
+Nicolai|Crater|-42.4|25.9|42|0
+Nicollet|Crater|-21.9|347.5|15|0
+Nielsen|Crater|31.8|308.2|9|0
+Nobili|Crater|0.2|75.9|42|0
+Noggerath|Crater|-48.8|314.3|30|0
+Nonius|Crater|-34.8|3.8|69|0
+Norman|Crater|-11.8|329.6|10|0
+Oenopides|Crater|57|295.9|67|0
+Oersted|Crater|43.1|47.2|42|0
+Oken|Crater|-43.7|75.9|71|0
+Olbers|Crater|7.4|284.1|74|0
+Opelt|Crater|-16.3|342.5|48|0
+Oppolzer|Crater|-1.5|359.5|40|0
+Orontius|Crater|-40.6|355.4|105|0
+Osama|Crater|18.6|5.2|0|0
+Osiris|Crater|18.6|27.6|1|0
+Osman|Crater|-11|353.8|2|0
+Palisa|Crater|-9.4|352.8|33|0
+Palitzsch|Crater|-28|64.5|41|0
+Pallas|Crater|5.5|358.4|46|0
+Palmieri|Crater|-28.6|312.3|40|0
+Parrot|Crater|-14.5|3.3|70|0
+Parry|Crater|-7.9|344.2|47|0
+Pascal|Crater|74.6|289.7|115|0
+Patricia|Crater|25|0.3|5|0
+Peary|Crater|88.6|33|73|0
+Peek|Crater|2.6|86.9|12|0
+Peirce|Crater|18.3|53.5|18|0
+Peirescius|Crater|-46.5|67.6|61|0
+Pentland|Crater|-64.6|11.5|56|0
+Petavius|Crater|-25.1|60.4|188|0
+Petermann|Crater|74.2|66.3|73|0
+Peters|Crater|68.1|29.5|15|0
+Petit|Crater|2.3|63.5|5|0
+Petrov|Crater|-61.4|88|49|0
+Pettit|Crater|-27.5|273.4|35|0
+Phillips|Crater|-26.6|75.3|122|0
+Philolaus|Crater|72.1|327.6|70|0
+Phocylides|Crater|-52.7|303|121|0
+Piazzi|Crater|-36.6|292.1|134|0
+Piazzi Smyth|Crater|41.9|356.8|13|0
+Picard|Crater|14.6|54.7|22|0
+Piccolomini|Crater|-29.7|32.2|87|0
+Pickering|Crater|-2.9|7|15|0
+Pictet|Crater|-43.6|352.6|62|0
+Pilatre|Crater|-60.2|273.1|50|0
+Pingre|Crater|-58.7|286.3|88|0
+Pitatus|Crater|-29.9|346.5|106|0
+Pitiscus|Crater|-50.4|30.9|82|0
+Plana|Crater|42.2|28.2|44|0
+Plato|Crater|51.6|350.6|109|0
+Playfair|Crater|-23.5|8.4|47|0
+Plinius|Crater|15.4|23.7|43|0
+Plutarch|Crater|24.1|79|68|0
+Poisson|Crater|-30.4|10.6|42|0
+Polybius|Crater|-22.4|25.6|41|0
+Pomortsev|Crater|0.7|66.9|23|0
+Poncelet|Crater|75.8|305.9|69|0
+Pons|Crater|-25.3|21.5|41|0
+Pontanus|Crater|-28.4|14.4|57|0
+Pontecoulant|Crater|-58.7|66|91|0
+Porter|Crater|-56.1|349.9|51|0
+Posidonius|Crater|31.8|29.9|95|0
+Prinz|Crater|25.5|315.9|46|0
+Proclus|Crater|16.1|46.8|28|0
+Proctor|Crater|-46.4|354.9|52|0
+Protagoras|Crater|56|7.3|21|0
+Ptolemaeus|Crater|-9.3|358.1|164|0
+Puiseux|Crater|-27.8|321|24|0
+Pupin|Crater|23.8|349|2|0
+Purbach|Crater|-25.5|357.7|115|0
+Pythagoras|Crater|63.5|297|142|0
+Pytheas|Crater|20.5|339.4|20|0
+Rabbi Levi|Crater|-34.7|23.6|81|0
+Raman|Crater|27|304.9|10|0
+Rankine|Crater|-3.9|71.5|8|0
+Rayleigh|Crater|29.3|89.6|114|0
+Regiomontanus|Crater|-28.3|359|108|0
+Regnault|Crater|54.1|272|46|0
+Reichenbach|Crater|-30.3|48|71|0
+Reimarus|Crater|-47.7|60.3|48|0
+Reiner|Crater|7|305.1|29|0
+Reinhold|Crater|3.3|337.2|42|0
+Repsold|Crater|51.3|281.4|109|0
+Respighi|Crater|2.8|71.9|18|0
+Reumur|Crater|-2.4|0.7|52|0
+Rheita|Crater|-37.1|47.2|70|0
+Riccioli|Crater|-3.3|285.4|139|0
+Riccius|Crater|-36.9|26.5|71|0
+Riemann|Crater|38.9|86.8|163|0
+Ritchey|Crater|-11.1|8.5|24|0
+Ritter|Crater|2|19.2|29|0
+Robert|Crater|19|27.4|1|0
+Robinson|Crater|59|314.1|24|0
+Rocca|Crater|-12.7|287.2|89|0
+Rocco|Crater|28.9|315|4|0
+Romer|Crater|25.4|36.4|39|0
+Rosa|Crater|20.3|327.7|1|0
+Rosenberger|Crater|-55.4|43.1|95|0
+Ross|Crater|11.7|21.7|24|0
+Rosse|Crater|-17.9|35|11|0
+Rost|Crater|-56.4|326.3|48|0
+Rothmann|Crater|-30.8|27.7|42|0
+Runge|Crater|-2.5|86.7|38|0
+Russell|Crater|26.5|284.6|103|0
+Russell|Crater|26.4|284.4|103|0
+Ruth|Crater|28.7|314.9|3|0
+Rutherfurd|Crater|-60.9|347.9|48|0
+Sabatier|Crater|13.2|79|10|0
+Sabine|Crater|1.4|20.1|30|0
+Sacrobosco|Crater|-23.7|16.7|98|0
+Samir|Crater|28.5|325.7|2|0
+Sampson|Crater|29.7|343.5|1|0
+Santbech|Crater|-20.9|44|64|0
+Santos-Dumont|Crater|27.7|4.8|8|0
+Sarabhai|Crater|24.7|21|7|0
+Sasserides|Crater|-39.1|350.7|90|0
+Saunder|Crater|-4.2|8.8|44|0
+Saussure|Crater|-43.4|356.2|54|0
+Scheele|Crater|-9.4|322.2|4|0
+Scheiner|Crater|-60.5|332.5|110|0
+Schiaparelli|Crater|23.4|301.2|24|0
+Schickard|Crater|-44.3|304.7|206|0
+Schiller|Crater|-51.9|321|180|0
+Schluter|Crater|-5.9|276.7|89|0
+Schmidt|Crater|1|18.8|11|0
+Schomberger|Crater|-76.7|24.9|85|0
+Schorr|Crater|-19.5|89.7|53|0
+Schroter|Crater|2.6|353|35|0
+Schubert|Crater|2.8|81|54|0
+Schumacher|Crater|42.4|60.7|60|0
+Schwabe|Crater|65.1|45.6|25|0
+Scoresby|Crater|77.7|14.1|55|0
+Scott|Crater|-82.1|48.5|103|0
+Secchi|Crater|2.4|43.5|22|0
+Seeliger|Crater|-2.2|3|8|0
+Segner|Crater|-58.9|311.7|67|0
+Seleucus|Crater|21|293.4|43|0
+Seneca|Crater|26.6|80.2|46|0
+Shaler|Crater|-32.9|274.8|48|0
+Shapley|Crater|9.4|56.9|23|0
+Sharp|Crater|45.7|319.8|39|0
+Sheepshanks|Crater|59.2|16.9|25|0
+Short|Crater|-74.6|352.7|70|0
+Shuckburgh|Crater|42.6|52.8|38|0
+Silberschlag|Crater|6.2|12.5|13|0
+Simpelius|Crater|-73|15.2|70|0
+Sinas|Crater|8.8|31.6|11|0
+Sirsalis|Crater|-12.5|299.6|42|0
+Slocum|Crater|-3|89|13|0
+Smithson|Crater|2.4|53.6|5|0
+Snellius|Crater|-29.3|55.7|82|0
+Somerville|Crater|-8.3|64.9|15|0
+Sommering|Crater|0.1|352.5|28|0
+Soraya|Crater|-12.9|358.4|2|0
+Sosigenes|Crater|8.7|17.6|17|0
+South|Crater|58|309.2|104|0
+Spallanzani|Crater|-46.3|24.7|32|0
+Sporer|Crater|-4.3|358.2|27|0
+Stadius|Crater|10.5|346.3|69|0
+Steinheil|Crater|-48.6|46.5|67|0
+Stella|Crater|19.9|29.8|36|0
+Stevinus|Crater|-32.5|54.2|74|0
+Stewart|Crater|2.2|67|13|0
+Stiborius|Crater|-34.4|32|43|0
+Stofler|Crater|-41.1|6|126|0
+Stokes|Crater|52.5|271.9|51|0
+Strabo|Crater|61.9|54.3|55|0
+Street|Crater|-46.5|349.5|57|0
+Struve|Crater|22.4|282.9|164|0
+Suess|Crater|4.4|312.4|8|0
+Sulpicius Gallus|Crater|19.6|11.6|12|0
+Sung-Mei|Crater|24.6|11.3|5|0
+Susan|Crater|-11|353.7|1|0
+Swasey|Crater|-5.5|89.7|23|0
+Swift|Crater|19.3|53.4|10|0
+Sylvester|Crater|82.7|280.4|58|0
+Tacchini|Crater|4.9|85.8|40|0
+Tacitus|Crater|-16.2|19|39|0
+Tacquet|Crater|16.6|19.2|7|0
+Taizo|Crater|16.6|19.2|6|0
+Talbot|Crater|-2.5|85.3|11|0
+Tannerus|Crater|-56.4|22|28|0
+Taruntius|Crater|5.6|46.5|56|0
+Taylor|Crater|-5.3|16.7|42|0
+Tebbutt|Crater|9.6|53.6|31|0
+Tempel|Crater|3.9|11.9|45|0
+Thales|Crater|61.8|50.3|31|0
+Theaetetus|Crater|37|6|24|0
+Thebit|Crater|-22|356|56|0
+Theiler|Crater|13.4|83.3|7|0
+Theon Junior|Crater|-2.3|15.8|17|0
+Theon Senior|Crater|-0.8|15.4|18|0
+Theophilus|Crater|-11.4|26.4|110|0
+Theophrastus|Crater|17.5|39|9|0
+Timaeus|Crater|62.8|359.5|32|0
+Timocharis|Crater|26.7|346.9|33|0
+Tisserand|Crater|21.4|48.2|36|0
+Tolansky|Crater|-9.5|344|13|0
+Torricelli|Crater|-4.6|28.5|22|0
+Toscanelli|Crater|27.4|312.5|7|0
+Townley|Crater|3.4|63.3|18|0
+Tralles|Crater|28.4|52.8|43|0
+Triesnecker|Crater|4.2|3.6|26|0
+Trouvelot|Crater|49.3|5.8|9|0
+Tucker|Crater|-5.6|88.2|7|0
+Turner|Crater|-1.4|346.8|11|0
+Tycho|Crater|-43.4|348.9|102|0
+Ukert|Crater|7.8|1.4|23|0
+Ulugh Beigh|Crater|32.7|278.1|54|0
+Urey|Crater|27.9|87.4|38|0
+Vaisala|Crater|25.9|312.2|8|0
+Van Albada|Crater|9.4|64.3|21|0
+Van Biesbroeck|Crater|28.7|314.4|9|0
+Van Vleck|Crater|-1.9|78.3|31|0
+Vasco da|Crater|13.6|276.1|83|0
+Vega|Crater|-45.4|63.4|75|0
+Vendelinus|Crater|-16.4|61.6|131|0
+Vera|Crater|26.3|316.3|2|0
+Verne|Crater|24.9|334.7|2|0
+Very|Crater|25.6|25.3|5|0
+Vieta|Crater|-29.2|303.7|87|0
+Virchow|Crater|9.8|83.7|16|0
+Vitello|Crater|-30.4|322.5|42|0
+Vitruvius|Crater|17.6|31.3|29|0
+Vlacq|Crater|-53.3|38.8|89|0
+Vogel|Crater|-15.1|5.9|26|0
+Volta|Crater|53.9|275.6|123|0
+Von Behring|Crater|-7.8|71.8|38|0
+Voskresenskiy|Crater|28|271.9|49|0
+Wallace|Crater|20.3|351.3|26|0
+Wallach|Crater|4.9|32.3|6|0
+Walter|Crater|28|326.2|1|0
+Walter (Walther)|Crater|-33.1|1|128|0
+Wargentin|Crater|-49.6|299.8|84|0
+Warner|Crater|-4|87.3|35|0
+Watt|Crater|-49.5|48.6|66|0
+Watts|Crater|8.9|46.3|15|0
+Webb|Crater|-0.9|60|21|0
+Weierstrass|Crater|-1.3|77.2|33|0
+Weigel|Crater|-58.2|321.2|35|0
+Weinek|Crater|-27.5|37|32|0
+Weiss|Crater|-31.8|340.5|66|0
+Werner|Crater|-28|3.3|70|0
+Whewell|Crater|4.2|13.7|13|0
+Wichmann|Crater|-7.5|321.9|10|0
+Widmanstatten|Crater|-6.1|85.5|46|0
+Wildt|Crater|9|75.8|11|0
+Wilhelm|Crater|-43.4|339.6|106|0
+Wilkins|Crater|-29.4|19.6|57|0
+Williams|Crater|42|37.2|36|0
+Wilson|Crater|-69.2|317.6|69|0
+Winthrop|Crater|-10.7|315.6|17|0
+Wohler|Crater|-38.2|31.4|27|0
+Wolf|Crater|-22.7|343.4|25|0
+Wollaston|Crater|30.6|313.1|10|0
+Wright|Crater|-31.6|273.4|39|0
+Wrottesley|Crater|-23.9|56.8|57|0
+Wurzelbauer|Crater|-33.9|344.1|88|0
+Xenophanes|Crater|57.5|278|125|0
+Yakovkin|Crater|-54.5|281.2|37|0
+Yangel'|Crater|17|4.7|8|0
+Yerkes|Crater|14.6|51.7|36|0
+Yoshi|Crater|24.6|11|1|0
+Young|Crater|-41.5|50.9|71|0
+Zach|Crater|-60.9|5.3|70|0
+Zagut|Crater|-32|22.1|84|0
+Zahringer|Crater|5.6|40.2|11|0
+Zeno|Crater|45.2|72.9|65|0
+Zinner|Crater|26.6|301.2|4|0
+Zollner|Crater|-8|18.9|47|0
+Zucchius|Crater|-61.4|309.7|64|0
+Zupus|Crater|-17.2|307.7|38|0
+Reiner Gamma|Albedo Feature|7.5|301|70|0
+Abulfeda, Catena|Chain of craters|-16.9|17.2|219|0
+Brigitte, Catena|Chain of craters|18.5|27.5|5|0
+Davy, Catena|Chain of craters|-11|353|50|0
+Humboldt, Catena|Chain of craters|-21.5|84.6|165|0
+Krafft, Catena|Chain of craters|15|288|60|0
+Littrow, Catena|Chain of craters|22.2|29.5|10|0
+Pierre, Catena|Chain of craters|19.8|328.2|9|0
+Sylvester, Catena|Chain of craters|81.4|273.8|173|0
+Taruntius, Catena|Chain of craters|3|48|100|0
+Timocharis, Catena|Chain of craters|29|347|50|0
+Yuri, Catena|Chain of craters|24.4|329.6|5|0
+Aldrovandi, Dorsa|Ridge|24|28.5|136|0
+Andrusov, Dorsa|Ridge|-1|57|160|0
+Arduino, Dorsum|Ridge|24.9|324.2|107|0
+Argand, Dorsa|Ridge|28.1|319.4|109|0
+Azara, Dorsum|Ridge|26.7|19.2|105|0
+Barlow, Dorsa|Ridge|15|31|120|0
+Bucher, Dorsum|Ridge|31|321|90|0
+Buckland, Dorsum|Ridge|20.4|12.8|380|0
+Burnet, Dorsa|Ridge|28.4|303|194|0
+Cato, Dorsa|Ridge|1|47|140|0
+Cayeux, Dorsum|Ridge|1.6|51.2|84|0
+Cushman, Dorsum|Ridge|1|49|80|0
+Dana, Dorsa|Ridge|3|90|70|0
+Ewing, Dorsa|Ridge|-10.2|320.6|141|0
+Gast, Dorsum|Ridge|24|9|60|0
+Geikie, Dorsa|Ridge|-4.6|52.5|228|0
+Grabau, Dorsum|Ridge|29.4|344.1|121|0
+Guettard, Dorsum|Ridge|-10|342|40|0
+Harker, Dorsa|Ridge|14.5|64|197|0
+Heim, Dorsum|Ridge|32|330.2|148|0
+Higazy, Dorsum|Ridge|28|343|60|0
+Lister, Dorsa|Ridge|20.3|23.8|203|0
+Mawson, Dorsa|Ridge|-4.6|55.7|132|0
+Nicol, Dorsum|Ridge|18|23|50|0
+Niggli, Dorsum|Ridge|29|308|50|0
+Oppel, Dorsum|Ridge|18.7|52.6|268|0
+Owen, Dorsum|Ridge|25|11|50|0
+Rubey, Dorsa|Ridge|-10|318|100|0
+Scilla, Dorsum|Ridge|32.8|299.6|108|0
+Smirnov, Dorsa|Ridge|27.3|25.3|156|0
+Sorby, Dorsa|Ridge|19|14|80|0
+Stille, Dorsa|Ridge|27|341|80|0
+Termier, Dorsum|Ridge|11|58|90|0
+Tetyaev, Dorsa|Ridge|19.9|64.2|176|0
+Thera, Dorsum|Ridge|24.4|328.6|7|0
+Von Cotta|Ridge|23.2|11.9|199|0
+Whiston, Dorsa|Ridge|29.4|303.6|85|0
+Zirkel, Dorsum|Ridge|28.1|336.5|193|0
+Aestatis, Lacus|Lake; Small plain|-15|291|90|0
+Autumni, Lacus|Lake; Small plain|-9.9|276.1|183|0
+Bonitatis, Lacus|Lake; Small plain|23.2|43.7|92|0
+Doloris, Lacus|Lake; Small plain|17.1|9|110|0
+Excellentiae, Lacus|Lake; Small plain|-35.4|316|184|0
+Felicitatis, Lacus|Lake; Small plain|19|5|90|0
+Gaudii, Lacus|Lake; Small plain|16.2|12.6|113|0
+Hiemalis, Lacus|Lake; Small plain|15|14|50|0
+Lenitatis, Lacus|Lake; Small plain|14|12|80|0
+Mortis, Lacus|Lake; Small plain|45|27.2|151|0
+Odii, Lacus|Lake; Small plain|19|7|70|0
+Perseverantiae, Lacus|Lake; Small plain|8|62|70|0
+Somniorum, Lacus|Lake; Small plain|38|29.2|384|0
+Spei, Lacus|Lake; Small plain|43|65|80|0
+Temporis, Lacus|Lake; Small plain|45.9|58.4|117|0
+Timoris, Lacus|Lake; Small plain|-38.8|332.7|117|0
+Veris, Lacus|Lake; Small plain|-16.5|273.9|396|0
+Apennine Front|Landing site name|25.9|3.7|6|0
+Baby Ray|Landing site name|-9.1|15.4|0|0
+Bear Mountain|Landing site name|20|30.7|0|0
+Bench|Landing site name|-3.2|336.6|0|0
+Block|Landing site name|-3.2|336.6|0|0
+Bowen-Apollo|Landing site name|20.3|30.9|0|0
+Bridge|Landing site name|26|3.6|1|0
+Bronte|Landing site name|20.2|30.7|0|0
+Camelot|Landing site name|20.2|30.7|1|0
+Cinco|Landing site name|-19.1|15.5|0|0
+Cochise|Landing site name|-20.2|30.8|1|0
+Cone|Landing site name|-3.7|342.6|0|0
+Crescent|Landing site name|-2.9|336.6|1|0
+Doublet|Landing site name|-3.7|342.5|0|0
+Dune|Landing site name|26|3.7|0|0
+Earthlight|Landing site name|26.1|3.7|0|0
+Elbow|Landing site name|26|3.6|0|0
+Emory|Landing site name|20.1|30.8|1|0
+End|Landing site name|-8.9|15.6|0|0
+Family Mountain|Landing site name|20.4|30.3|7|0
+Flag|Landing site name|-9|15.5|0|0
+Flank|Landing site name|-3.7|342.6|0|0
+Gator|Landing site name|-9|15.6|1|0
+Halfway|Landing site name|-9|15.5|0|0
+Halo|Landing site name|-3.2|336.6|0|0
+Head|Landing site name|-3|336.6|0|0
+Hess-Apollo|Landing site name|20.1|30.7|1|0
+Horatio|Landing site name|20.2|30.7|0|0
+Index|Landing site name|26.1|3.7|0|0
+Kiva|Landing site name|-8.6|15.5|1|0
+Lara|Landing site name|20.4|30.5|0|0
+Last|Landing site name|26.1|0|0|0
+Light Mantle|Landing site name|20.2|30.8|4|0
+Mackin-Apollo (Mackin)|Landing site name|20.1|30.7|0|0
+Middle Crescent|Landing site name|-3.2|336.6|0|0
+Nansen-Apollo|Landing site name|20.1|30.5|1|0
+North Complex|Landing site name|26.2|3.6|2|0
+North Massif|Landing site name|20.4|30.8|14|0
+North Ray|Landing site name|-8.8|15.5|1|0
+Old Nameless|Landing site name|-3.7|342.5|0|0
+Palmetto|Landing site name|-8.9|15.5|0|0
+Plain|Landing site name|26.2|3.6|2|0
+Plum|Landing site name|-9|15.5|0|0
+Powell|Landing site name|20.2|30.8|1|0
+Ravine|Landing site name|-8.9|15.6|1|0
+Rhysling|Landing site name|26.1|3.7|0|0
+Scarp|Landing site name|20.3|30.6|8|0
+Sculptured Hills|Landing site name|20.3|31|8|0
+Shakespeare|Landing site name|20.2|30.8|1|0
+Sharp-Apollo|Landing site name|-3.2|336.6|0|0
+Sherlock|Landing site name|20.2|30.8|0|0
+Shorty|Landing site name|20.2|30.6|0|0
+Smoky Mountains|Landing site name|-8.8|15.6|3|0
+Snowman|Landing site name|-3.2|336.6|1|0
+South Cluster|Landing site name|26|3.7|2|0
+South Massif|Landing site name|20|30.4|16|0
+South Ray|Landing site name|-9.2|15.4|1|0
+Spook|Landing site name|-9|15.5|0|0
+Spot|Landing site name|-9|15.5|0|0
+Spur|Landing site name|27.9|358.8|13|0
+St. George|Landing site name|26|3.5|2|0
+Statio Tranquillitatis|Landing site name|0.8|23.5|0|0
+Steno-Apollo|Landing site name|20.1|30.8|1|0
+Stone Mountain|Landing site name|-9.1|15.6|5|0
+Stubby|Landing site name|-9.1|15.5|1|0
+Taurus-Littrow Valley|Landing site name|20|31|30|0
+Terrace|Landing site name|26.1|3.7|0|0
+Tortilla Flat|Landing site name|20.2|30.7|1|0
+Trap|Landing site name|-9.1|15.4|1|0
+Trident|Landing site name|20.2|30.8|0|0
+Triplet|Landing site name|-3.7|342.5|0|0
+Van Serg|Landing site name|20.2|30.8|0|0
+Victory|Landing site name|20.2|30.7|1|0
+Weird|Landing site name|-3.7|342.5|0|0
+Wessex Cleft|Landing site name|20.3|30.9|4|0
+West|Landing site name|0.8|23.5|0|0
+Wreck|Landing site name|-9.1|15.5|1|0
+Anguis, Mare|Sea; Large circular plain|22.6|67.7|150|0
+Cognitum, Mare|Sea; Large circular plain|-10|336.9|376|0
+Crisium, Mare|Sea; Large circular plain|17|59.1|418|0
+Fecunditatis, Mare|Sea; Large circular plain|-7.8|51.3|909|0
+Frigoris, Mare|Sea; Large circular plain|56|1.4|1596|0
+Humboldtianum, Mare|Sea; Large circular plain|56.8|81.5|273|0
+Humorum, Mare|Sea; Large circular plain|-24.4|321.4|389|0
+Imbrium, Mare|Sea; Large circular plain|32.8|344.4|1123|0
+Insularum, Mare|Sea; Large circular plain|7.5|329.1|513|0
+Marginis, Mare|Sea; Large circular plain|13.3|86.1|420|0
+Nectaris, Mare|Sea; Large circular plain|-15.2|35.5|333|0
+Nubium, Mare|Sea; Large circular plain|-21.3|343.4|715|0
+Serenitatis, Mare|Sea; Large circular plain|28|17.5|707|0
+Smythii, Mare|Sea; Large circular plain|1.3|87.5|373|0
+Spumans, Mare|Sea; Large circular plain|1.1|65.1|139|0
+Tranquillitatis, Mare|Sea; Large circular plain|8.5|31.4|873|0
+Undarum, Mare|Sea; Large circular plain|6.8|68.4|243|0
+Vaporum, Mare|Sea; Large circular plain|13.3|3.6|245|0
+Agnes, Mons|Mountain|18.6|5.3|1|0
+Agricola, Montes|Mountain|29.1|305.8|141|0
+Alpes, Montes|Mountain|46.4|359.2|281|0
+Ampere, Mons|Mountain|19|356|30|0
+Apenninus, Montes|Mountain|18.9|356.3|401|0
+Archimedes, Montes|Mountain|25.3|355.4|163|0
+Argaeus, Mons|Mountain|19|29|50|0
+Blanc, Mont|Mountain|45|1|25|0
+Bradley, Mons|Mountain|22|1|30|0
+Carpatus, Montes|Mountain|14.5|335.6|361|0
+Caucasus, Montes|Mountain|38.4|10|445|0
+Cordillera, Montes|Mountain|-17.5|278.4|574|0
+Delisle, Mons|Mountain|29.5|324.2|30|0
+Esam, Mons|Mountain|14.6|35.7|8|0
+Gruithuisen Delta|Mountain|36|320.5|20|0
+Gruithuisen Gamma|Mountain|36.6|319.5|20|0
+Hadley Delta|Mountain|25.8|3.8|15|0
+Hadley, Mons|Mountain|26.5|4.7|25|0
+Haemus, Montes|Mountain|19.9|9.2|560|0
+Hansteen, Mons|Mountain|-12.1|310|30|0
+Harbinger, Montes|Mountain|27|319|90|0
+Herodotus, Mons|Mountain|27.5|307|5|0
+Huygens, Mons|Mountain|20|357.1|40|0
+Jura, Montes|Mountain|47.1|326|422|0
+La Hire|Mountain|27.8|334.5|25|0
+Maraldi, Mons|Mountain|20.3|35.3|15|0
+Moro, Mons|Mountain|-12|340.3|10|0
+Penck, Mons|Mountain|-10|21.6|30|0
+Pico, Mons|Mountain|45.7|351.1|25|0
+Piton, Mons|Mountain|40.6|358.9|25|0
+Pyrenaeus, Montes|Mountain|-15.6|41.2|164|0
+Recti, Montes|Mountain|48|340|90|0
+Riphaeus, Montes|Mountain|-7.7|331.9|189|0
+Rook, Montes|Mountain|-20.6|277.5|791|0
+Rumker, Mons|Mountain|40.8|301.9|70|0
+Secchi, Montes|Mountain|3|43|50|0
+Spitzbergen, Montes|Mountain|35|355|60|0
+Taurus, Montes|Mountain|28.4|41.1|172|0
+Teneriffe, Montes|Mountain|47.1|348.2|182|0
+Usov, Mons|Mountain|12|63|15|0
+Vinogradov, Mons|Mountain|22.4|327.6|25|0
+Vitruvius, Mons|Mountain|19.4|30.8|15|0
+Wolff, Mons|Mountain|17|353.2|35|0
+Procellarum, Oceanus|Ocean|18.4|302.6|2568|0
+Epidemiarum, Palus|Swamp|-32|331.8|286|0
+Putredinis, Palus|Swamp|26.5|0.4|161|0
+Somni, Palus|Swamp|14.1|45|143|0
+Descensus, Planitia|Low plain|7.1|295.6|1|0
+Agarum, Promontorium|Cape|14|66|70|0
+Agassiz, Promontorium|Cape|42|1.8|20|0
+Archerusia, Promontorium|Cape|16.7|22|10|0
+Deville, Promontorium|Cape|43.2|1|20|0
+Fresnel, Promontorium|Cape|29|4.7|20|0
+Heraclides, Promontorium|Cape|40.3|326.8|50|0
+Kelvin, Promontorium|Cape|-27|327|50|0
+Laplace, Promontorium|Cape|46|334.2|50|0
+Taenarium, Promontorium|Cape|-19|352|70|0
+Agatharchides, Rima|Fissure|-20|332|50|0
+Agricola, Rima|Fissure|29|307|110|0
+Alphonsus, Rimae|Fissure|-14|358|80|0
+Apollonius, Rimae|Fissure|5|53|230|0
+Archimedes, Rimae|Fissure|26.6|355.9|169|0
+Archytas, Rima|Fissure|53|3|90|0
+Ariadaeus, Rima|Fissure|6.4|14|250|0
+Aristarchus, Rimae|Fissure|26.9|312.5|121|0
+Artsimovich, Rima|Fissure|27|321|70|0
+Arzachel, Rimae|Fissure|-18|358|50|0
+Atlas, Rimae|Fissure|47.5|43.6|60|0
+Billy, Rima|Fissure|-15|312|70|0
+Birt, Rima|Fissure|-21|351|50|0
+Bode, Rimae|Fissure|10|356|70|0
+Bond, G.|Fissure|33.3|35.5|168|0
+Boscovich, Rimae|Fissure|9.8|11.1|40|0
+Bradley, Rima|Fissure|23.8|358.8|161|0
+Brayley, Rima|Fissure|21.4|322.5|311|0
+Burg, Rimae|Fissure|44.5|23.8|147|0
+Calippus, Rima|Fissure|37|13|40|0
+Cardanus, Rima|Fissure|11.4|288.5|175|0
+Carmen, Rima|Fissure|19.8|29.3|10|0
+Cauchy, Rima|Fissure|10.5|38|140|0
+Chacornac, Rimae|Fissure|29|32|120|0
+Cleomedes, Rima|Fissure|27|57|80|0
+Cleopatra, Rima|Fissure|30|306.2|14|0
+Conon, Rima|Fissure|18.6|2|30|0
+Daniell, Rimae|Fissure|37|26|200|0
+Darwin, Rimae|Fissure|-19.3|290.5|143|0
+Dawes, Rima|Fissure|17.5|26.6|15|0
+De Gasparis|Fissure|-24.6|308.9|93|0
+Delisle, Rima|Fissure|31|328|60|0
+Diophantus, Rima|Fissure|29|327|150|0
+Doppelmayer, Rimae|Fissure|-25.9|314.9|162|0
+Draper, Rima|Fissure|18|335|160|0
+Euler, Rima|Fissure|21|329|90|0
+Flammarion, Rima|Fissure|-2.8|354.4|80|0
+Fresnel, Rimae|Fissure|28|4|90|0
+Furnerius, Rima|Fissure|-35|61|50|0
+Galilaei, Rima|Fissure|11.9|301.5|89|0
+Gartner, Rima|Fissure|59|36|30|0
+Gassendi, Rimae|Fissure|-18|320|70|0
+Gay-Lussac, Rima|Fissure|13|338|40|0
+Gerard, Rimae|Fissure|46|276|100|0
+Goclenius, Rimae|Fissure|-8|43|240|0
+Grimaldi, Rimae|Fissure|9|296|230|0
+Gutenberg, Rimae|Fissure|-5|38|330|0
+Hadley, Rima|Fissure|25|3|80|0
+Hansteen, Rima|Fissure|-12|307|25|0
+Hase, Rimae|Fissure|-29.4|62.5|83|0
+Herigonius, Rimae|Fissure|-13|323|100|0
+Hesiodus, Rima|Fissure|-30|340|256|0
+Hevelius, Rimae|Fissure|1|292|182|0
+Hippalus, Rimae|Fissure|-25.5|330.8|191|0
+Hyginus, Rima|Fissure|7.4|7.8|219|0
+Hypatia, Rimae|Fissure|-0.4|22.4|206|0
+Jansen, Rima|Fissure|14.5|29|35|0
+Janssen, Rimae|Fissure|-45.6|40|114|0
+Kopff, Rimae|Fissure|-17.4|270.4|41|0
+Krieger, Rima|Fissure|29|314.4|22|0
+Liebig, Rimae|Fissure|-20|315|140|0
+Littrow, Rimae|Fissure|22.1|29.9|115|0
+MacLear, Rimae|Fissure|13|20|110|0
+Maestlin, Rimae|Fissure|2|320|80|0
+Mairan, Rima|Fissure|38|313|90|0
+Marcello, Rima|Fissure|18.6|27.7|2|0
+Marius, Rima|Fissure|16.5|311.1|121|0
+Maupertuis, Rimae|Fissure|52|337|60|0
+Mayer, T.|Fissure|13|329|50|0
+Menelaus, Rimae|Fissure|17.2|17.9|131|0
+Mersenius, Rimae|Fissure|-21.5|310.8|84|0
+Messier, Rima|Fissure|-1|45|100|0
+Milichius, Rima|Fissure|8|327|100|0
+Opelt, Rimae|Fissure|-13|342|70|0
+Oppolzer, Rima|Fissure|-1.7|1|94|0
+Palmieri, Rimae|Fissure|-28|313|150|0
+Parry, Rimae|Fissure|-6.1|343.2|82|0
+Petavius, Rimae|Fissure|-25.9|58.9|80|0
+Pitatus, Rimae|Fissure|-28.5|346.2|94|0
+Plato, Rimae|Fissure|52.9|356.8|87|0
+Plinius, Rimae|Fissure|17.9|23.6|124|0
+Posidonius, Rimae|Fissure|32|28.7|70|0
+Prinz, Rimae|Fissure|27|317|80|0
+Ramsden, Rimae|Fissure|-33.9|328.6|108|0
+Reiko, Rima|Fissure|18.6|27.7|2|0
+Repsold, Rimae|Fissure|50.6|278.3|166|0
+Reumur, Rima|Fissure|-3|3|30|0
+Riccioli, Rimae|Fissure|2|286|400|0
+Ritter, Rimae|Fissure|3|18|100|0
+Romer, Rimae|Fissure|27|35|110|0
+Rudolf, Rima|Fissure|19.6|29.6|8|0
+Schroter, Rima|Fissure|24|0|200|0
+Schroter, Rima|Fissure|6|348|40|0
+Secchi, Rimae|Fissure|1|44|35|0
+Sharp, Rima|Fissure|46.7|309.5|107|0
+Sheepshanks, Rima|Fissure|58|24|200|0
+Sirsalis, Rimae|Fissure|-15.7|298.3|426|0
+Sosigenes, Rimae|Fissure|8.6|18.7|190|0
+Suess, Rima|Fissure|6.7|311.8|165|0
+Sulpicius Gallus|Fissure|21|10|90|0
+Sung-Mei, Rima|Fissure|24.6|11.3|40|0
+Taruntius, Rimae|Fissure|5.5|46.5|25|0
+Theaetetus, Rimae|Fissure|33|6|50|0
+Triesnecker, Rimae|Fissure|4.3|4.6|215|0
+Vasco da|Fissure|10|278|60|0
+Vladimir, Rima|Fissure|25.2|359.2|10|0
+Wan-Yu, Rima|Fissure|20|328.5|12|0
+Yangel', Rima|Fissure|16.7|4.6|30|0
+Zahia, Rima|Fissure|25|330.5|16|0
+Zupus, Rimae|Fissure|-15|307|120|0
+Altai, Rupes|Scarp|-24.3|22.6|427|0
+Boris, Rupes|Scarp|30.5|326.5|4|0
+Cauchy, Rupes|Scarp|9|37|120|0
+Kelvin, Rupes|Scarp|-27.3|326.9|78|0
+Liebig, Rupes|Scarp|-24.4|311.5|37|0
+Mercator, Rupes|Scarp|-31|337.7|93|0
+Recta, Rupes|Scarp|-22.1|352.2|134|0
+Toscanelli, Rupes|Scarp|27.4|312.5|70|0
+Aestuum, Sinus|Bay|10.9|351.2|290|0
+Amoris, Sinus|Bay|18.1|39.1|130|0
+Asperitatis, Sinus|Bay|-3.8|27.4|206|0
+Concordiae, Sinus|Bay|10.8|43.2|142|0
+Fidei, Sinus|Bay|18|2|70|0
+Honoris, Sinus|Bay|11.7|18.1|109|0
+Iridum, Sinus|Bay|44.1|328.5|236|0
+Lunicus, Sinus|Bay|31.8|358.6|126|0
+Medii, Sinus|Bay|2.4|1.7|335|0
+Roris, Sinus|Bay|54|303.4|202|0
+Successus, Sinus|Bay|0.9|59|132|0
+Alpes, Vallis|Sinuous valley|48.5|3.2|166|0
+Baade, Vallis|Sinuous valley|-45.9|283.8|203|0
+Bohr, Vallis|Sinuous valley|12.4|273.4|80|0
+Bouvard, Vallis|Sinuous valley|-38.3|276.9|284|0
+Capella, Vallis|Sinuous valley|-7.6|34.9|49|0
+Inghirami, Vallis|Sinuous valley|-43.8|287.8|148|0
+Palitzsch, Vallis|Sinuous valley|-26.4|64.3|132|0
+Rheita, Vallis|Sinuous valley|-42.5|51.5|445|0
+Schroteri, Vallis|Sinuous valley|26.2|309.2|168|0
+Snellius, Vallis|Sinuous valley|-31.1|56|592|0
+
+# For RCS Only -- Do Not Edit|0
+# @(#) $RCSfile: moon_db,v $ $Date: 2001/04/19 21:12:05 $ $Revision: 1.1.1.1 $ $Name:  $

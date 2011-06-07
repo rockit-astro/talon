@@ -1,0 +1,40 @@
+This is the CCD camera daemon. It uses the generic dev/ccdcamera
+interface to operate the actual camera. It accepts commands via the
+Camera.{in,out} fifo interface.
+
+The only command is to start an exposure. The command consists of exactly
+5 lines of text, each of which ends in a newline, as follows:
+
+Expose X+YxWxH bxXby Dur Shutter FITSFilefile
+Source
+Comment
+Title
+Observer
+
+Possible responses are:
+
+  1  Exposure complete
+  0  Image file created
+  0  Stop complete
+  0  Reset complete
+-1   Internal error
+-2   EXPO can not get camera fd
+-3   READ can not get camera fd
+-4   Exposure timed out
+-5   Download timed out
+-7   Unknown command
+-8   Expose format error
+-9   Bad Expose args
+-10  Error reading Source
+-11  Error reading Comment
+-12  Error reading Title
+-13  Error reading Observer
+-14  Can't malloc for pixels
+-15  Setup error
+-16  Pixels ready but state not EXPO
+-17  Readout error
+-18  File create
+-19  File i/o
+
+! For RCS Only -- Do Not Edit
+! @(#) $RCSfile: README,v $ $Date: 2001/04/19 21:12:09 $ $Revision: 1.1.1.1 $ $Name:  $
