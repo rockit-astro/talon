@@ -14,3 +14,6 @@ install (FILES ${ANDOR_LIBS} DESTINATION lib RENAME libandor.so.2)
 
 install (FILES ${ATSIFIO_LIBS} DESTINATION lib)
 install (FILES ${ANDOR_LIBS} DESTINATION lib RENAME libatsifio.so.2)
+
+install (DIRECTORY andor DESTINATION /usr/local/etc)
+
