@@ -1112,7 +1112,7 @@ static int buildXTrack(Now *np, Obj *op)
 			//			printf("ttrack = %.0f\n", ttrack);
 			if (mip->have && mip->xtrack)
 			{
-#warning "@@@@@@@@@@@@@@@@@@@@@@@@@ONLY FOR TEST @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"	tel.c	/saft/daemons/telescoped.csi	line 215	C/C++ Problem
+//#warning "@@@@@@@@@@@@@@@@@@@@@@@@@ONLY FOR TEST @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"	tel.c	/saft/daemons/telescoped.csi	line 215	C/C++ Problem
 				// make sure we're homed to begin with
 				char buf[128];
 				if (axisHomedCheck(mip, buf))
@@ -1123,7 +1123,7 @@ static int buildXTrack(Now *np, Obj *op)
 					toTTS("Error: %s", buf);
 					return -1;
 				}
-#warning "@@@@@@@@@@@@@@@@@@@@@@@@@ONLY FOR TEST @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"	tel.c	/saft/daemons/telescoped.csi	line 215	C/C++ Problem
+//#warning "@@@@@@@@@@@@@@@@@@@@@@@@@ONLY FOR TEST @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"	tel.c	/saft/daemons/telescoped.csi	line 215	C/C++ Problem
 
 				axis = mip - telstatshmp->minfo;
 				xyrp = xyr[axis];
@@ -1245,7 +1245,7 @@ static int trackObj(Obj *op, int first)
 				{
 					if (mip->have && !mip->xtrack)
 					{
-#warning "@@@@@@@@@@@@@@@@@@@@@@@@@ONLY FOR TEST @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"	tel.c	/saft/daemons/telescoped.csi	line 215	C/C++ Problem
+//#warning "@@@@@@@@@@@@@@@@@@@@@@@@@ONLY FOR TEST @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"	tel.c	/saft/daemons/telescoped.csi	line 215	C/C++ Problem
 						// make sure we're homed to begin with
 						char buf[128];
 						if (axisHomedCheck(mip, buf))
@@ -1256,7 +1256,7 @@ static int trackObj(Obj *op, int first)
 							toTTS("Error: %s", buf);
 							return -1;
 						}
-#warning "@@@@@@@@@@@@@@@@@@@@@@@@@ONLY FOR TEST @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"	tel.c	/saft/daemons/telescoped.csi	line 215	C/C++ Problem
+//#warning "@@@@@@@@@@@@@@@@@@@@@@@@@ONLY FOR TEST @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"	tel.c	/saft/daemons/telescoped.csi	line 215	C/C++ Problem
 						if (virtual_mode)
 						{
 							vmcSetTrackingOffset(mip->axis, 0);
