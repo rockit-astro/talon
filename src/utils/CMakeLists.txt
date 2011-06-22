@@ -1,3 +1,4 @@
 add_subdirectory (xobs)
 add_subdirectory (xcamera)
 add_subdirectory (xephem)
+add_subdirectory (csimc)

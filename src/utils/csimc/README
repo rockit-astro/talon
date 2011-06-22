@@ -1,0 +1,5 @@
+Csimc is the command line tool to connect directly to the CSIMC network. It
+requires csimcd to be running, starting it if it is not already running.
+
+# For RCS Only -- Do Not Edit
+# @(#) $RCSfile: README,v $ $Date: 2001/04/19 21:11:57 $ $Revision: 1.1.1.1 $ $Name:  $
