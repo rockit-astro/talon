@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 2.6)
 project (scripts)
 
-set(SCRIPTS get-catalogs killTel killp)
+set(SCRIPTS get-catalogs startTel killTel killp)
 
 set(SCRIPTS_DIR ${CORE_INSTALL_DIR}/bin)
 

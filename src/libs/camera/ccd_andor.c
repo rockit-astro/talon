@@ -165,6 +165,55 @@ int andor_setExpCCD(CCDExpoParams *expP, char *errmsg)
 		return -1;
 	}
 
+
+	int Vspeeds;
+	int Hspeeds;
+	int numChannels;
+	int noGains;
+
+	//Settin Vertical Shift Speeds
+	GetNumberVSSpeeds(&Vspeeds);
+//	SetVSSpeed(1);
+
+
+//	//Seting Horizontal Shift Speeds
+	GetNumberADChannels(&numChannels);
+//	SetADChannel(1);
+
+	GetNumberHorizontalSpeeds(&Hspeeds);
+//	GetNumberHSSpeeds(1, 1, &Hspeeds);
+//	SetHSSpeed(1, 0);
+
+
+	GetNumberPreAmpGains(&noGains);
+//	SetPreAmpGain(2);
+
+
+
+	printf("Vspeeds = %d Hspeeds = %d numChannels = %d noGains = %d\n", Vspeeds, Hspeeds, numChannels, noGains);
+
+
+//	SetVSSpeed(1);
+//	SetADChannel(1);
+	ret = SetHSSpeed(0, 2);
+	if (ret != DRV_SUCCESS)
+	{
+		sprintf(errmsg, "Error (%d) setting SetHSSpeed\n", ret);
+		return -1;
+	}
+
+	ret = SetPreAmpGain(1);
+	if (ret != DRV_SUCCESS)
+	{
+		sprintf(errmsg, "Error (%d) setting SetPreAmpGain\n", ret);
+		return -1;
+	}
+
+
+
+
+
+
 	ret = SetAcquisitionMode(1);
 	if (ret != DRV_SUCCESS)
 	{

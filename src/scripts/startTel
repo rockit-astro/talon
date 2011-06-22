@@ -1,0 +1,4 @@
+#!/bin/csh -f
+# start all telescope-related daemons and tools.
+
+echo "I do nothing at this point"
