@@ -1,0 +1,157 @@
+----------------------------------------------------------------------------
+  DigiTemp v1.0 for Linux			(C)1998 by Nexus Computing
+============================================================================
+
+  Thank you for purchasing DigiTemp for Linux. If you have any problems or
+suggestions please feel free to contact me at nexus@eskimo.com
+
+
+  Quick Setup
+  -----------
+
+  If you are like me you want to just plug it in and run it, right? Ok,
+follow these steps to start reading temperatures:
+
+  1. Find a free serial port on your system (I'll use /dev/ttyS2 in these
+     examples).
+
+  2. Plug DigiTemp into the connector if you haven't already.
+
+  3. Initalize the .digitemprc file with the following command:
+
+    digitemp -s/dev/ttyS2 -i
+
+    You should see a response like this:
+       DigiTemp v1.0 Copyright 1997 by Brian C. Lane
+
+       ROM #0 : 1077790000000078
+       ROM #1 : 10777A0000000036
+
+    The ROM numbers for your sensors will be different of course.
+
+ 4. Read temperatures with this command:
+
+    digitemp -a
+
+    You should see something like this:
+       DigiTemp v1.0 Copyright 1997 by Brian C. Lane
+
+       Sensor 0 C: 37.59 F: 99.67
+       Sensor 1 C: 21.53 F: 70.75
+
+
+ 5. If it doesn't work, try running the initalization again.
+    Make sure you have the right serial port and that it works, try
+    plugging a known working modem into the port. If all else fails,
+    email me!
+
+ 6. Read the rest of this document to learn how to log data to a file,
+    create a .cgi for web servers, and how to upload include files to a
+    remote web server.
+
+
+  Overview
+  --------
+
+    When DigiTemp initalizes it stores the serial port and serial numbers
+into a file called .digitemprc in the current directory. It reads this file
+to set the default options when run. The command line arguments can be used
+to override the settings in .digitemprc temporarily.
+
+
+  Temperature Logging
+  -------------------
+
+    To log temperatures to a logfile instead of to the console you use the
+-l command line option. I have a cron job that runs every 15 minutes and
+logs the temperatures to a file called /var/log/temperature. The cron entry
+look like this:
+
+    0,15,30,45 * * * *      /usr/local/bin/digitemp -a -l/var/log/temperature
+
+
+  Timing
+  ------
+
+    There are two timing values that you can adjust and store to the
+.digitemprc file. They are the Failure timeout and the Read timeout. The
+Failure timeout is the amount of time to wait for a response from DigiTemp
+before failing the operation. The default is 5 seconds. The Fail timeout can
+be set by issuing the following command:
+
+    digitemp -f5     Set the Fail timeout to 5 seconds
+    digitemp -i -f5  Set the Fail timeout to 5 seconds and store to .digitemprc
+
+    The Read timeout is the amount of time for DigiTemp to pause after
+issuing a temperature conversion command before it reads the temperature
+(it takes the DS1820 a few microseconds to do the conversion and make the
+temperature available to DigiTemp). The default value for this is 500mS. The
+Read timeout can be set by issuing the following command:
+
+    digitemp -r500      Set Read timeout to 500mS
+    digitemp -i -r500   Set Read timeout to 500mS and save to .digitemprc
+
+    If you don't specify either of these parameters then they are set to the
+defaults. If Read timeout is set too short the temperature will not be read
+too correctly. The shortest I can set it with my sensors is 300mS before
+they fail.
+
+
+  Web scripts
+  -----------
+
+    I have written four Perl scripts for use with local or remote web
+pages:
+
+  web_temp	This can be used as a CGI binary and will show the last
+		two entries from the /var/log/temperature file
+
+  inc_temp	This can be called from a cron job to create a server side
+		include file that can be included from your webpage.
+
+  rem_temp	This is the script I use to update my webpage at
+                http://www.eskimo.com/~nexus every hour (or whenever the
+		script can get through the busy signals). It creates
+		a shtml file in the /tmp/ directory and then uses Mike
+		Gleason's ncftpput program to upload it to the remote site
+		after dip has made the connection.
+
+		You need to have a connection script working for this script
+		to work correctly. Or if you have diald just comment out
+		the ppp-on and off lines. Please consult the various linux
+		howto FAQs for information on how to construct the connect
+		scripts if you don't already have them set up.
+
+  led_temp	This is the rem_temp script with the addition of the
+		creation of a script for the Java applet LED Sign v2.7
+		My webpage checks for java in the client's browser and then
+		runs the LED sign, if no Java is detected it just displays
+		the text version.
+
+
+    The scripts have been commented so that you can change them easily.
+There are several veriables that need to be setup for your system before
+they will run. Also, be aware that the ncftpput program is run with the
+username and password on the command line, and that it will show up to
+anyone running ps -ax while it is executing. This is not a problem for me
+since I run it on my private system.
+
+  The sourcecode for the Linux, DOS, and Windows 95 versions is availabe for
+$19.95 (for all the source, not just one platform). Send a check and your
+email address to:
+
+  Nexus Computing
+  P.O. Box 2643
+  Gig Harbor, Wa 98335-2643
+
+  I will email a zipfile of the source to you as soon as I receive a check.
+
+  If you have any comments, questions, or scripts that you would like to
+donate, drop me an email, and I'll set up a ftp directory for user
+contributions.
+
+    Brian Lane, Owner
+    Nexus Computing
+    nexus@eskimo.com
+
+ 

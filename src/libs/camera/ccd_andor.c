@@ -477,7 +477,7 @@ int andor_readPix(char *mem, int nbytes, int block, char *errmsg)
 		andor_debug("WaitForAcquisition finished\n");
 	}
 
-	ret = GetAcquiredData16((at_u16*) mem,
+	ret = GetAcquiredData16((unsigned short*) mem,
 			andor_camera.width * andor_camera.height);
 	if (ret == DRV_ACQUIRING)
 	{
