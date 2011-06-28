@@ -1,0 +1,13 @@
+#!/bin/bash
+
+snmpget -v 1 -c public 192.168.0.111 .1.3.6.1.4.1.318.1.1.12.3.3.1.1.4.1 | gawk '{print "Nominal computer is "($4==1?"\033[32mON\033[0m":"\033[31mOFF\033[0m")}'
+snmpget -v 1 -c public 192.168.0.111 .1.3.6.1.4.1.318.1.1.12.3.3.1.1.4.2 | gawk '{print "Telescope 12v power is "($4==1?"\033[32mON\033[0m":"\033[31mOFF\033[0m")}'
+snmpget -v 1 -c public 192.168.0.111 .1.3.6.1.4.1.318.1.1.12.3.3.1.1.4.3 | gawk '{print "Telescope 80v power is "($4==1?"\033[32mON\033[0m":"\033[31mOFF\033[0m")}'
+snmpget -v 1 -c public 192.168.0.111 .1.3.6.1.4.1.318.1.1.12.3.3.1.1.4.4 | gawk '{print "Webcam power is "($4==1?"\033[32mON\033[0m":"\033[31mOFF\033[0m")}'
+snmpget -v 1 -c public 192.168.0.111 .1.3.6.1.4.1.318.1.1.12.3.3.1.1.4.5 | gawk '{print "Telescope mixed power is "($4==1?"\033[32mON\033[0m":"\033[31mOFF\033[0m")}'
+snmpget -v 1 -c public 192.168.0.111 .1.3.6.1.4.1.318.1.1.12.3.3.1.1.4.6 | gawk '{print "Cover motors is "($4==1?"\033[32mON\033[0m":"\033[31mOFF\033[0m")}'
+
+snmpget -v 1 -c public 192.168.0.112 .1.3.6.1.4.1.318.1.1.12.3.3.1.1.4.1 | gawk '{print "Redundant computer is "($4==1?"\033[32mON\033[0m":"\033[31mOFF\033[0m")}'
+snmpget -v 1 -c public 192.168.0.112 .1.3.6.1.4.1.318.1.1.12.3.3.1.1.4.2 | gawk '{print "Dome controler is "($4==1?"\033[32mON\033[0m":"\033[31mOFF\033[0m")}'
+snmpget -v 1 -c public 192.168.0.112 .1.3.6.1.4.1.318.1.1.12.3.3.1.1.4.3 | gawk '{print "Dome power is "($4==1?"\033[32mON\033[0m":"\033[31mOFF\033[0m")}'
+
