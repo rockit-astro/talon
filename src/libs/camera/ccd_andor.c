@@ -171,30 +171,25 @@ int andor_setExpCCD(CCDExpoParams *expP, char *errmsg)
 	int numChannels;
 	int noGains;
 
-	//Settin Vertical Shift Speeds
-	GetNumberVSSpeeds(&Vspeeds);
-//	SetVSSpeed(1);
+
+//      Insure High Capacity Mode is OFF      
+        ret = SetHighCapacity(0);
+        if (ret != DRV_SUCCESS)
+        {
+               sprintf(errmsg, "Error (%d) setting SetHighCapacity\n", ret);
+               return -1;
+        }
+        
+        ret =  SetVSSpeed(0);
+        if (ret != DRV_SUCCESS)
+        {
+               sprintf(errmsg, "Erro (%d) setting SetVSSpeed\n", ret);
+               return -1;
+        }
+
+//	printf("Vspeeds = %d  Hspeeds = %d  numChannels = %d noGains = %d\n", Vspeeds, Hspeeds, numChannels, noGains);
 
 
-//	//Seting Horizontal Shift Speeds
-	GetNumberADChannels(&numChannels);
-//	SetADChannel(1);
-
-	GetNumberHorizontalSpeeds(&Hspeeds);
-//	GetNumberHSSpeeds(1, 1, &Hspeeds);
-//	SetHSSpeed(1, 0);
-
-
-	GetNumberPreAmpGains(&noGains);
-//	SetPreAmpGain(2);
-
-
-
-	printf("Vspeeds = %d Hspeeds = %d numChannels = %d noGains = %d\n", Vspeeds, Hspeeds, numChannels, noGains);
-
-
-//	SetVSSpeed(1);
-//	SetADChannel(1);
 	ret = SetHSSpeed(0, 2);
 	if (ret != DRV_SUCCESS)
 	{
@@ -208,9 +203,6 @@ int andor_setExpCCD(CCDExpoParams *expP, char *errmsg)
 		sprintf(errmsg, "Error (%d) setting SetPreAmpGain\n", ret);
 		return -1;
 	}
-
-
-
 
 
 
