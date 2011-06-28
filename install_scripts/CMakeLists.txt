@@ -1,0 +1,8 @@
+
+install(FILES preinstall preinstall_as_root postinstall postinstall_as_root
+DESTINATION install_scripts
+PERMISSIONS 
+OWNER_READ OWNER_WRITE OWNER_EXECUTE
+GROUP_READ GROUP_EXECUTE
+WORLD_READ WORLD_EXECUTE)
+

@@ -1,0 +1,28 @@
+b
+d dpage
+w dpage 00; D 7000 2
+w dpage 01; D 7000 2
+w dpage 02; D 7000 2
+w dpage 03; D 7000 2
+w dpage 04; D 7000 2
+w dpage 05; D 7000 2
+w dpage 06; D 7000 2
+w dpage 07; D 7000 2
+w dpage 08; D 7000 2
+w dpage 09; D 7000 2
+w dpage 0a; D 7000 2
+w dpage 0b; D 7000 2
+w dpage 0c; D 7000 2
+w dpage 0d; D 7000 2
+w dpage 0e; D 7000 2
+w dpage 0f; D 7000 2
+w dpage 17; D 7000 2
+w dpage 18; D 7000 2
+w dpage 19; D 7000 2
+w dpage 1a; D 7000 2
+w dpage 1b; D 7000 2
+w dpage 1c; D 7000 2
+w dpage 1d; D 7000 2
+w dpage 1e; D 7000 2
+w dpage 1f; D 7000 2
+g

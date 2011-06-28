@@ -1,0 +1,9 @@
+It is required to link "/lib/libc.so.6" to "lib/libc.so.5" and
+"/libld-linux.so.2" to "/lib/ld-linux.so.1" otherwise the ICC
+compiler will not work
+
+Execute as root:
+
+ln -s /lib/libc.so.6 /lib/libc.so.5
+ln -s /lib/ld-linux.so.2 /lib/ld-linux.so.1
+

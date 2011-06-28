@@ -1,0 +1,43 @@
+#!/usr/bin/perl -w
+# read a *.rbf on stdin and produce flex_data.s19 on stdout.
+# 8000..8001 Count
+# 8002..8003 Sum % ffff of next Count bytes
+# 8004..     Count bytes
+
+# base address
+$base = 0x8000;
+
+# first Word is length.
+printf "S105%04x%04x00\n", $base, -s STDIN;
+$base += 2;
+
+# skip sum for now
+$base += 2;
+
+# now write pairs of Bytes as Words at sequential addresses.
+# Words write much faster than Bytes.
+# also keep sum for a final check.
+# N.B. we just add a fake check-sum.
+$sum = 0;
+while (read (STDIN, $byte, 1)) {
+    $v = unpack ("C", $byte);
+    if ($base & 1) {
+	$word = ($word << 8) | $v;
+	printf "S105%04x%04x00\n", $base-1, $word;
+    } else {
+	$word = $v;
+    }
+    $sum += $v;
+    $base++;
+}
+
+# possibly one more
+if ($base & 1) {
+    printf "S104%04x%02x00\n", $base-1, $word;
+}
+
+# go back and write sum
+printf "S105%04x%04x00\n", 0x8002, $sum & 0xffff;
+
+# For RCS Only -- Do Not Edit
+# @(#) $RCSfile: mkflex_prog,v $ $Date: 2001/04/19 21:11:57 $ $Revision: 1.1.1.1 $ $Name:  $

@@ -36,5 +36,10 @@ set(CORE_SDK_DIR ${CORE_SRC_DIR}/sdk)
 set(CORE_LIBS astro fits fs misc wcs)
 set(CORE_DAEMONS csimcd telescoped)
 
+
+set(CORE_CSIMC_DIR ${CORE_INSTALL_DIR}/CSIMC)
+set(CORE_CSIMC_ICC_DIR ${CORE_CSIMC_DIR}/icc)
+
 add_subdirectory (src)
 add_subdirectory (archive)
+add_subdirectory (install_scripts)

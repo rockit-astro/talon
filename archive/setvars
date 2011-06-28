@@ -1,3 +1,7 @@
 export TELHOME=/usr/local/telescope
 export PATH=$TELHOME/bin:$PATH
 export LD_LIBRARY_PATH=$TELHOME/lib:$LD_LIBRARY_PATH
+
+
+
+export PATH=$TELHOME/CSIMC/icc/bin:$PATH

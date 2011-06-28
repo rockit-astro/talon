@@ -1,0 +1,7 @@
+#!/bin/bash
+
+
+make -C ${TELHOME}/xephem/fifos
+
+
+su -c "bash ./postinstall_as_root"

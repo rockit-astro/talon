@@ -1,0 +1,3 @@
+#!/bin/bash
+
+su -c "bash ./preinstall_as_root"
