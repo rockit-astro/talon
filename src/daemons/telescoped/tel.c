@@ -30,6 +30,10 @@
 
 //ICE
 int xtrack_mode;
+static double xstrack; /* when current xtrack started */
+static double xttrack;
+
+static void tel_set_xdelta(double HA, double DEC);
 //ICE
 
 /* handy loop "for each motor" we deal with here */
@@ -143,6 +147,14 @@ void tel_msg(msg)
 		tel_jog(1, jog_dir, VEL_MAX); // Slow/fast jog
 	else if (sscanf(msg, "Offset %lf,%lf", &a, &b) == 2)
 		offsetTracking(1, a, b);
+//ICE
+	else if (sscanf(msg, "xdelta(%lf,%lf)", &a, &b) == 2)
+	{
+		printf("HA = %lf DEC = %lf\n", a, b);
+		fflush(stdout);
+		tel_set_xdelta(a, b);
+	}
+//ICE
 	else
 		tel_stop(1);
 }
@@ -1081,8 +1093,35 @@ static void buildTrack(Now *np, Obj *op)
 }
 
 //ICE
-static double xstrack; /* when current xtrack started */
-static double xttrack;
+static void tel_set_xdelta(double HA, double DEC)
+{
+	long int stepsHA;
+	long int stepsDEC;
+
+	if (HMOT->have && HMOT->xtrack)
+	{
+		double radsHA = HA * (2 * PI) / 360.0;
+		stepsHA = HMOT->esign * HMOT->estep * radsHA / (2* PI);
+		csi_w(MIPCFD(HMOT), "xdel=%d;", stepsHA);
+		printf("HA xdelta %d encoder steps\n", stepsHA);
+	}
+	else printf("HA axis not present or not in xtrack mode\n");
+
+
+	if (DMOT->have && DMOT->xtrack)
+	{
+		double radsDEC = DEC * (2 * PI) / 360.0;
+		stepsDEC = HMOT->esign * DMOT->estep * radsDEC / (2* PI);
+		csi_w(MIPCFD(DMOT), "xdel=%d;", stepsDEC);
+		printf("DEC xdelta %d encoder steps\n", stepsDEC);
+	}
+	else printf("DEC axis not present or not in xtrack mode\n");
+
+	fflush(stdout);
+	return;
+}
+
+
 static int buildXTrack(Now *np, Obj *op)
 {
 	double x, y, r;
