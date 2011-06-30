@@ -146,15 +146,27 @@ axis_home (MotorInfo *mip, FifoId fid, int first)
     }
 }
 
+//ICE
+//#define NO_HOME_CHECK
+//ICE
 /* Check to see if we have homed this axis yet */
 int axisHomedCheck(MotorInfo *mip, char msgbuf[])
 {
+//ICE
+//#warning "@@@@@@@@@@@@@@@@@@@@@@@@@ONLY FOR TEST @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"	tel.c	/saft/daemons/telescoped.csi	line 215	C/C++ Problem
+#ifdef NO_HOME_CHECK
+	return 0;
+#else
+//#warning "@@@@@@@@@@@@@@@@@@@@@@@@@ONLY FOR TEST @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"	tel.c	/saft/daemons/telescoped.csi	line 215	C/C++ Problem
+
     if (mip->ishomed) {
         return 0;
     } else {
         sprintf (msgbuf, "Axis %d must be homed", mip->axis);
         return (-1);
     }
+#endif
+//ICE
 }
 
 /* check if the given axis is about to hit a limit.
