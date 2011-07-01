@@ -16,12 +16,12 @@ CLDFLAGS = -R
 DEBUGF = -A -w
 #DEBUGF = -A -w -l -m
 CFLAGS = $(CLDFLAGS) $(DEBUGF) -I$(ICC_INCLUDE)
-YACC = byacc
+YACC = ../byacc/byacc
 YFLAGS = -d -v -b gram
 LIBS = -lc12
 
 # how to run bdm, the pod interface program for debugging
-BDM12 = PodexICE -t /dev/ttyUSB1
+BDM12 = PodexICE -t /dev/podexice
 
 # boot program linker setup.
 # text must all fit into EEPROM, f000..ffff.

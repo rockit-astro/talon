@@ -9,4 +9,4 @@ csimc_firmware -> Output directory containing both original and ice firmware.
                   For PodexICE downloading use "make".
 PodexICE       -> Modified Podex BDM12 programmer for CSIMC boards firmware downloading.
 icc            -> CSIMC boards toolchain.
-
+byacc-1.9      -> Specific byacc version required for CSIMC firmware building. Downloaded form http://distfiles.gentoo.org/distfiles/byacc-1.9.tar.gz

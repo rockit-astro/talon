@@ -1,0 +1,4729 @@
+Newsgroups: comp.sources.unix
+From: robert.corbett@eng.Sun.COM (Roger Corbett)
+Subject: v26i289: byacc-1.9 - Berkeley YACC, Part01/03
+Sender: unix-sources-moderator@gw.home.vix.com
+Approved: vixie@gw.home.vix.com
+
+Submitted-By: robert.corbett@eng.Sun.COM (Roger Corbett)
+Posting-Number: Volume 26, Issue 289
+Archive-Name: byacc-1.9/part01
+
+[ byacc is "Berkeley YACC", written by the same person who originally did
+  "bison".  byacc is smaller, simpler, and faster than bison; it also
+  generates smaller and faster parsers than bison.  It is the standard
+  "yacc" distributed with BSD/386 and other Net-2 descendents as well as
+  4.4BSD.  Needless to say, it contains no AT&T/USL code.  It is completely
+  compatible with AT&T Yacc's documentation, though it does not neccessarily
+  implement any UNdocumented features of AT&T Yacc.
+
+  I made a small patch, with permission from the author; see CSU.diffs.  
+  This patch is already applied; I included it only for reference.  It fixes
+  a small bit of lint that ANSI/Posix cares about that older systems didn't.
+
+  This is another piece of the 4.4BSD release which is being released here
+  since it isn't covered by the U C Regents license (it wasn't done at or
+  funded through CSRG, but is rather a contribution to BSD from outside UCB).
+  If you must know, I happened to see it while grabbing "db-1.6" from UCB,
+  and Keith Bostic said "sure, go ahead and post them both."
+
+  --vix ]
+  
+#! /bin/sh
+# This is a shell archive.  Remove anything before this line, then unpack
+# it by saving it into a file and typing "sh file".  To overwrite existing
+# files, type "sh file -c".  You can also feed this as standard input via
+# unshar, or by typing "sh <file", e.g..  If this archive is complete, you
+# will see the following message at the end:
+#		"End of archive 1 (of 3)."
+# Contents:  ACKNOWLEDGEMENTS CSU.diffs MANIFEST Makefile NEW_FEATURES
+#   NOTES NO_WARRANTY README closure.c defs.h error.c lalr.c lr0.c
+#   main.c mkpar.c skeleton.c symtab.c test test/error.output
+#   test/error.tab.c test/error.tab.h test/error.y test/ftp.tab.h
+#   verbose.c warshall.c yacc.1
+# Wrapped by vixie@gw.home.vix.com on Mon Jul  5 19:23:02 1993
+PATH=/bin:/usr/bin:/usr/ucb ; export PATH
+if test -f 'ACKNOWLEDGEMENTS' -a "${1}" != "-c" ; then 
+  echo shar: Will not clobber existing file \"'ACKNOWLEDGEMENTS'\"
+else
+echo shar: Extracting \"'ACKNOWLEDGEMENTS'\" \(771 characters\)
+sed "s/^X//" >'ACKNOWLEDGEMENTS' <<'END_OF_FILE'
+X     Berkeley Yacc owes much to the unflagging efforts of Keith Bostic.
+XHis badgering kept me working on it long after I was ready to quit.
+X
+X     Berkeley Yacc is based on the excellent algorithm for computing LALR(1)
+Xlookaheads developed by Tom Pennello and Frank DeRemer.  The algorithm is
+Xdescribed in their almost impenetrable article in TOPLAS 4,4.
+X
+X     Finally, much of the credit for the latest version must go to those
+Xwho pointed out deficiencies of my earlier releases.  Among the most
+Xprolific contributors were
+X
+X	  Benson I. Margulies
+X	  Dave Gentzel
+X	  Antoine Verheijen
+X	  Peter S. Housel
+X	  Dale Smith
+X	  Ozan Yigit
+X	  John Campbell
+X	  Bill Sommerfeld
+X	  Paul Hilfinger
+X	  Gary Bridgewater
+X	  Dave Bakken
+X	  Dan Lanciani
+X	  Richard Sargent
+X	  Parag Patel
+END_OF_FILE
+if test 771 -ne `wc -c <'ACKNOWLEDGEMENTS'`; then
+    echo shar: \"'ACKNOWLEDGEMENTS'\" unpacked with wrong size!
+fi
+# end of 'ACKNOWLEDGEMENTS'
+fi
+if test -f 'CSU.diffs' -a "${1}" != "-c" ; then 
+  echo shar: Will not clobber existing file \"'CSU.diffs'\"
+else
+echo shar: Extracting \"'CSU.diffs'\" \(224 characters\)
+sed "s/^X//" >'CSU.diffs' <<'END_OF_FILE'
+X*** main.c.orig	Mon Jul  5 18:47:51 1993
+X--- main.c	Mon Jul  5 19:18:46 1993
+X***************
+X*** 72,76 ****
+X  
+X  
+X! onintr()
+X  {
+X      done(1);
+X--- 72,78 ----
+X  
+X  
+X! void
+X! onintr(signo)
+X!     int signo;
+X  {
+X      done(1);
+END_OF_FILE
+if test 224 -ne `wc -c <'CSU.diffs'`; then
+    echo shar: \"'CSU.diffs'\" unpacked with wrong size!
+fi
+# end of 'CSU.diffs'
+fi
+if test -f 'MANIFEST' -a "${1}" != "-c" ; then 
+  echo shar: Will not clobber existing file \"'MANIFEST'\"
+else
+echo shar: Extracting \"'MANIFEST'\" \(1075 characters\)
+sed "s/^X//" >'MANIFEST' <<'END_OF_FILE'
+X   File Name		Archive #	Description
+X-----------------------------------------------------------
+X ACKNOWLEDGEMENTS           1	
+X CSU.diffs                  1	
+X MANIFEST                   1	This shipping list
+X Makefile                   1	
+X NEW_FEATURES               1	
+X NOTES                      1	
+X NO_WARRANTY                1	
+X README                     1	
+X closure.c                  1	
+X defs.h                     1	
+X error.c                    1	
+X lalr.c                     1	
+X lr0.c                      1	
+X main.c                     1	
+X mkpar.c                    1	
+X output.c                   2	
+X reader.c                   3	
+X skeleton.c                 1	
+X symtab.c                   1	
+X test                       1	
+X test/error.output          1	
+X test/error.tab.c           1	
+X test/error.tab.h           1	
+X test/error.y               1	
+X test/ftp.output            2	
+X test/ftp.tab.c             3	
+X test/ftp.tab.h             1	
+X test/ftp.y                 2	
+X verbose.c                  1	
+X warshall.c                 1	
+X yacc.1                     1	
+END_OF_FILE
+if test 1075 -ne `wc -c <'MANIFEST'`; then
+    echo shar: \"'MANIFEST'\" unpacked with wrong size!
+fi
+# end of 'MANIFEST'
+fi
+if test -f 'Makefile' -a "${1}" != "-c" ; then 
+  echo shar: Will not clobber existing file \"'Makefile'\"
+else
+echo shar: Extracting \"'Makefile'\" \(1294 characters\)
+sed "s/^X//" >'Makefile' <<'END_OF_FILE'
+XDEST	      = .
+X
+XHDRS	      = defs.h
+X
+XCFLAGS	      = -O -DNDEBUG
+X
+XLDFLAGS	      =
+X
+XLIBS	      =
+X
+XLINKER	      = cc
+X
+XMAKEFILE      = Makefile
+X
+XOBJS	      = closure.o \
+X		error.o \
+X		lalr.o \
+X		lr0.o \
+X		main.o \
+X		mkpar.o \
+X		output.o \
+X		reader.o \
+X		skeleton.o \
+X		symtab.o \
+X		verbose.o \
+X		warshall.o
+X
+XPRINT	      = pr -f -l88
+X
+XPROGRAM	      = yacc
+X
+XSRCS	      = closure.c \
+X		error.c \
+X		lalr.c \
+X		lr0.c \
+X		main.c \
+X		mkpar.c \
+X		output.c \
+X		reader.c \
+X		skeleton.c \
+X		symtab.c \
+X		verbose.c \
+X		warshall.c
+X
+Xall:		$(PROGRAM)
+X
+X$(PROGRAM):     $(OBJS) $(LIBS)
+X		@echo -n "Loading $(PROGRAM) ... "
+X		@$(LINKER) $(LDFLAGS) -o $(PROGRAM) $(OBJS) $(LIBS)
+X		@echo "done"
+X
+Xclean:;		@rm -f $(OBJS)
+X
+Xclobber:;	@rm -f $(OBJS) $(PROGRAM)
+X
+Xdepend:;	@mkmf -f $(MAKEFILE) PROGRAM=$(PROGRAM) DEST=$(DEST)
+X
+Xindex:;		@ctags -wx $(HDRS) $(SRCS)
+X
+Xinstall:	$(PROGRAM)
+X		@echo Installing $(PROGRAM) in $(DEST)
+X		@install -s $(PROGRAM) $(DEST)
+X
+Xlisting:;	@$(PRINT) Makefile $(HDRS) $(SRCS) | lpr
+X
+Xlint:;		@lint $(SRCS)
+X
+Xprogram:        $(PROGRAM)
+X
+Xtags:           $(HDRS) $(SRCS); @ctags $(HDRS) $(SRCS)
+X
+X###
+Xclosure.o: defs.h
+Xerror.o: defs.h
+Xlalr.o: defs.h
+Xlr0.o: defs.h
+Xmain.o: defs.h
+Xmkpar.o: defs.h
+Xoutput.o: defs.h
+Xreader.o: defs.h
+Xskeleton.o: defs.h
+Xsymtab.o: defs.h
+Xverbose.o: defs.h
+Xwarshall.o: defs.h
+END_OF_FILE
+if test 1294 -ne `wc -c <'Makefile'`; then
+    echo shar: \"'Makefile'\" unpacked with wrong size!
+fi
+# end of 'Makefile'
+fi
+if test -f 'NEW_FEATURES' -a "${1}" != "-c" ; then 
+  echo shar: Will not clobber existing file \"'NEW_FEATURES'\"
+else
+echo shar: Extracting \"'NEW_FEATURES'\" \(2050 characters\)
+sed "s/^X//" >'NEW_FEATURES' <<'END_OF_FILE'
+X     The -r option has been implemented.  The -r option tells Yacc to
+Xput the read-only tables in y.tab.c and the code and variables in
+Xy.code.c.  Keith Bostic asked for this option so that :yyfix could be
+Xeliminated.
+X
+X     The -l and -t options have been implemented.  The -l option tells
+XYacc not to include #line directives in the code it produces.  The -t
+Xoption causes debugging code to be included in the compiled parser.
+X
+X     The code for error recovery has been changed to implement the same
+Xalgorithm as AT&T Yacc.  There will still be differences in the way
+Xerror recovery works because AT&T Yacc uses more default reductions
+Xthan Berkeley Yacc.
+X
+X     The environment variable TMPDIR determines the directory where
+Xtemporary files will be created.  If TMPDIR is defined, temporary files
+Xwill be created in the directory whose pathname is the value of TMPDIR.
+XBy default, temporary files are created in /tmp.
+X
+X     The keywords are now case-insensitive.  For example, %nonassoc,
+X%NONASSOC, %NonAssoc, and %nOnAsSoC are all equivalent.
+X
+X     Commas and semicolons that are not part of C code are treated as
+Xcommentary.
+X
+X     Line-end comments, as in BCPL, are permitted.  Line-end comments
+Xbegin with // and end at the next end-of-line.  Line-end comments are
+Xpermitted in C code; they are converted to C comments on output.
+X
+X     The form of y.output files has been changed to look more like
+Xthose produced by AT&T Yacc.
+X
+X     A new kind of declaration has been added.  The form of the declaration
+Xis
+X
+X	  %ident string
+X
+Xwhere string is a sequence of characters begining with a double quote
+Xand ending with either a double quote or the next end-of-line, whichever
+Xcomes first.  The declaration will cause a #ident directive to be written
+Xnear the start of the output file.
+X
+X     If a parser has been compiled with debugging code, that code can be
+Xenabled by setting an environment variable.  If the environment variable
+XYYDEBUG is set to 0, debugging output is suppressed.  If it is set to 1,
+Xdebugging output is written to standard output.
+END_OF_FILE
+if test 2050 -ne `wc -c <'NEW_FEATURES'`; then
+    echo shar: \"'NEW_FEATURES'\" unpacked with wrong size!
+fi
+# end of 'NEW_FEATURES'
+fi
+if test -f 'NOTES' -a "${1}" != "-c" ; then 
+  echo shar: Will not clobber existing file \"'NOTES'\"
+else
+echo shar: Extracting \"'NOTES'\" \(504 characters\)
+sed "s/^X//" >'NOTES' <<'END_OF_FILE'
+XBerkeley Yacc reflects its origins.  The reason so many routines
+Xuse exactly six register variables is that Berkeley Yacc was
+Xdeveloped on a VAX using PCC.  PCC placed at most six variables
+Xin registers.  I went to considerable effort to find which six
+Xvariables most belonged in registers.  Changes in machines and
+Xcompilers make that effort worthless, perhaps even harmful.
+X
+XThe code contains many instances where address calculations are
+Xperformed in particular ways to optimize the code for the VAX.
+END_OF_FILE
+if test 504 -ne `wc -c <'NOTES'`; then
+    echo shar: \"'NOTES'\" unpacked with wrong size!
+fi
+# end of 'NOTES'
+fi
+if test -f 'NO_WARRANTY' -a "${1}" != "-c" ; then 
+  echo shar: Will not clobber existing file \"'NO_WARRANTY'\"
+else
+echo shar: Extracting \"'NO_WARRANTY'\" \(156 characters\)
+sed "s/^X//" >'NO_WARRANTY' <<'END_OF_FILE'
+X     Berkeley Yacc is distributed with no warranty whatever.  The author
+Xand any other contributors take no responsibility for the consequences of
+Xits use.
+END_OF_FILE
+if test 156 -ne `wc -c <'NO_WARRANTY'`; then
+    echo shar: \"'NO_WARRANTY'\" unpacked with wrong size!
+fi
+# end of 'NO_WARRANTY'
+fi
+if test -f 'README' -a "${1}" != "-c" ; then 
+  echo shar: Will not clobber existing file \"'README'\"
+else
+echo shar: Extracting \"'README'\" \(1152 characters\)
+sed "s/^X//" >'README' <<'END_OF_FILE'
+X    Berkeley Yacc is an LALR(1) parser generator.  Berkeley Yacc has been made
+Xas compatible as possible with AT&T Yacc.  Berkeley Yacc can accept any input
+Xspecification that conforms to the AT&T Yacc documentation.  Specifications
+Xthat take advantage of undocumented features of AT&T Yacc will probably be
+Xrejected.
+X
+X    Berkeley Yacc is distributed with no warranty whatever.  The code is certain
+Xto contain errors.  Neither the author nor any contributor takes responsibility
+Xfor any consequences of its use.
+X
+X    Berkeley Yacc is in the public domain.  The data structures and algorithms
+Xused in Berkeley Yacc are all either taken from documents available to the
+Xgeneral public or are inventions of the author.  Anyone may freely distribute
+Xsource or binary forms of Berkeley Yacc whether unchanged or modified.
+XDistributers may charge whatever fees they can obtain for Berkeley Yacc.
+XPrograms generated by Berkeley Yacc may be distributed freely.
+X
+X    Please report bugs to
+X
+X			robert.corbett@eng.Sun.COM
+X
+XInclude a small example if possible.  Please include the banner string from
+Xskeleton.c with the bug report.  Do not expect rapid responses.
+END_OF_FILE
+if test 1152 -ne `wc -c <'README'`; then
+    echo shar: \"'README'\" unpacked with wrong size!
+fi
+# end of 'README'
+fi
+if test -f 'closure.c' -a "${1}" != "-c" ; then 
+  echo shar: Will not clobber existing file \"'closure.c'\"
+else
+echo shar: Extracting \"'closure.c'\" \(4275 characters\)
+sed "s/^X//" >'closure.c' <<'END_OF_FILE'
+X#include "defs.h"
+X
+Xshort *itemset;
+Xshort *itemsetend;
+Xunsigned *ruleset;
+X
+Xstatic unsigned *first_derives;
+Xstatic unsigned *EFF;
+X
+X
+Xset_EFF()
+X{
+X    register unsigned *row;
+X    register int symbol;
+X    register short *sp;
+X    register int rowsize;
+X    register int i;
+X    register int rule;
+X
+X    rowsize = WORDSIZE(nvars);
+X    EFF = NEW2(nvars * rowsize, unsigned);
+X
+X    row = EFF;
+X    for (i = start_symbol; i < nsyms; i++)
+X    {
+X	sp = derives[i];
+X	for (rule = *sp; rule > 0; rule = *++sp)
+X	{
+X	    symbol = ritem[rrhs[rule]];
+X	    if (ISVAR(symbol))
+X	    {
+X		symbol -= start_symbol;
+X		SETBIT(row, symbol);
+X	    }
+X	}
+X	row += rowsize;
+X    }
+X
+X    reflexive_transitive_closure(EFF, nvars);
+X
+X#ifdef	DEBUG
+X    print_EFF();
+X#endif
+X}
+X
+X
+Xset_first_derives()
+X{
+X    register unsigned *rrow;
+X    register unsigned *vrow;
+X    register int j;
+X    register unsigned k;
+X    register unsigned cword;
+X    register short *rp;
+X
+X    int rule;
+X    int i;
+X    int rulesetsize;
+X    int varsetsize;
+X
+X    rulesetsize = WORDSIZE(nrules);
+X    varsetsize = WORDSIZE(nvars);
+X    first_derives = NEW2(nvars * rulesetsize, unsigned) - ntokens * rulesetsize;
+X
+X    set_EFF();
+X
+X    rrow = first_derives + ntokens * rulesetsize;
+X    for (i = start_symbol; i < nsyms; i++)
+X    {
+X	vrow = EFF + ((i - ntokens) * varsetsize);
+X	k = BITS_PER_WORD;
+X	for (j = start_symbol; j < nsyms; k++, j++)
+X	{
+X	    if (k >= BITS_PER_WORD)
+X	    {
+X		cword = *vrow++;
+X		k = 0;
+X	    }
+X
+X	    if (cword & (1 << k))
+X	    {
+X		rp = derives[j];
+X		while ((rule = *rp++) >= 0)
+X		{
+X		    SETBIT(rrow, rule);
+X		}
+X	    }
+X	}
+X
+X	vrow += varsetsize;
+X	rrow += rulesetsize;
+X    }
+X
+X#ifdef	DEBUG
+X    print_first_derives();
+X#endif
+X
+X    FREE(EFF);
+X}
+X
+X
+Xclosure(nucleus, n)
+Xshort *nucleus;
+Xint n;
+X{
+X    register int ruleno;
+X    register unsigned word;
+X    register unsigned i;
+X    register short *csp;
+X    register unsigned *dsp;
+X    register unsigned *rsp;
+X    register int rulesetsize;
+X
+X    short *csend;
+X    unsigned *rsend;
+X    int symbol;
+X    int itemno;
+X
+X    rulesetsize = WORDSIZE(nrules);
+X    rsp = ruleset;
+X    rsend = ruleset + rulesetsize;
+X    for (rsp = ruleset; rsp < rsend; rsp++)
+X	*rsp = 0;
+X
+X    csend = nucleus + n;
+X    for (csp = nucleus; csp < csend; ++csp)
+X    {
+X	symbol = ritem[*csp];
+X	if (ISVAR(symbol))
+X	{
+X	    dsp = first_derives + symbol * rulesetsize;
+X	    rsp = ruleset;
+X	    while (rsp < rsend)
+X		*rsp++ |= *dsp++;
+X	}
+X    }
+X
+X    ruleno = 0;
+X    itemsetend = itemset;
+X    csp = nucleus;
+X    for (rsp = ruleset; rsp < rsend; ++rsp)
+X    {
+X	word = *rsp;
+X	if (word)
+X	{
+X	    for (i = 0; i < BITS_PER_WORD; ++i)
+X	    {
+X		if (word & (1 << i))
+X		{
+X		    itemno = rrhs[ruleno+i];
+X		    while (csp < csend && *csp < itemno)
+X			*itemsetend++ = *csp++;
+X		    *itemsetend++ = itemno;
+X		    while (csp < csend && *csp == itemno)
+X			++csp;
+X		}
+X	    }
+X	}
+X	ruleno += BITS_PER_WORD;
+X    }
+X
+X    while (csp < csend)
+X	*itemsetend++ = *csp++;
+X
+X#ifdef	DEBUG
+X  print_closure(n);
+X#endif
+X}
+X
+X
+X
+Xfinalize_closure()
+X{
+X  FREE(itemset);
+X  FREE(ruleset);
+X  FREE(first_derives + ntokens * WORDSIZE(nrules));
+X}
+X
+X
+X#ifdef	DEBUG
+X
+Xprint_closure(n)
+Xint n;
+X{
+X  register short *isp;
+X
+X  printf("\n\nn = %d\n\n", n);
+X  for (isp = itemset; isp < itemsetend; isp++)
+X    printf("   %d\n", *isp);
+X}
+X
+X
+Xprint_EFF()
+X{
+X    register int i, j;
+X    register unsigned *rowp;
+X    register unsigned word;
+X    register unsigned k;
+X
+X    printf("\n\nEpsilon Free Firsts\n");
+X
+X    for (i = start_symbol; i < nsyms; i++)
+X    {
+X	printf("\n%s", symbol_name[i]);
+X	rowp = EFF + ((i - start_symbol) * WORDSIZE(nvars));
+X	word = *rowp++;
+X
+X	k = BITS_PER_WORD;
+X	for (j = 0; j < nvars; k++, j++)
+X	{
+X	    if (k >= BITS_PER_WORD)
+X	    {
+X		word = *rowp++;
+X		k = 0;
+X	    }
+X
+X	    if (word & (1 << k))
+X		printf("  %s", symbol_name[start_symbol + j]);
+X	}
+X    }
+X}
+X
+X
+Xprint_first_derives()
+X{
+X    register int i;
+X    register int j;
+X    register unsigned *rp;
+X    register unsigned cword;
+X    register unsigned k;
+X
+X    printf("\n\n\nFirst Derives\n");
+X
+X    for (i = start_symbol; i < nsyms; i++)
+X    {
+X	printf("\n%s derives\n", symbol_name[i]);
+X	rp = first_derives + i * WORDSIZE(nrules);
+X	k = BITS_PER_WORD;
+X	for (j = 0; j <= nrules; k++, j++)
+X        {
+X	  if (k >= BITS_PER_WORD)
+X	  {
+X	      cword = *rp++;
+X	      k = 0;
+X	  }
+X
+X	  if (cword & (1 << k))
+X	    printf("   %d\n", j);
+X	}
+X    }
+X
+X  fflush(stdout);
+X}
+X
+X#endif
+END_OF_FILE
+if test 4275 -ne `wc -c <'closure.c'`; then
+    echo shar: \"'closure.c'\" unpacked with wrong size!
+fi
+# end of 'closure.c'
+fi
+if test -f 'defs.h' -a "${1}" != "-c" ; then 
+  echo shar: Will not clobber existing file \"'defs.h'\"
+else
+echo shar: Extracting \"'defs.h'\" \(5937 characters\)
+sed "s/^X//" >'defs.h' <<'END_OF_FILE'
+X#include <assert.h>
+X#include <ctype.h>
+X#include <stdio.h>
+X
+X
+X/*  machine-dependent definitions			*/
+X/*  the following definitions are for the Tahoe		*/
+X/*  they might have to be changed for other machines	*/
+X
+X/*  MAXCHAR is the largest unsigned character value	*/
+X/*  MAXSHORT is the largest value of a C short		*/
+X/*  MINSHORT is the most negative value of a C short	*/
+X/*  MAXTABLE is the maximum table size			*/
+X/*  BITS_PER_WORD is the number of bits in a C unsigned	*/
+X/*  WORDSIZE computes the number of words needed to	*/
+X/*	store n bits					*/
+X/*  BIT returns the value of the n-th bit starting	*/
+X/*	from r (0-indexed)				*/
+X/*  SETBIT sets the n-th bit starting from r		*/
+X
+X#define	MAXCHAR		255
+X#define	MAXSHORT	32767
+X#define MINSHORT	-32768
+X#define MAXTABLE	32500
+X#define BITS_PER_WORD	32
+X#define	WORDSIZE(n)	(((n)+(BITS_PER_WORD-1))/BITS_PER_WORD)
+X#define	BIT(r, n)	((((r)[(n)>>5])>>((n)&31))&1)
+X#define	SETBIT(r, n)	((r)[(n)>>5]|=((unsigned)1<<((n)&31)))
+X
+X
+X/*  character names  */
+X
+X#define	NUL		'\0'    /*  the null character  */
+X#define	NEWLINE		'\n'    /*  line feed  */
+X#define	SP		' '     /*  space  */
+X#define	BS		'\b'    /*  backspace  */
+X#define	HT		'\t'    /*  horizontal tab  */
+X#define	VT		'\013'  /*  vertical tab  */
+X#define	CR		'\r'    /*  carriage return  */
+X#define	FF		'\f'    /*  form feed  */
+X#define	QUOTE		'\''    /*  single quote  */
+X#define	DOUBLE_QUOTE	'\"'    /*  double quote  */
+X#define	BACKSLASH	'\\'    /*  backslash  */
+X
+X
+X/* defines for constructing filenames */
+X
+X#define CODE_SUFFIX	".code.c"
+X#define	DEFINES_SUFFIX	".tab.h"
+X#define	OUTPUT_SUFFIX	".tab.c"
+X#define	VERBOSE_SUFFIX	".output"
+X
+X
+X/* keyword codes */
+X
+X#define TOKEN 0
+X#define LEFT 1
+X#define RIGHT 2
+X#define NONASSOC 3
+X#define MARK 4
+X#define TEXT 5
+X#define TYPE 6
+X#define START 7
+X#define UNION 8
+X#define IDENT 9
+X
+X
+X/*  symbol classes  */
+X
+X#define UNKNOWN 0
+X#define TERM 1
+X#define NONTERM 2
+X
+X
+X/*  the undefined value  */
+X
+X#define UNDEFINED (-1)
+X
+X
+X/*  action codes  */
+X
+X#define SHIFT 1
+X#define REDUCE 2
+X
+X
+X/*  character macros  */
+X
+X#define IS_IDENT(c)	(isalnum(c) || (c) == '_' || (c) == '.' || (c) == '$')
+X#define	IS_OCTAL(c)	((c) >= '0' && (c) <= '7')
+X#define	NUMERIC_VALUE(c)	((c) - '0')
+X
+X
+X/*  symbol macros  */
+X
+X#define ISTOKEN(s)	((s) < start_symbol)
+X#define ISVAR(s)	((s) >= start_symbol)
+X
+X
+X/*  storage allocation macros  */
+X
+X#define CALLOC(k,n)	(calloc((unsigned)(k),(unsigned)(n)))
+X#define	FREE(x)		(free((char*)(x)))
+X#define MALLOC(n)	(malloc((unsigned)(n)))
+X#define	NEW(t)		((t*)allocate(sizeof(t)))
+X#define	NEW2(n,t)	((t*)allocate((unsigned)((n)*sizeof(t))))
+X#define REALLOC(p,n)	(realloc((char*)(p),(unsigned)(n)))
+X
+X
+X/*  the structure of a symbol table entry  */
+X
+Xtypedef struct bucket bucket;
+Xstruct bucket
+X{
+X    struct bucket *link;
+X    struct bucket *next;
+X    char *name;
+X    char *tag;
+X    short value;
+X    short index;
+X    short prec;
+X    char class;
+X    char assoc;
+X};
+X
+X
+X/*  the structure of the LR(0) state machine  */
+X
+Xtypedef struct core core;
+Xstruct core
+X{
+X    struct core *next;
+X    struct core *link;
+X    short number;
+X    short accessing_symbol;
+X    short nitems;
+X    short items[1];
+X};
+X
+X
+X/*  the structure used to record shifts  */
+X
+Xtypedef struct shifts shifts;
+Xstruct shifts
+X{
+X    struct shifts *next;
+X    short number;
+X    short nshifts;
+X    short shift[1];
+X};
+X
+X
+X/*  the structure used to store reductions  */
+X
+Xtypedef struct reductions reductions;
+Xstruct reductions
+X{
+X    struct reductions *next;
+X    short number;
+X    short nreds;
+X    short rules[1];
+X};
+X
+X
+X/*  the structure used to represent parser actions  */
+X
+Xtypedef struct action action;
+Xstruct action
+X{
+X    struct action *next;
+X    short symbol;
+X    short number;
+X    short prec;
+X    char action_code;
+X    char assoc;
+X    char suppressed;
+X};
+X
+X
+X/* global variables */
+X
+Xextern char dflag;
+Xextern char lflag;
+Xextern char rflag;
+Xextern char tflag;
+Xextern char vflag;
+Xextern char *symbol_prefix;
+X
+Xextern char *myname;
+Xextern char *cptr;
+Xextern char *line;
+Xextern int lineno;
+Xextern int outline;
+X
+Xextern char *banner[];
+Xextern char *tables[];
+Xextern char *header[];
+Xextern char *body[];
+Xextern char *trailer[];
+X
+Xextern char *action_file_name;
+Xextern char *code_file_name;
+Xextern char *defines_file_name;
+Xextern char *input_file_name;
+Xextern char *output_file_name;
+Xextern char *text_file_name;
+Xextern char *union_file_name;
+Xextern char *verbose_file_name;
+X
+Xextern FILE *action_file;
+Xextern FILE *code_file;
+Xextern FILE *defines_file;
+Xextern FILE *input_file;
+Xextern FILE *output_file;
+Xextern FILE *text_file;
+Xextern FILE *union_file;
+Xextern FILE *verbose_file;
+X
+Xextern int nitems;
+Xextern int nrules;
+Xextern int nsyms;
+Xextern int ntokens;
+Xextern int nvars;
+Xextern int ntags;
+X
+Xextern char unionized;
+Xextern char line_format[];
+X
+Xextern int   start_symbol;
+Xextern char  **symbol_name;
+Xextern short *symbol_value;
+Xextern short *symbol_prec;
+Xextern char  *symbol_assoc;
+X
+Xextern short *ritem;
+Xextern short *rlhs;
+Xextern short *rrhs;
+Xextern short *rprec;
+Xextern char  *rassoc;
+X
+Xextern short **derives;
+Xextern char *nullable;
+X
+Xextern bucket *first_symbol;
+Xextern bucket *last_symbol;
+X
+Xextern int nstates;
+Xextern core *first_state;
+Xextern shifts *first_shift;
+Xextern reductions *first_reduction;
+Xextern short *accessing_symbol;
+Xextern core **state_table;
+Xextern shifts **shift_table;
+Xextern reductions **reduction_table;
+Xextern unsigned *LA;
+Xextern short *LAruleno;
+Xextern short *lookaheads;
+Xextern short *goto_map;
+Xextern short *from_state;
+Xextern short *to_state;
+X
+Xextern action **parser;
+Xextern int SRtotal;
+Xextern int RRtotal;
+Xextern short *SRconflicts;
+Xextern short *RRconflicts;
+Xextern short *defred;
+Xextern short *rules_used;
+Xextern short nunused;
+Xextern short final_state;
+X
+X/* global functions */
+X
+Xextern char *allocate();
+Xextern bucket *lookup();
+Xextern bucket *make_bucket();
+X
+X
+X/* system variables */
+X
+Xextern int errno;
+X
+X
+X/* system functions */
+X
+Xextern void free();
+Xextern char *calloc();
+Xextern char *malloc();
+Xextern char *realloc();
+Xextern char *strcpy();
+END_OF_FILE
+if test 5937 -ne `wc -c <'defs.h'`; then
+    echo shar: \"'defs.h'\" unpacked with wrong size!
+fi
+# end of 'defs.h'
+fi
+if test -f 'error.c' -a "${1}" != "-c" ; then 
+  echo shar: Will not clobber existing file \"'error.c'\"
+else
+echo shar: Extracting \"'error.c'\" \(6051 characters\)
+sed "s/^X//" >'error.c' <<'END_OF_FILE'
+X/* routines for printing error messages  */
+X
+X#include "defs.h"
+X
+X
+Xfatal(msg)
+Xchar *msg;
+X{
+X    fprintf(stderr, "%s: f - %s\n", myname, msg);
+X    done(2);
+X}
+X
+X
+Xno_space()
+X{
+X    fprintf(stderr, "%s: f - out of space\n", myname);
+X    done(2);
+X}
+X
+X
+Xopen_error(filename)
+Xchar *filename;
+X{
+X    fprintf(stderr, "%s: f - cannot open \"%s\"\n", myname, filename);
+X    done(2);
+X}
+X
+X
+Xunexpected_EOF()
+X{
+X    fprintf(stderr, "%s: e - line %d of \"%s\", unexpected end-of-file\n",
+X	    myname, lineno, input_file_name);
+X    done(1);
+X}
+X
+X
+Xprint_pos(st_line, st_cptr)
+Xchar *st_line;
+Xchar *st_cptr;
+X{
+X    register char *s;
+X
+X    if (st_line == 0) return;
+X    for (s = st_line; *s != '\n'; ++s)
+X    {
+X	if (isprint(*s) || *s == '\t')
+X	    putc(*s, stderr);
+X	else
+X	    putc('?', stderr);
+X    }
+X    putc('\n', stderr);
+X    for (s = st_line; s < st_cptr; ++s)
+X    {
+X	if (*s == '\t')
+X	    putc('\t', stderr);
+X	else
+X	    putc(' ', stderr);
+X    }
+X    putc('^', stderr);
+X    putc('\n', stderr);
+X}
+X
+X
+Xsyntax_error(st_lineno, st_line, st_cptr)
+Xint st_lineno;
+Xchar *st_line;
+Xchar *st_cptr;
+X{
+X    fprintf(stderr, "%s: e - line %d of \"%s\", syntax error\n",
+X	    myname, st_lineno, input_file_name);
+X    print_pos(st_line, st_cptr);
+X    done(1);
+X}
+X
+X
+Xunterminated_comment(c_lineno, c_line, c_cptr)
+Xint c_lineno;
+Xchar *c_line;
+Xchar *c_cptr;
+X{
+X    fprintf(stderr, "%s: e - line %d of \"%s\", unmatched /*\n",
+X	    myname, c_lineno, input_file_name);
+X    print_pos(c_line, c_cptr);
+X    done(1);
+X}
+X
+X
+Xunterminated_string(s_lineno, s_line, s_cptr)
+Xint s_lineno;
+Xchar *s_line;
+Xchar *s_cptr;
+X{
+X    fprintf(stderr, "%s: e - line %d of \"%s\", unterminated string\n",
+X	    myname, s_lineno, input_file_name);
+X    print_pos(s_line, s_cptr);
+X    done(1);
+X}
+X
+X
+Xunterminated_text(t_lineno, t_line, t_cptr)
+Xint t_lineno;
+Xchar *t_line;
+Xchar *t_cptr;
+X{
+X    fprintf(stderr, "%s: e - line %d of \"%s\", unmatched %%{\n",
+X	    myname, t_lineno, input_file_name);
+X    print_pos(t_line, t_cptr);
+X    done(1);
+X}
+X
+X
+Xunterminated_union(u_lineno, u_line, u_cptr)
+Xint u_lineno;
+Xchar *u_line;
+Xchar *u_cptr;
+X{
+X    fprintf(stderr, "%s: e - line %d of \"%s\", unterminated %%union \
+Xdeclaration\n", myname, u_lineno, input_file_name);
+X    print_pos(u_line, u_cptr);
+X    done(1);
+X}
+X
+X
+Xover_unionized(u_cptr)
+Xchar *u_cptr;
+X{
+X    fprintf(stderr, "%s: e - line %d of \"%s\", too many %%union \
+Xdeclarations\n", myname, lineno, input_file_name);
+X    print_pos(line, u_cptr);
+X    done(1);
+X}
+X
+X
+Xillegal_tag(t_lineno, t_line, t_cptr)
+Xint t_lineno;
+Xchar *t_line;
+Xchar *t_cptr;
+X{
+X    fprintf(stderr, "%s: e - line %d of \"%s\", illegal tag\n",
+X	    myname, t_lineno, input_file_name);
+X    print_pos(t_line, t_cptr);
+X    done(1);
+X}
+X
+X
+Xillegal_character(c_cptr)
+Xchar *c_cptr;
+X{
+X    fprintf(stderr, "%s: e - line %d of \"%s\", illegal character\n",
+X	    myname, lineno, input_file_name);
+X    print_pos(line, c_cptr);
+X    done(1);
+X}
+X
+X
+Xused_reserved(s)
+Xchar *s;
+X{
+X    fprintf(stderr, "%s: e - line %d of \"%s\", illegal use of reserved symbol \
+X%s\n", myname, lineno, input_file_name, s);
+X    done(1);
+X}
+X
+X
+Xtokenized_start(s)
+Xchar *s;
+X{
+X     fprintf(stderr, "%s: e - line %d of \"%s\", the start symbol %s cannot be \
+Xdeclared to be a token\n", myname, lineno, input_file_name, s);
+X     done(1);
+X}
+X
+X
+Xretyped_warning(s)
+Xchar *s;
+X{
+X    fprintf(stderr, "%s: w - line %d of \"%s\", the type of %s has been \
+Xredeclared\n", myname, lineno, input_file_name, s);
+X}
+X
+X
+Xreprec_warning(s)
+Xchar *s;
+X{
+X    fprintf(stderr, "%s: w - line %d of \"%s\", the precedence of %s has been \
+Xredeclared\n", myname, lineno, input_file_name, s);
+X}
+X
+X
+Xrevalued_warning(s)
+Xchar *s;
+X{
+X    fprintf(stderr, "%s: w - line %d of \"%s\", the value of %s has been \
+Xredeclared\n", myname, lineno, input_file_name, s);
+X}
+X
+X
+Xterminal_start(s)
+Xchar *s;
+X{
+X    fprintf(stderr, "%s: e - line %d of \"%s\", the start symbol %s is a \
+Xtoken\n", myname, lineno, input_file_name, s);
+X    done(1);
+X}
+X
+X
+Xrestarted_warning()
+X{
+X    fprintf(stderr, "%s: w - line %d of \"%s\", the start symbol has been \
+Xredeclared\n", myname, lineno, input_file_name);
+X}
+X
+X
+Xno_grammar()
+X{
+X    fprintf(stderr, "%s: e - line %d of \"%s\", no grammar has been \
+Xspecified\n", myname, lineno, input_file_name);
+X    done(1);
+X}
+X
+X
+Xterminal_lhs(s_lineno)
+Xint s_lineno;
+X{
+X    fprintf(stderr, "%s: e - line %d of \"%s\", a token appears on the lhs \
+Xof a production\n", myname, s_lineno, input_file_name);
+X    done(1);
+X}
+X
+X
+Xprec_redeclared()
+X{
+X    fprintf(stderr, "%s: w - line %d of  \"%s\", conflicting %%prec \
+Xspecifiers\n", myname, lineno, input_file_name);
+X}
+X
+X
+Xunterminated_action(a_lineno, a_line, a_cptr)
+Xint a_lineno;
+Xchar *a_line;
+Xchar *a_cptr;
+X{
+X    fprintf(stderr, "%s: e - line %d of \"%s\", unterminated action\n",
+X	    myname, a_lineno, input_file_name);
+X    print_pos(a_line, a_cptr);
+X    done(1);
+X}
+X
+X
+Xdollar_warning(a_lineno, i)
+Xint a_lineno;
+Xint i;
+X{
+X    fprintf(stderr, "%s: w - line %d of \"%s\", $%d references beyond the \
+Xend of the current rule\n", myname, a_lineno, input_file_name, i);
+X}
+X
+X
+Xdollar_error(a_lineno, a_line, a_cptr)
+Xint a_lineno;
+Xchar *a_line;
+Xchar *a_cptr;
+X{
+X    fprintf(stderr, "%s: e - line %d of \"%s\", illegal $-name\n",
+X	    myname, a_lineno, input_file_name);
+X    print_pos(a_line, a_cptr);
+X    done(1);
+X}
+X
+X
+Xuntyped_lhs()
+X{
+X    fprintf(stderr, "%s: e - line %d of \"%s\", $$ is untyped\n",
+X	    myname, lineno, input_file_name);
+X    done(1);
+X}
+X
+X
+Xuntyped_rhs(i, s)
+Xint i;
+Xchar *s;
+X{
+X    fprintf(stderr, "%s: e - line %d of \"%s\", $%d (%s) is untyped\n",
+X	    myname, lineno, input_file_name, i, s);
+X    done(1);
+X}
+X
+X
+Xunknown_rhs(i)
+Xint i;
+X{
+X    fprintf(stderr, "%s: e - line %d of \"%s\", $%d is untyped\n",
+X	    myname, lineno, input_file_name, i);
+X    done(1);
+X}
+X
+X
+Xdefault_action_warning()
+X{
+X    fprintf(stderr, "%s: w - line %d of \"%s\", the default action assigns an \
+Xundefined value to $$\n", myname, lineno, input_file_name);
+X}
+X
+X
+Xundefined_goal(s)
+Xchar *s;
+X{
+X    fprintf(stderr, "%s: e - the start symbol %s is undefined\n", myname, s);
+X    done(1);
+X}
+X
+X
+Xundefined_symbol_warning(s)
+Xchar *s;
+X{
+X    fprintf(stderr, "%s: w - the symbol %s is undefined\n", myname, s);
+X}
+END_OF_FILE
+if test 6051 -ne `wc -c <'error.c'`; then
+    echo shar: \"'error.c'\" unpacked with wrong size!
+fi
+# end of 'error.c'
+fi
+if test -f 'lalr.c' -a "${1}" != "-c" ; then 
+  echo shar: Will not clobber existing file \"'lalr.c'\"
+else
+echo shar: Extracting \"'lalr.c'\" \(10213 characters\)
+sed "s/^X//" >'lalr.c' <<'END_OF_FILE'
+X#include "defs.h"
+X
+Xtypedef
+X  struct shorts
+X    {
+X      struct shorts *next;
+X      short value;
+X    }
+X  shorts;
+X
+Xint tokensetsize;
+Xshort *lookaheads;
+Xshort *LAruleno;
+Xunsigned *LA;
+Xshort *accessing_symbol;
+Xcore **state_table;
+Xshifts **shift_table;
+Xreductions **reduction_table;
+Xshort *goto_map;
+Xshort *from_state;
+Xshort *to_state;
+X
+Xshort **transpose();
+X
+Xstatic int infinity;
+Xstatic int maxrhs;
+Xstatic int ngotos;
+Xstatic unsigned *F;
+Xstatic short **includes;
+Xstatic shorts **lookback;
+Xstatic short **R;
+Xstatic short *INDEX;
+Xstatic short *VERTICES;
+Xstatic int top;
+X
+X
+Xlalr()
+X{
+X    tokensetsize = WORDSIZE(ntokens);
+X
+X    set_state_table();
+X    set_accessing_symbol();
+X    set_shift_table();
+X    set_reduction_table();
+X    set_maxrhs();
+X    initialize_LA();
+X    set_goto_map();
+X    initialize_F();
+X    build_relations();
+X    compute_FOLLOWS();
+X    compute_lookaheads();
+X}
+X
+X
+X
+Xset_state_table()
+X{
+X    register core *sp;
+X
+X    state_table = NEW2(nstates, core *);
+X    for (sp = first_state; sp; sp = sp->next)
+X	state_table[sp->number] = sp;
+X}
+X
+X
+X
+Xset_accessing_symbol()
+X{
+X    register core *sp;
+X
+X    accessing_symbol = NEW2(nstates, short);
+X    for (sp = first_state; sp; sp = sp->next)
+X	accessing_symbol[sp->number] = sp->accessing_symbol;
+X}
+X
+X
+X
+Xset_shift_table()
+X{
+X    register shifts *sp;
+X
+X    shift_table = NEW2(nstates, shifts *);
+X    for (sp = first_shift; sp; sp = sp->next)
+X	shift_table[sp->number] = sp;
+X}
+X
+X
+X
+Xset_reduction_table()
+X{
+X    register reductions *rp;
+X
+X    reduction_table = NEW2(nstates, reductions *);
+X    for (rp = first_reduction; rp; rp = rp->next)
+X	reduction_table[rp->number] = rp;
+X}
+X
+X
+X
+Xset_maxrhs()
+X{
+X  register short *itemp;
+X  register short *item_end;
+X  register int length;
+X  register int max;
+X
+X  length = 0;
+X  max = 0;
+X  item_end = ritem + nitems;
+X  for (itemp = ritem; itemp < item_end; itemp++)
+X    {
+X      if (*itemp >= 0)
+X	{
+X	  length++;
+X	}
+X      else
+X	{
+X	  if (length > max) max = length;
+X	  length = 0;
+X	}
+X    }
+X
+X  maxrhs = max;
+X}
+X
+X
+X
+Xinitialize_LA()
+X{
+X  register int i, j, k;
+X  register reductions *rp;
+X
+X  lookaheads = NEW2(nstates + 1, short);
+X
+X  k = 0;
+X  for (i = 0; i < nstates; i++)
+X    {
+X      lookaheads[i] = k;
+X      rp = reduction_table[i];
+X      if (rp)
+X	k += rp->nreds;
+X    }
+X  lookaheads[nstates] = k;
+X
+X  LA = NEW2(k * tokensetsize, unsigned);
+X  LAruleno = NEW2(k, short);
+X  lookback = NEW2(k, shorts *);
+X
+X  k = 0;
+X  for (i = 0; i < nstates; i++)
+X    {
+X      rp = reduction_table[i];
+X      if (rp)
+X	{
+X	  for (j = 0; j < rp->nreds; j++)
+X	    {
+X	      LAruleno[k] = rp->rules[j];
+X	      k++;
+X	    }
+X	}
+X    }
+X}
+X
+X
+Xset_goto_map()
+X{
+X  register shifts *sp;
+X  register int i;
+X  register int symbol;
+X  register int k;
+X  register short *temp_map;
+X  register int state2;
+X  register int state1;
+X
+X  goto_map = NEW2(nvars + 1, short) - ntokens;
+X  temp_map = NEW2(nvars + 1, short) - ntokens;
+X
+X  ngotos = 0;
+X  for (sp = first_shift; sp; sp = sp->next)
+X    {
+X      for (i = sp->nshifts - 1; i >= 0; i--)
+X	{
+X	  symbol = accessing_symbol[sp->shift[i]];
+X
+X	  if (ISTOKEN(symbol)) break;
+X
+X	  if (ngotos == MAXSHORT)
+X	    fatal("too many gotos");
+X
+X	  ngotos++;
+X	  goto_map[symbol]++;
+X        }
+X    }
+X
+X  k = 0;
+X  for (i = ntokens; i < nsyms; i++)
+X    {
+X      temp_map[i] = k;
+X      k += goto_map[i];
+X    }
+X
+X  for (i = ntokens; i < nsyms; i++)
+X    goto_map[i] = temp_map[i];
+X
+X  goto_map[nsyms] = ngotos;
+X  temp_map[nsyms] = ngotos;
+X
+X  from_state = NEW2(ngotos, short);
+X  to_state = NEW2(ngotos, short);
+X
+X  for (sp = first_shift; sp; sp = sp->next)
+X    {
+X      state1 = sp->number;
+X      for (i = sp->nshifts - 1; i >= 0; i--)
+X	{
+X	  state2 = sp->shift[i];
+X	  symbol = accessing_symbol[state2];
+X
+X	  if (ISTOKEN(symbol)) break;
+X
+X	  k = temp_map[symbol]++;
+X	  from_state[k] = state1;
+X	  to_state[k] = state2;
+X	}
+X    }
+X
+X  FREE(temp_map + ntokens);
+X}
+X
+X
+X
+X/*  Map_goto maps a state/symbol pair into its numeric representation.	*/
+X
+Xint
+Xmap_goto(state, symbol)
+Xint state;
+Xint symbol;
+X{
+X    register int high;
+X    register int low;
+X    register int middle;
+X    register int s;
+X
+X    low = goto_map[symbol];
+X    high = goto_map[symbol + 1];
+X
+X    for (;;)
+X    {
+X	assert(low <= high);
+X	middle = (low + high) >> 1;
+X	s = from_state[middle];
+X	if (s == state)
+X	    return (middle);
+X	else if (s < state)
+X	    low = middle + 1;
+X	else
+X	    high = middle - 1;
+X    }
+X}
+X
+X
+X
+Xinitialize_F()
+X{
+X  register int i;
+X  register int j;
+X  register int k;
+X  register shifts *sp;
+X  register short *edge;
+X  register unsigned *rowp;
+X  register short *rp;
+X  register short **reads;
+X  register int nedges;
+X  register int stateno;
+X  register int symbol;
+X  register int nwords;
+X
+X  nwords = ngotos * tokensetsize;
+X  F = NEW2(nwords, unsigned);
+X
+X  reads = NEW2(ngotos, short *);
+X  edge = NEW2(ngotos + 1, short);
+X  nedges = 0;
+X
+X  rowp = F;
+X  for (i = 0; i < ngotos; i++)
+X    {
+X      stateno = to_state[i];
+X      sp = shift_table[stateno];
+X
+X      if (sp)
+X	{
+X	  k = sp->nshifts;
+X
+X	  for (j = 0; j < k; j++)
+X	    {
+X	      symbol = accessing_symbol[sp->shift[j]];
+X	      if (ISVAR(symbol))
+X		break;
+X	      SETBIT(rowp, symbol);
+X	    }
+X
+X	  for (; j < k; j++)
+X	    {
+X	      symbol = accessing_symbol[sp->shift[j]];
+X	      if (nullable[symbol])
+X		edge[nedges++] = map_goto(stateno, symbol);
+X	    }
+X	
+X	  if (nedges)
+X	    {
+X	      reads[i] = rp = NEW2(nedges + 1, short);
+X
+X	      for (j = 0; j < nedges; j++)
+X		rp[j] = edge[j];
+X
+X	      rp[nedges] = -1;
+X	      nedges = 0;
+X	    }
+X	}
+X
+X      rowp += tokensetsize;
+X    }
+X
+X  SETBIT(F, 0);
+X  digraph(reads);
+X
+X  for (i = 0; i < ngotos; i++)
+X    {
+X      if (reads[i])
+X	FREE(reads[i]);
+X    }
+X
+X  FREE(reads);
+X  FREE(edge);
+X}
+X
+X
+X
+Xbuild_relations()
+X{
+X  register int i;
+X  register int j;
+X  register int k;
+X  register short *rulep;
+X  register short *rp;
+X  register shifts *sp;
+X  register int length;
+X  register int nedges;
+X  register int done;
+X  register int state1;
+X  register int stateno;
+X  register int symbol1;
+X  register int symbol2;
+X  register short *shortp;
+X  register short *edge;
+X  register short *states;
+X  register short **new_includes;
+X
+X  includes = NEW2(ngotos, short *);
+X  edge = NEW2(ngotos + 1, short);
+X  states = NEW2(maxrhs + 1, short);
+X
+X  for (i = 0; i < ngotos; i++)
+X    {
+X      nedges = 0;
+X      state1 = from_state[i];
+X      symbol1 = accessing_symbol[to_state[i]];
+X
+X      for (rulep = derives[symbol1]; *rulep >= 0; rulep++)
+X	{
+X	  length = 1;
+X	  states[0] = state1;
+X	  stateno = state1;
+X
+X	  for (rp = ritem + rrhs[*rulep]; *rp >= 0; rp++)
+X	    {
+X	      symbol2 = *rp;
+X	      sp = shift_table[stateno];
+X	      k = sp->nshifts;
+X
+X	      for (j = 0; j < k; j++)
+X		{
+X		  stateno = sp->shift[j];
+X		  if (accessing_symbol[stateno] == symbol2) break;
+X		}
+X
+X	      states[length++] = stateno;
+X	    }
+X
+X	  add_lookback_edge(stateno, *rulep, i);
+X
+X	  length--;
+X	  done = 0;
+X	  while (!done)
+X	    {
+X	      done = 1;
+X	      rp--;
+X	      if (ISVAR(*rp))
+X		{
+X		  stateno = states[--length];
+X		  edge[nedges++] = map_goto(stateno, *rp);
+X		  if (nullable[*rp] && length > 0) done = 0;
+X		}
+X	    }
+X	}
+X
+X      if (nedges)
+X	{
+X	  includes[i] = shortp = NEW2(nedges + 1, short);
+X	  for (j = 0; j < nedges; j++)
+X	    shortp[j] = edge[j];
+X	  shortp[nedges] = -1;
+X	}
+X    }
+X
+X  new_includes = transpose(includes, ngotos);
+X
+X  for (i = 0; i < ngotos; i++)
+X    if (includes[i])
+X      FREE(includes[i]);
+X
+X  FREE(includes);
+X
+X  includes = new_includes;
+X
+X  FREE(edge);
+X  FREE(states);
+X}
+X
+X
+Xadd_lookback_edge(stateno, ruleno, gotono)
+Xint stateno, ruleno, gotono;
+X{
+X    register int i, k;
+X    register int found;
+X    register shorts *sp;
+X
+X    i = lookaheads[stateno];
+X    k = lookaheads[stateno + 1];
+X    found = 0;
+X    while (!found && i < k)
+X    {
+X	if (LAruleno[i] == ruleno)
+X	    found = 1;
+X	else
+X	    ++i;
+X    }
+X    assert(found);
+X
+X    sp = NEW(shorts);
+X    sp->next = lookback[i];
+X    sp->value = gotono;
+X    lookback[i] = sp;
+X}
+X
+X
+X
+Xshort **
+Xtranspose(R, n)
+Xshort **R;
+Xint n;
+X{
+X  register short **new_R;
+X  register short **temp_R;
+X  register short *nedges;
+X  register short *sp;
+X  register int i;
+X  register int k;
+X
+X  nedges = NEW2(n, short);
+X
+X  for (i = 0; i < n; i++)
+X    {
+X      sp = R[i];
+X      if (sp)
+X	{
+X	  while (*sp >= 0)
+X	    nedges[*sp++]++;
+X	}
+X    }
+X
+X  new_R = NEW2(n, short *);
+X  temp_R = NEW2(n, short *);
+X
+X  for (i = 0; i < n; i++)
+X    {
+X      k = nedges[i];
+X      if (k > 0)
+X	{
+X	  sp = NEW2(k + 1, short);
+X	  new_R[i] = sp;
+X	  temp_R[i] = sp;
+X	  sp[k] = -1;
+X	}
+X    }
+X
+X  FREE(nedges);
+X
+X  for (i = 0; i < n; i++)
+X    {
+X      sp = R[i];
+X      if (sp)
+X	{
+X	  while (*sp >= 0)
+X	    *temp_R[*sp++]++ = i;
+X	}
+X    }
+X
+X  FREE(temp_R);
+X
+X  return (new_R);
+X}
+X
+X
+X
+Xcompute_FOLLOWS()
+X{
+X  digraph(includes);
+X}
+X
+X
+Xcompute_lookaheads()
+X{
+X  register int i, n;
+X  register unsigned *fp1, *fp2, *fp3;
+X  register shorts *sp, *next;
+X  register unsigned *rowp;
+X
+X  rowp = LA;
+X  n = lookaheads[nstates];
+X  for (i = 0; i < n; i++)
+X    {
+X      fp3 = rowp + tokensetsize;
+X      for (sp = lookback[i]; sp; sp = sp->next)
+X	{
+X	  fp1 = rowp;
+X	  fp2 = F + tokensetsize * sp->value;
+X	  while (fp1 < fp3)
+X	    *fp1++ |= *fp2++;
+X	}
+X      rowp = fp3;
+X    }
+X
+X  for (i = 0; i < n; i++)
+X    for (sp = lookback[i]; sp; sp = next)
+X      {
+X        next = sp->next;
+X        FREE(sp);
+X      }
+X
+X  FREE(lookback);
+X  FREE(F);
+X}
+X
+X
+Xdigraph(relation)
+Xshort **relation;
+X{
+X  register int i;
+X
+X  infinity = ngotos + 2;
+X  INDEX = NEW2(ngotos + 1, short);
+X  VERTICES = NEW2(ngotos + 1, short);
+X  top = 0;
+X
+X  R = relation;
+X
+X  for (i = 0; i < ngotos; i++)
+X    INDEX[i] = 0;
+X
+X  for (i = 0; i < ngotos; i++)
+X    {
+X      if (INDEX[i] == 0 && R[i])
+X	traverse(i);
+X    }
+X
+X  FREE(INDEX);
+X  FREE(VERTICES);
+X}
+X
+X
+X
+Xtraverse(i)
+Xregister int i;
+X{
+X  register unsigned *fp1;
+X  register unsigned *fp2;
+X  register unsigned *fp3;
+X  register int j;
+X  register short *rp;
+X
+X  int height;
+X  unsigned *base;
+X
+X  VERTICES[++top] = i;
+X  INDEX[i] = height = top;
+X
+X  base = F + i * tokensetsize;
+X  fp3 = base + tokensetsize;
+X
+X  rp = R[i];
+X  if (rp)
+X    {
+X      while ((j = *rp++) >= 0)
+X	{
+X	  if (INDEX[j] == 0)
+X	    traverse(j);
+X
+X	  if (INDEX[i] > INDEX[j])
+X	    INDEX[i] = INDEX[j];
+X
+X	  fp1 = base;
+X	  fp2 = F + j * tokensetsize;
+X
+X	  while (fp1 < fp3)
+X	    *fp1++ |= *fp2++;
+X	}
+X    }
+X
+X  if (INDEX[i] == height)
+X    {
+X      for (;;)
+X	{
+X	  j = VERTICES[top--];
+X	  INDEX[j] = infinity;
+X
+X	  if (i == j)
+X	    break;
+X
+X	  fp1 = base;
+X	  fp2 = F + j * tokensetsize;
+X
+X	  while (fp1 < fp3)
+X	    *fp2++ = *fp1++;
+X	}
+X    }
+X}
+END_OF_FILE
+if test 10213 -ne `wc -c <'lalr.c'`; then
+    echo shar: \"'lalr.c'\" unpacked with wrong size!
+fi
+# end of 'lalr.c'
+fi
+if test -f 'lr0.c' -a "${1}" != "-c" ; then 
+  echo shar: Will not clobber existing file \"'lr0.c'\"
+else
+echo shar: Extracting \"'lr0.c'\" \(9587 characters\)
+sed "s/^X//" >'lr0.c' <<'END_OF_FILE'
+X
+X#include "defs.h"
+X
+Xextern short *itemset;
+Xextern short *itemsetend;
+Xextern unsigned *ruleset;
+X
+Xint nstates;
+Xcore *first_state;
+Xshifts *first_shift;
+Xreductions *first_reduction;
+X
+Xint get_state();
+Xcore *new_state();
+X
+Xstatic core **state_set;
+Xstatic core *this_state;
+Xstatic core *last_state;
+Xstatic shifts *last_shift;
+Xstatic reductions *last_reduction;
+X
+Xstatic int nshifts;
+Xstatic short *shift_symbol;
+X
+Xstatic short *redset;
+Xstatic short *shiftset;
+X
+Xstatic short **kernel_base;
+Xstatic short **kernel_end;
+Xstatic short *kernel_items;
+X
+X
+Xallocate_itemsets()
+X{
+X    register short *itemp;
+X    register short *item_end;
+X    register int symbol;
+X    register int i;
+X    register int count;
+X    register int max;
+X    register short *symbol_count;
+X
+X    count = 0;
+X    symbol_count = NEW2(nsyms, short);
+X
+X    item_end = ritem + nitems;
+X    for (itemp = ritem; itemp < item_end; itemp++)
+X    {
+X	symbol = *itemp;
+X	if (symbol >= 0)
+X	{
+X	    count++;
+X	    symbol_count[symbol]++;
+X	}
+X    }
+X
+X    kernel_base = NEW2(nsyms, short *);
+X    kernel_items = NEW2(count, short);
+X
+X    count = 0;
+X    max = 0;
+X    for (i = 0; i < nsyms; i++)
+X    {
+X	kernel_base[i] = kernel_items + count;
+X	count += symbol_count[i];
+X	if (max < symbol_count[i])
+X	    max = symbol_count[i];
+X    }
+X
+X    shift_symbol = symbol_count;
+X    kernel_end = NEW2(nsyms, short *);
+X}
+X
+X
+Xallocate_storage()
+X{
+X    allocate_itemsets();
+X    shiftset = NEW2(nsyms, short);
+X    redset = NEW2(nrules + 1, short);
+X    state_set = NEW2(nitems, core *);
+X}
+X
+X
+Xappend_states()
+X{
+X    register int i;
+X    register int j;
+X    register int symbol;
+X
+X#ifdef	TRACE
+X    fprintf(stderr, "Entering append_states()\n");
+X#endif
+X    for (i = 1; i < nshifts; i++)
+X    {
+X	symbol = shift_symbol[i];
+X	j = i;
+X	while (j > 0 && shift_symbol[j - 1] > symbol)
+X	{
+X	    shift_symbol[j] = shift_symbol[j - 1];
+X	    j--;
+X	}
+X	shift_symbol[j] = symbol;
+X    }
+X
+X    for (i = 0; i < nshifts; i++)
+X    {
+X	symbol = shift_symbol[i];
+X	shiftset[i] = get_state(symbol);
+X    }
+X}
+X
+X
+Xfree_storage()
+X{
+X    FREE(shift_symbol);
+X    FREE(redset);
+X    FREE(shiftset);
+X    FREE(kernel_base);
+X    FREE(kernel_end);
+X    FREE(kernel_items);
+X    FREE(state_set);
+X}
+X
+X
+X
+Xgenerate_states()
+X{
+X    allocate_storage();
+X    itemset = NEW2(nitems, short);
+X    ruleset = NEW2(WORDSIZE(nrules), unsigned);
+X    set_first_derives();
+X    initialize_states();
+X
+X    while (this_state)
+X    {
+X	closure(this_state->items, this_state->nitems);
+X	save_reductions();
+X	new_itemsets();
+X	append_states();
+X
+X	if (nshifts > 0)
+X	    save_shifts();
+X
+X	this_state = this_state->next;
+X    }
+X
+X    finalize_closure();
+X    free_storage();
+X}
+X
+X
+X
+Xint
+Xget_state(symbol)
+Xint symbol;
+X{
+X    register int key;
+X    register short *isp1;
+X    register short *isp2;
+X    register short *iend;
+X    register core *sp;
+X    register int found;
+X    register int n;
+X
+X#ifdef	TRACE
+X    fprintf(stderr, "Entering get_state(%d)\n", symbol);
+X#endif
+X
+X    isp1 = kernel_base[symbol];
+X    iend = kernel_end[symbol];
+X    n = iend - isp1;
+X
+X    key = *isp1;
+X    assert(0 <= key && key < nitems);
+X    sp = state_set[key];
+X    if (sp)
+X    {
+X	found = 0;
+X	while (!found)
+X	{
+X	    if (sp->nitems == n)
+X	    {
+X		found = 1;
+X		isp1 = kernel_base[symbol];
+X		isp2 = sp->items;
+X
+X		while (found && isp1 < iend)
+X		{
+X		    if (*isp1++ != *isp2++)
+X			found = 0;
+X		}
+X	    }
+X
+X	    if (!found)
+X	    {
+X		if (sp->link)
+X		{
+X		    sp = sp->link;
+X		}
+X		else
+X		{
+X		    sp = sp->link = new_state(symbol);
+X		    found = 1;
+X		}
+X	    }
+X	}
+X    }
+X    else
+X    {
+X	state_set[key] = sp = new_state(symbol);
+X    }
+X
+X    return (sp->number);
+X}
+X
+X
+X
+Xinitialize_states()
+X{
+X    register int i;
+X    register short *start_derives;
+X    register core *p;
+X
+X    start_derives = derives[start_symbol];
+X    for (i = 0; start_derives[i] >= 0; ++i)
+X	continue;
+X
+X    p = (core *) MALLOC(sizeof(core) + i*sizeof(short));
+X    if (p == 0) no_space();
+X
+X    p->next = 0;
+X    p->link = 0;
+X    p->number = 0;
+X    p->accessing_symbol = 0;
+X    p->nitems = i;
+X
+X    for (i = 0;  start_derives[i] >= 0; ++i)
+X	p->items[i] = rrhs[start_derives[i]];
+X
+X    first_state = last_state = this_state = p;
+X    nstates = 1;
+X}
+X
+X
+Xnew_itemsets()
+X{
+X    register int i;
+X    register int shiftcount;
+X    register short *isp;
+X    register short *ksp;
+X    register int symbol;
+X
+X    for (i = 0; i < nsyms; i++)
+X	kernel_end[i] = 0;
+X
+X    shiftcount = 0;
+X    isp = itemset;
+X    while (isp < itemsetend)
+X    {
+X	i = *isp++;
+X	symbol = ritem[i];
+X	if (symbol > 0)
+X	{
+X	    ksp = kernel_end[symbol];
+X	    if (!ksp)
+X	    {
+X		shift_symbol[shiftcount++] = symbol;
+X		ksp = kernel_base[symbol];
+X	    }
+X
+X	    *ksp++ = i + 1;
+X	    kernel_end[symbol] = ksp;
+X	}
+X    }
+X
+X    nshifts = shiftcount;
+X}
+X
+X
+X
+Xcore *
+Xnew_state(symbol)
+Xint symbol;
+X{
+X    register int n;
+X    register core *p;
+X    register short *isp1;
+X    register short *isp2;
+X    register short *iend;
+X
+X#ifdef	TRACE
+X    fprintf(stderr, "Entering new_state(%d)\n", symbol);
+X#endif
+X
+X    if (nstates >= MAXSHORT)
+X	fatal("too many states");
+X
+X    isp1 = kernel_base[symbol];
+X    iend = kernel_end[symbol];
+X    n = iend - isp1;
+X
+X    p = (core *) allocate((unsigned) (sizeof(core) + (n - 1) * sizeof(short)));
+X    p->accessing_symbol = symbol;
+X    p->number = nstates;
+X    p->nitems = n;
+X
+X    isp2 = p->items;
+X    while (isp1 < iend)
+X	*isp2++ = *isp1++;
+X
+X    last_state->next = p;
+X    last_state = p;
+X
+X    nstates++;
+X
+X    return (p);
+X}
+X
+X
+X/* show_cores is used for debugging */
+X
+Xshow_cores()
+X{
+X    core *p;
+X    int i, j, k, n;
+X    int itemno;
+X
+X    k = 0;
+X    for (p = first_state; p; ++k, p = p->next)
+X    {
+X	if (k) printf("\n");
+X	printf("state %d, number = %d, accessing symbol = %s\n",
+X		k, p->number, symbol_name[p->accessing_symbol]);
+X	n = p->nitems;
+X	for (i = 0; i < n; ++i)
+X	{
+X	    itemno = p->items[i];
+X	    printf("%4d  ", itemno);
+X	    j = itemno;
+X	    while (ritem[j] >= 0) ++j;
+X	    printf("%s :", symbol_name[rlhs[-ritem[j]]]);
+X	    j = rrhs[-ritem[j]];
+X	    while (j < itemno)
+X		printf(" %s", symbol_name[ritem[j++]]);
+X	    printf(" .");
+X	    while (ritem[j] >= 0)
+X		printf(" %s", symbol_name[ritem[j++]]);
+X	    printf("\n");
+X	    fflush(stdout);
+X	}
+X    }
+X}
+X
+X
+X/* show_ritems is used for debugging */
+X
+Xshow_ritems()
+X{
+X    int i;
+X
+X    for (i = 0; i < nitems; ++i)
+X	printf("ritem[%d] = %d\n", i, ritem[i]);
+X}
+X
+X
+X/* show_rrhs is used for debugging */
+Xshow_rrhs()
+X{
+X    int i;
+X
+X    for (i = 0; i < nrules; ++i)
+X	printf("rrhs[%d] = %d\n", i, rrhs[i]);
+X}
+X
+X
+X/* show_shifts is used for debugging */
+X
+Xshow_shifts()
+X{
+X    shifts *p;
+X    int i, j, k;
+X
+X    k = 0;
+X    for (p = first_shift; p; ++k, p = p->next)
+X    {
+X	if (k) printf("\n");
+X	printf("shift %d, number = %d, nshifts = %d\n", k, p->number,
+X		p->nshifts);
+X	j = p->nshifts;
+X	for (i = 0; i < j; ++i)
+X	    printf("\t%d\n", p->shift[i]);
+X    }
+X}
+X
+X
+Xsave_shifts()
+X{
+X    register shifts *p;
+X    register short *sp1;
+X    register short *sp2;
+X    register short *send;
+X
+X    p = (shifts *) allocate((unsigned) (sizeof(shifts) +
+X			(nshifts - 1) * sizeof(short)));
+X
+X    p->number = this_state->number;
+X    p->nshifts = nshifts;
+X
+X    sp1 = shiftset;
+X    sp2 = p->shift;
+X    send = shiftset + nshifts;
+X
+X    while (sp1 < send)
+X	*sp2++ = *sp1++;
+X
+X    if (last_shift)
+X    {
+X	last_shift->next = p;
+X	last_shift = p;
+X    }
+X    else
+X    {
+X	first_shift = p;
+X	last_shift = p;
+X    }
+X}
+X
+X
+X
+Xsave_reductions()
+X{
+X    register short *isp;
+X    register short *rp1;
+X    register short *rp2;
+X    register int item;
+X    register int count;
+X    register reductions *p;
+X    register short *rend;
+X
+X    count = 0;
+X    for (isp = itemset; isp < itemsetend; isp++)
+X    {
+X	item = ritem[*isp];
+X	if (item < 0)
+X	{
+X	    redset[count++] = -item;
+X	}
+X    }
+X
+X    if (count)
+X    {
+X	p = (reductions *) allocate((unsigned) (sizeof(reductions) +
+X					(count - 1) * sizeof(short)));
+X
+X	p->number = this_state->number;
+X	p->nreds = count;
+X
+X	rp1 = redset;
+X	rp2 = p->rules;
+X	rend = rp1 + count;
+X
+X	while (rp1 < rend)
+X	    *rp2++ = *rp1++;
+X
+X	if (last_reduction)
+X	{
+X	    last_reduction->next = p;
+X	    last_reduction = p;
+X	}
+X	else
+X	{
+X	    first_reduction = p;
+X	    last_reduction = p;
+X	}
+X    }
+X}
+X
+X
+Xset_derives()
+X{
+X    register int i, k;
+X    register int lhs;
+X    register short *rules;
+X
+X    derives = NEW2(nsyms, short *);
+X    rules = NEW2(nvars + nrules, short);
+X
+X    k = 0;
+X    for (lhs = start_symbol; lhs < nsyms; lhs++)
+X    {
+X	derives[lhs] = rules + k;
+X	for (i = 0; i < nrules; i++)
+X	{
+X	    if (rlhs[i] == lhs)
+X	    {
+X		rules[k] = i;
+X		k++;
+X	    }
+X	}
+X	rules[k] = -1;
+X	k++;
+X    }
+X
+X#ifdef	DEBUG
+X    print_derives();
+X#endif
+X}
+X
+Xfree_derives()
+X{
+X    FREE(derives[start_symbol]);
+X    FREE(derives);
+X}
+X
+X#ifdef	DEBUG
+Xprint_derives()
+X{
+X    register int i;
+X    register short *sp;
+X
+X    printf("\nDERIVES\n\n");
+X
+X    for (i = start_symbol; i < nsyms; i++)
+X    {
+X	printf("%s derives ", symbol_name[i]);
+X	for (sp = derives[i]; *sp >= 0; sp++)
+X	{
+X	    printf("  %d", *sp);
+X	}
+X	putchar('\n');
+X    }
+X
+X    putchar('\n');
+X}
+X#endif
+X
+X
+Xset_nullable()
+X{
+X    register int i, j;
+X    register int empty;
+X    int done;
+X
+X    nullable = MALLOC(nsyms);
+X    if (nullable == 0) no_space();
+X
+X    for (i = 0; i < nsyms; ++i)
+X	nullable[i] = 0;
+X
+X    done = 0;
+X    while (!done)
+X    {
+X	done = 1;
+X	for (i = 1; i < nitems; i++)
+X	{
+X	    empty = 1;
+X	    while ((j = ritem[i]) >= 0)
+X	    {
+X		if (!nullable[j])
+X		    empty = 0;
+X		++i;
+X	    }
+X	    if (empty)
+X	    {
+X		j = rlhs[-j];
+X		if (!nullable[j])
+X		{
+X		    nullable[j] = 1;
+X		    done = 0;
+X		}
+X	    }
+X	}
+X    }
+X
+X#ifdef DEBUG
+X    for (i = 0; i < nsyms; i++)
+X    {
+X	if (nullable[i])
+X	    printf("%s is nullable\n", symbol_name[i]);
+X	else
+X	    printf("%s is not nullable\n", symbol_name[i]);
+X    }
+X#endif
+X}
+X
+X
+Xfree_nullable()
+X{
+X    FREE(nullable);
+X}
+X
+X
+Xlr0()
+X{
+X    set_derives();
+X    set_nullable();
+X    generate_states();
+X}
+END_OF_FILE
+if test 9587 -ne `wc -c <'lr0.c'`; then
+    echo shar: \"'lr0.c'\" unpacked with wrong size!
+fi
+# end of 'lr0.c'
+fi
+if test -f 'main.c' -a "${1}" != "-c" ; then 
+  echo shar: Will not clobber existing file \"'main.c'\"
+else
+echo shar: Extracting \"'main.c'\" \(6630 characters\)
+sed "s/^X//" >'main.c' <<'END_OF_FILE'
+X#include <signal.h>
+X#include "defs.h"
+X
+Xchar dflag;
+Xchar lflag;
+Xchar rflag;
+Xchar tflag;
+Xchar vflag;
+X
+Xchar *symbol_prefix;
+Xchar *file_prefix = "y";
+Xchar *myname = "yacc";
+Xchar *temp_form = "yacc.XXXXXXX";
+X
+Xint lineno;
+Xint outline;
+X
+Xchar *action_file_name;
+Xchar *code_file_name;
+Xchar *defines_file_name;
+Xchar *input_file_name = "";
+Xchar *output_file_name;
+Xchar *text_file_name;
+Xchar *union_file_name;
+Xchar *verbose_file_name;
+X
+XFILE *action_file;	/*  a temp file, used to save actions associated    */
+X			/*  with rules until the parser is written	    */
+XFILE *code_file;	/*  y.code.c (used when the -r option is specified) */
+XFILE *defines_file;	/*  y.tab.h					    */
+XFILE *input_file;	/*  the input file				    */
+XFILE *output_file;	/*  y.tab.c					    */
+XFILE *text_file;	/*  a temp file, used to save text until all	    */
+X			/*  symbols have been defined			    */
+XFILE *union_file;	/*  a temp file, used to save the union		    */
+X			/*  definition until all symbol have been	    */
+X			/*  defined					    */
+XFILE *verbose_file;	/*  y.output					    */
+X
+Xint nitems;
+Xint nrules;
+Xint nsyms;
+Xint ntokens;
+Xint nvars;
+X
+Xint   start_symbol;
+Xchar  **symbol_name;
+Xshort *symbol_value;
+Xshort *symbol_prec;
+Xchar  *symbol_assoc;
+X
+Xshort *ritem;
+Xshort *rlhs;
+Xshort *rrhs;
+Xshort *rprec;
+Xchar  *rassoc;
+Xshort **derives;
+Xchar *nullable;
+X
+Xextern char *mktemp();
+Xextern char *getenv();
+X
+X
+Xdone(k)
+Xint k;
+X{
+X    if (action_file) { fclose(action_file); unlink(action_file_name); }
+X    if (text_file) { fclose(text_file); unlink(text_file_name); }
+X    if (union_file) { fclose(union_file); unlink(union_file_name); }
+X    exit(k);
+X}
+X
+X
+Xvoid
+Xonintr(signo)
+X    int signo;
+X{
+X    done(1);
+X}
+X
+X
+Xset_signals()
+X{
+X#ifdef SIGINT
+X    if (signal(SIGINT, SIG_IGN) != SIG_IGN)
+X	signal(SIGINT, onintr);
+X#endif
+X#ifdef SIGTERM
+X    if (signal(SIGTERM, SIG_IGN) != SIG_IGN)
+X	signal(SIGTERM, onintr);
+X#endif
+X#ifdef SIGHUP
+X    if (signal(SIGHUP, SIG_IGN) != SIG_IGN)
+X	signal(SIGHUP, onintr);
+X#endif
+X}
+X
+X
+Xusage()
+X{
+X    fprintf(stderr, "usage: %s [-dlrtv] [-b file_prefix] [-p symbol_prefix] filename\n", myname);
+X    exit(1);
+X}
+X
+X
+Xgetargs(argc, argv)
+Xint argc;
+Xchar *argv[];
+X{
+X    register int i;
+X    register char *s;
+X
+X    if (argc > 0) myname = argv[0];
+X    for (i = 1; i < argc; ++i)
+X    {
+X	s = argv[i];
+X	if (*s != '-') break;
+X	switch (*++s)
+X	{
+X	case '\0':
+X	    input_file = stdin;
+X	    if (i + 1 < argc) usage();
+X	    return;
+X
+X	case '-':
+X	    ++i;
+X	    goto no_more_options;
+X
+X	case 'b':
+X	    if (*++s)
+X		 file_prefix = s;
+X	    else if (++i < argc)
+X		file_prefix = argv[i];
+X	    else
+X		usage();
+X	    continue;
+X
+X	case 'd':
+X	    dflag = 1;
+X	    break;
+X
+X	case 'l':
+X	    lflag = 1;
+X	    break;
+X
+X	case 'p':
+X	    if (*++s)
+X		symbol_prefix = s;
+X	    else if (++i < argc)
+X		symbol_prefix = argv[i];
+X	    else
+X		usage();
+X	    continue;
+X
+X	case 'r':
+X	    rflag = 1;
+X	    break;
+X
+X	case 't':
+X	    tflag = 1;
+X	    break;
+X
+X	case 'v':
+X	    vflag = 1;
+X	    break;
+X
+X	default:
+X	    usage();
+X	}
+X
+X	for (;;)
+X	{
+X	    switch (*++s)
+X	    {
+X	    case '\0':
+X		goto end_of_option;
+X
+X	    case 'd':
+X		dflag = 1;
+X		break;
+X
+X	    case 'l':
+X		lflag = 1;
+X		break;
+X
+X	    case 'r':
+X		rflag = 1;
+X		break;
+X
+X	    case 't':
+X		tflag = 1;
+X		break;
+X
+X	    case 'v':
+X		vflag = 1;
+X		break;
+X
+X	    default:
+X		usage();
+X	    }
+X	}
+Xend_of_option:;
+X    }
+X
+Xno_more_options:;
+X    if (i + 1 != argc) usage();
+X    input_file_name = argv[i];
+X}
+X
+X
+Xchar *
+Xallocate(n)
+Xunsigned n;
+X{
+X    register char *p;
+X
+X    p = NULL;
+X    if (n)
+X    {
+X	p = CALLOC(1, n);
+X	if (!p) no_space();
+X    }
+X    return (p);
+X}
+X
+X
+Xcreate_file_names()
+X{
+X    int i, len;
+X    char *tmpdir;
+X
+X    tmpdir = getenv("TMPDIR");
+X    if (tmpdir == 0) tmpdir = "/tmp";
+X
+X    len = strlen(tmpdir);
+X    i = len + 13;
+X    if (len && tmpdir[len-1] != '/')
+X	++i;
+X
+X    action_file_name = MALLOC(i);
+X    if (action_file_name == 0) no_space();
+X    text_file_name = MALLOC(i);
+X    if (text_file_name == 0) no_space();
+X    union_file_name = MALLOC(i);
+X    if (union_file_name == 0) no_space();
+X
+X    strcpy(action_file_name, tmpdir);
+X    strcpy(text_file_name, tmpdir);
+X    strcpy(union_file_name, tmpdir);
+X
+X    if (len && tmpdir[len - 1] != '/')
+X    {
+X	action_file_name[len] = '/';
+X	text_file_name[len] = '/';
+X	union_file_name[len] = '/';
+X	++len;
+X    }
+X
+X    strcpy(action_file_name + len, temp_form);
+X    strcpy(text_file_name + len, temp_form);
+X    strcpy(union_file_name + len, temp_form);
+X
+X    action_file_name[len + 5] = 'a';
+X    text_file_name[len + 5] = 't';
+X    union_file_name[len + 5] = 'u';
+X
+X    mktemp(action_file_name);
+X    mktemp(text_file_name);
+X    mktemp(union_file_name);
+X
+X    len = strlen(file_prefix);
+X
+X    output_file_name = MALLOC(len + 7);
+X    if (output_file_name == 0)
+X	no_space();
+X    strcpy(output_file_name, file_prefix);
+X    strcpy(output_file_name + len, OUTPUT_SUFFIX);
+X
+X    if (rflag)
+X    {
+X	code_file_name = MALLOC(len + 8);
+X	if (code_file_name == 0)
+X	    no_space();
+X	strcpy(code_file_name, file_prefix);
+X	strcpy(code_file_name + len, CODE_SUFFIX);
+X    }
+X    else
+X	code_file_name = output_file_name;
+X
+X    if (dflag)
+X    {
+X	defines_file_name = MALLOC(len + 7);
+X	if (defines_file_name == 0)
+X	    no_space();
+X	strcpy(defines_file_name, file_prefix);
+X	strcpy(defines_file_name + len, DEFINES_SUFFIX);
+X    }
+X
+X    if (vflag)
+X    {
+X	verbose_file_name = MALLOC(len + 8);
+X	if (verbose_file_name == 0)
+X	    no_space();
+X	strcpy(verbose_file_name, file_prefix);
+X	strcpy(verbose_file_name + len, VERBOSE_SUFFIX);
+X    }
+X}
+X
+X
+Xopen_files()
+X{
+X    create_file_names();
+X
+X    if (input_file == 0)
+X    {
+X	input_file = fopen(input_file_name, "r");
+X	if (input_file == 0)
+X	    open_error(input_file_name);
+X    }
+X
+X    action_file = fopen(action_file_name, "w");
+X    if (action_file == 0)
+X	open_error(action_file_name);
+X
+X    text_file = fopen(text_file_name, "w");
+X    if (text_file == 0)
+X	open_error(text_file_name);
+X
+X    if (vflag)
+X    {
+X	verbose_file = fopen(verbose_file_name, "w");
+X	if (verbose_file == 0)
+X	    open_error(verbose_file_name);
+X    }
+X
+X    if (dflag)
+X    {
+X	defines_file = fopen(defines_file_name, "w");
+X	if (defines_file == 0)
+X	    open_error(defines_file_name);
+X	union_file = fopen(union_file_name, "w");
+X	if (union_file ==  0)
+X	    open_error(union_file_name);
+X    }
+X
+X    output_file = fopen(output_file_name, "w");
+X    if (output_file == 0)
+X	open_error(output_file_name);
+X
+X    if (rflag)
+X    {
+X	code_file = fopen(code_file_name, "w");
+X	if (code_file == 0)
+X	    open_error(code_file_name);
+X    }
+X    else
+X	code_file = output_file;
+X}
+X
+X
+Xint
+Xmain(argc, argv)
+Xint argc;
+Xchar *argv[];
+X{
+X    set_signals();
+X    getargs(argc, argv);
+X    open_files();
+X    reader();
+X    lr0();
+X    lalr();
+X    make_parser();
+X    verbose();
+X    output();
+X    done(0);
+X    /*NOTREACHED*/
+X}
+END_OF_FILE
+if test 6630 -ne `wc -c <'main.c'`; then
+    echo shar: \"'main.c'\" unpacked with wrong size!
+fi
+# end of 'main.c'
+fi
+if test -f 'mkpar.c' -a "${1}" != "-c" ; then 
+  echo shar: Will not clobber existing file \"'mkpar.c'\"
+else
+echo shar: Extracting \"'mkpar.c'\" \(6316 characters\)
+sed "s/^X//" >'mkpar.c' <<'END_OF_FILE'
+X
+X#include "defs.h"
+X
+Xaction **parser;
+Xint SRtotal;
+Xint RRtotal;
+Xshort *SRconflicts;
+Xshort *RRconflicts;
+Xshort *defred;
+Xshort *rules_used;
+Xshort nunused;
+Xshort final_state;
+X
+Xstatic int SRcount;
+Xstatic int RRcount;
+X
+Xextern action *parse_actions();
+Xextern action *get_shifts();
+Xextern action *add_reductions();
+Xextern action *add_reduce();
+X
+X
+Xmake_parser()
+X{
+X    register int i;
+X
+X    parser = NEW2(nstates, action *);
+X    for (i = 0; i < nstates; i++)
+X	parser[i] = parse_actions(i);
+X
+X    find_final_state();
+X    remove_conflicts();
+X    unused_rules();
+X    if (SRtotal + RRtotal > 0) total_conflicts();
+X    defreds();
+X}
+X
+X
+Xaction *
+Xparse_actions(stateno)
+Xregister int stateno;
+X{
+X    register action *actions;
+X
+X    actions = get_shifts(stateno);
+X    actions = add_reductions(stateno, actions);
+X    return (actions);
+X}
+X
+X
+Xaction *
+Xget_shifts(stateno)
+Xint stateno;
+X{
+X    register action *actions, *temp;
+X    register shifts *sp;
+X    register short *to_state;
+X    register int i, k;
+X    register int symbol;
+X
+X    actions = 0;
+X    sp = shift_table[stateno];
+X    if (sp)
+X    {
+X	to_state = sp->shift;
+X	for (i = sp->nshifts - 1; i >= 0; i--)
+X	{
+X	    k = to_state[i];
+X	    symbol = accessing_symbol[k];
+X	    if (ISTOKEN(symbol))
+X	    {
+X		temp = NEW(action);
+X		temp->next = actions;
+X		temp->symbol = symbol;
+X		temp->number = k;
+X		temp->prec = symbol_prec[symbol];
+X		temp->action_code = SHIFT;
+X		temp->assoc = symbol_assoc[symbol];
+X		actions = temp;
+X	    }
+X	}
+X    }
+X    return (actions);
+X}
+X
+Xaction *
+Xadd_reductions(stateno, actions)
+Xint stateno;
+Xregister action *actions;
+X{
+X    register int i, j, m, n;
+X    register int ruleno, tokensetsize;
+X    register unsigned *rowp;
+X
+X    tokensetsize = WORDSIZE(ntokens);
+X    m = lookaheads[stateno];
+X    n = lookaheads[stateno + 1];
+X    for (i = m; i < n; i++)
+X    {
+X	ruleno = LAruleno[i];
+X	rowp = LA + i * tokensetsize;
+X	for (j = ntokens - 1; j >= 0; j--)
+X	{
+X	    if (BIT(rowp, j))
+X		actions = add_reduce(actions, ruleno, j);
+X	}
+X    }
+X    return (actions);
+X}
+X
+X
+Xaction *
+Xadd_reduce(actions, ruleno, symbol)
+Xregister action *actions;
+Xregister int ruleno, symbol;
+X{
+X    register action *temp, *prev, *next;
+X
+X    prev = 0;
+X    for (next = actions; next && next->symbol < symbol; next = next->next)
+X	prev = next;
+X
+X    while (next && next->symbol == symbol && next->action_code == SHIFT)
+X    {
+X	prev = next;
+X	next = next->next;
+X    }
+X
+X    while (next && next->symbol == symbol &&
+X	    next->action_code == REDUCE && next->number < ruleno)
+X    {
+X	prev = next;
+X	next = next->next;
+X    }
+X
+X    temp = NEW(action);
+X    temp->next = next;
+X    temp->symbol = symbol;
+X    temp->number = ruleno;
+X    temp->prec = rprec[ruleno];
+X    temp->action_code = REDUCE;
+X    temp->assoc = rassoc[ruleno];
+X
+X    if (prev)
+X	prev->next = temp;
+X    else
+X	actions = temp;
+X
+X    return (actions);
+X}
+X
+X
+Xfind_final_state()
+X{
+X    register int goal, i;
+X    register short *to_state;
+X    register shifts *p;
+X
+X    p = shift_table[0];
+X    to_state = p->shift;
+X    goal = ritem[1];
+X    for (i = p->nshifts - 1; i >= 0; --i)
+X    {
+X	final_state = to_state[i];
+X	if (accessing_symbol[final_state] == goal) break;
+X    }
+X}
+X
+X
+Xunused_rules()
+X{
+X    register int i;
+X    register action *p;
+X
+X    rules_used = (short *) MALLOC(nrules*sizeof(short));
+X    if (rules_used == 0) no_space();
+X
+X    for (i = 0; i < nrules; ++i)
+X	rules_used[i] = 0;
+X
+X    for (i = 0; i < nstates; ++i)
+X    {
+X	for (p = parser[i]; p; p = p->next)
+X	{
+X	    if (p->action_code == REDUCE && p->suppressed == 0)
+X		rules_used[p->number] = 1;
+X	}
+X    }
+X
+X    nunused = 0;
+X    for (i = 3; i < nrules; ++i)
+X	if (!rules_used[i]) ++nunused;
+X
+X    if (nunused)
+X	if (nunused == 1)
+X	    fprintf(stderr, "%s: 1 rule never reduced\n", myname);
+X	else
+X	    fprintf(stderr, "%s: %d rules never reduced\n", myname, nunused);
+X}
+X
+X
+Xremove_conflicts()
+X{
+X    register int i;
+X    register int symbol;
+X    register action *p, *pref;
+X
+X    SRtotal = 0;
+X    RRtotal = 0;
+X    SRconflicts = NEW2(nstates, short);
+X    RRconflicts = NEW2(nstates, short);
+X    for (i = 0; i < nstates; i++)
+X    {
+X	SRcount = 0;
+X	RRcount = 0;
+X	symbol = -1;
+X	for (p = parser[i]; p; p = p->next)
+X	{
+X	    if (p->symbol != symbol)
+X	    {
+X		pref = p;
+X		symbol = p->symbol;
+X	    }
+X	    else if (i == final_state && symbol == 0)
+X	    {
+X		SRcount++;
+X		p->suppressed = 1;
+X	    }
+X	    else if (pref->action_code == SHIFT)
+X	    {
+X		if (pref->prec > 0 && p->prec > 0)
+X		{
+X		    if (pref->prec < p->prec)
+X		    {
+X			pref->suppressed = 2;
+X			pref = p;
+X		    }
+X		    else if (pref->prec > p->prec)
+X		    {
+X			p->suppressed = 2;
+X		    }
+X		    else if (pref->assoc == LEFT)
+X		    {
+X			pref->suppressed = 2;
+X			pref = p;
+X		    }
+X		    else if (pref->assoc == RIGHT)
+X		    {
+X			p->suppressed = 2;
+X		    }
+X		    else
+X		    {
+X			pref->suppressed = 2;
+X			p->suppressed = 2;
+X		    }
+X		}
+X		else
+X		{
+X		    SRcount++;
+X		    p->suppressed = 1;
+X		}
+X	    }
+X	    else
+X	    {
+X		RRcount++;
+X		p->suppressed = 1;
+X	    }
+X	}
+X	SRtotal += SRcount;
+X	RRtotal += RRcount;
+X	SRconflicts[i] = SRcount;
+X	RRconflicts[i] = RRcount;
+X    }
+X}
+X
+X
+Xtotal_conflicts()
+X{
+X    fprintf(stderr, "%s: ", myname);
+X    if (SRtotal == 1)
+X	fprintf(stderr, "1 shift/reduce conflict");
+X    else if (SRtotal > 1)
+X	fprintf(stderr, "%d shift/reduce conflicts", SRtotal);
+X
+X    if (SRtotal && RRtotal)
+X	fprintf(stderr, ", ");
+X
+X    if (RRtotal == 1)
+X	fprintf(stderr, "1 reduce/reduce conflict");
+X    else if (RRtotal > 1)
+X	fprintf(stderr, "%d reduce/reduce conflicts", RRtotal);
+X
+X    fprintf(stderr, ".\n");
+X}
+X
+X
+Xint
+Xsole_reduction(stateno)
+Xint stateno;
+X{
+X    register int count, ruleno;
+X    register action *p;
+X
+X    count = 0;
+X    ruleno = 0; 
+X    for (p = parser[stateno]; p; p = p->next)
+X    {
+X	if (p->action_code == SHIFT && p->suppressed == 0)
+X	    return (0);
+X	else if (p->action_code == REDUCE && p->suppressed == 0)
+X	{
+X	    if (ruleno > 0 && p->number != ruleno)
+X		return (0);
+X	    if (p->symbol != 1)
+X		++count;
+X	    ruleno = p->number;
+X	}
+X    }
+X
+X    if (count == 0)
+X	return (0);
+X    return (ruleno);
+X}
+X
+X
+Xdefreds()
+X{
+X    register int i;
+X
+X    defred = NEW2(nstates, short);
+X    for (i = 0; i < nstates; i++)
+X	defred[i] = sole_reduction(i);
+X}
+X 
+Xfree_action_row(p)
+Xregister action *p;
+X{
+X  register action *q;
+X
+X  while (p)
+X    {
+X      q = p->next;
+X      FREE(p);
+X      p = q;
+X    }
+X}
+X
+Xfree_parser()
+X{
+X  register int i;
+X
+X  for (i = 0; i < nstates; i++)
+X    free_action_row(parser[i]);
+X
+X  FREE(parser);
+X}
+X
+END_OF_FILE
+if test 6316 -ne `wc -c <'mkpar.c'`; then
+    echo shar: \"'mkpar.c'\" unpacked with wrong size!
+fi
+# end of 'mkpar.c'
+fi
+if test -f 'skeleton.c' -a "${1}" != "-c" ; then 
+  echo shar: Will not clobber existing file \"'skeleton.c'\"
+else
+echo shar: Extracting \"'skeleton.c'\" \(8596 characters\)
+sed "s/^X//" >'skeleton.c' <<'END_OF_FILE'
+X#include "defs.h"
+X
+X/*  The definition of yysccsid in the banner should be replaced with	*/
+X/*  a #pragma ident directive if the target C compiler supports		*/
+X/*  #pragma ident directives.						*/
+X/*									*/
+X/*  If the skeleton is changed, the banner should be changed so that	*/
+X/*  the altered version can be easily distinguished from the original.	*/
+X/*									*/
+X/*  The #defines included with the banner are there because they are	*/
+X/*  useful in subsequent code.  The macros #defined in the header or	*/
+X/*  the body either are not useful outside of semantic actions or	*/
+X/*  are conditional.							*/
+X
+Xchar *banner[] =
+X{
+X    "#ifndef lint",
+X    "static char yysccsid[] = \"@(#)yaccpar	1.9 (Berkeley) 02/21/93\";",
+X    "#endif",
+X    "#define YYBYACC 1",
+X    "#define YYMAJOR 1",
+X    "#define YYMINOR 9",
+X    "#define yyclearin (yychar=(-1))",
+X    "#define yyerrok (yyerrflag=0)",
+X    "#define YYRECOVERING (yyerrflag!=0)",
+X    0
+X};
+X
+X
+Xchar *tables[] =
+X{
+X    "extern short yylhs[];",
+X    "extern short yylen[];",
+X    "extern short yydefred[];",
+X    "extern short yydgoto[];",
+X    "extern short yysindex[];",
+X    "extern short yyrindex[];",
+X    "extern short yygindex[];",
+X    "extern short yytable[];",
+X    "extern short yycheck[];",
+X    "#if YYDEBUG",
+X    "extern char *yyname[];",
+X    "extern char *yyrule[];",
+X    "#endif",
+X    0
+X};
+X
+X
+Xchar *header[] =
+X{
+X    "#ifdef YYSTACKSIZE",
+X    "#undef YYMAXDEPTH",
+X    "#define YYMAXDEPTH YYSTACKSIZE",
+X    "#else",
+X    "#ifdef YYMAXDEPTH",
+X    "#define YYSTACKSIZE YYMAXDEPTH",
+X    "#else",
+X    "#define YYSTACKSIZE 500",
+X    "#define YYMAXDEPTH 500",
+X    "#endif",
+X    "#endif",
+X    "int yydebug;",
+X    "int yynerrs;",
+X    "int yyerrflag;",
+X    "int yychar;",
+X    "short *yyssp;",
+X    "YYSTYPE *yyvsp;",
+X    "YYSTYPE yyval;",
+X    "YYSTYPE yylval;",
+X    "short yyss[YYSTACKSIZE];",
+X    "YYSTYPE yyvs[YYSTACKSIZE];",
+X    "#define yystacksize YYSTACKSIZE",
+X    0
+X};
+X
+X
+Xchar *body[] =
+X{
+X    "#define YYABORT goto yyabort",
+X    "#define YYREJECT goto yyabort",
+X    "#define YYACCEPT goto yyaccept",
+X    "#define YYERROR goto yyerrlab",
+X    "int",
+X    "yyparse()",
+X    "{",
+X    "    register int yym, yyn, yystate;",
+X    "#if YYDEBUG",
+X    "    register char *yys;",
+X    "    extern char *getenv();",
+X    "",
+X    "    if (yys = getenv(\"YYDEBUG\"))",
+X    "    {",
+X    "        yyn = *yys;",
+X    "        if (yyn >= '0' && yyn <= '9')",
+X    "            yydebug = yyn - '0';",
+X    "    }",
+X    "#endif",
+X    "",
+X    "    yynerrs = 0;",
+X    "    yyerrflag = 0;",
+X    "    yychar = (-1);",
+X    "",
+X    "    yyssp = yyss;",
+X    "    yyvsp = yyvs;",
+X    "    *yyssp = yystate = 0;",
+X    "",
+X    "yyloop:",
+X    "    if (yyn = yydefred[yystate]) goto yyreduce;",
+X    "    if (yychar < 0)",
+X    "    {",
+X    "        if ((yychar = yylex()) < 0) yychar = 0;",
+X    "#if YYDEBUG",
+X    "        if (yydebug)",
+X    "        {",
+X    "            yys = 0;",
+X    "            if (yychar <= YYMAXTOKEN) yys = yyname[yychar];",
+X    "            if (!yys) yys = \"illegal-symbol\";",
+X    "            printf(\"%sdebug: state %d, reading %d (%s)\\n\",",
+X    "                    YYPREFIX, yystate, yychar, yys);",
+X    "        }",
+X    "#endif",
+X    "    }",
+X    "    if ((yyn = yysindex[yystate]) && (yyn += yychar) >= 0 &&",
+X    "            yyn <= YYTABLESIZE && yycheck[yyn] == yychar)",
+X    "    {",
+X    "#if YYDEBUG",
+X    "        if (yydebug)",
+X    "            printf(\"%sdebug: state %d, shifting to state %d\\n\",",
+X    "                    YYPREFIX, yystate, yytable[yyn]);",
+X    "#endif",
+X    "        if (yyssp >= yyss + yystacksize - 1)",
+X    "        {",
+X    "            goto yyoverflow;",
+X    "        }",
+X    "        *++yyssp = yystate = yytable[yyn];",
+X    "        *++yyvsp = yylval;",
+X    "        yychar = (-1);",
+X    "        if (yyerrflag > 0)  --yyerrflag;",
+X    "        goto yyloop;",
+X    "    }",
+X    "    if ((yyn = yyrindex[yystate]) && (yyn += yychar) >= 0 &&",
+X    "            yyn <= YYTABLESIZE && yycheck[yyn] == yychar)",
+X    "    {",
+X    "        yyn = yytable[yyn];",
+X    "        goto yyreduce;",
+X    "    }",
+X    "    if (yyerrflag) goto yyinrecovery;",
+X    "#ifdef lint",
+X    "    goto yynewerror;",
+X    "#endif",
+X    "yynewerror:",
+X    "    yyerror(\"syntax error\");",
+X    "#ifdef lint",
+X    "    goto yyerrlab;",
+X    "#endif",
+X    "yyerrlab:",
+X    "    ++yynerrs;",
+X    "yyinrecovery:",
+X    "    if (yyerrflag < 3)",
+X    "    {",
+X    "        yyerrflag = 3;",
+X    "        for (;;)",
+X    "        {",
+X    "            if ((yyn = yysindex[*yyssp]) && (yyn += YYERRCODE) >= 0 &&",
+X    "                    yyn <= YYTABLESIZE && yycheck[yyn] == YYERRCODE)",
+X    "            {",
+X    "#if YYDEBUG",
+X    "                if (yydebug)",
+X    "                    printf(\"%sdebug: state %d, error recovery shifting\\",
+X    " to state %d\\n\", YYPREFIX, *yyssp, yytable[yyn]);",
+X    "#endif",
+X    "                if (yyssp >= yyss + yystacksize - 1)",
+X    "                {",
+X    "                    goto yyoverflow;",
+X    "                }",
+X    "                *++yyssp = yystate = yytable[yyn];",
+X    "                *++yyvsp = yylval;",
+X    "                goto yyloop;",
+X    "            }",
+X    "            else",
+X    "            {",
+X    "#if YYDEBUG",
+X    "                if (yydebug)",
+X    "                    printf(\"%sdebug: error recovery discarding state %d\
+X\\n\",",
+X    "                            YYPREFIX, *yyssp);",
+X    "#endif",
+X    "                if (yyssp <= yyss) goto yyabort;",
+X    "                --yyssp;",
+X    "                --yyvsp;",
+X    "            }",
+X    "        }",
+X    "    }",
+X    "    else",
+X    "    {",
+X    "        if (yychar == 0) goto yyabort;",
+X    "#if YYDEBUG",
+X    "        if (yydebug)",
+X    "        {",
+X    "            yys = 0;",
+X    "            if (yychar <= YYMAXTOKEN) yys = yyname[yychar];",
+X    "            if (!yys) yys = \"illegal-symbol\";",
+X    "            printf(\"%sdebug: state %d, error recovery discards token %d\
+X (%s)\\n\",",
+X    "                    YYPREFIX, yystate, yychar, yys);",
+X    "        }",
+X    "#endif",
+X    "        yychar = (-1);",
+X    "        goto yyloop;",
+X    "    }",
+X    "yyreduce:",
+X    "#if YYDEBUG",
+X    "    if (yydebug)",
+X    "        printf(\"%sdebug: state %d, reducing by rule %d (%s)\\n\",",
+X    "                YYPREFIX, yystate, yyn, yyrule[yyn]);",
+X    "#endif",
+X    "    yym = yylen[yyn];",
+X    "    yyval = yyvsp[1-yym];",
+X    "    switch (yyn)",
+X    "    {",
+X    0
+X};
+X
+X
+Xchar *trailer[] =
+X{
+X    "    }",
+X    "    yyssp -= yym;",
+X    "    yystate = *yyssp;",
+X    "    yyvsp -= yym;",
+X    "    yym = yylhs[yyn];",
+X    "    if (yystate == 0 && yym == 0)",
+X    "    {",
+X    "#if YYDEBUG",
+X    "        if (yydebug)",
+X    "            printf(\"%sdebug: after reduction, shifting from state 0 to\\",
+X    " state %d\\n\", YYPREFIX, YYFINAL);",
+X    "#endif",
+X    "        yystate = YYFINAL;",
+X    "        *++yyssp = YYFINAL;",
+X    "        *++yyvsp = yyval;",
+X    "        if (yychar < 0)",
+X    "        {",
+X    "            if ((yychar = yylex()) < 0) yychar = 0;",
+X    "#if YYDEBUG",
+X    "            if (yydebug)",
+X    "            {",
+X    "                yys = 0;",
+X    "                if (yychar <= YYMAXTOKEN) yys = yyname[yychar];",
+X    "                if (!yys) yys = \"illegal-symbol\";",
+X    "                printf(\"%sdebug: state %d, reading %d (%s)\\n\",",
+X    "                        YYPREFIX, YYFINAL, yychar, yys);",
+X    "            }",
+X    "#endif",
+X    "        }",
+X    "        if (yychar == 0) goto yyaccept;",
+X    "        goto yyloop;",
+X    "    }",
+X    "    if ((yyn = yygindex[yym]) && (yyn += yystate) >= 0 &&",
+X    "            yyn <= YYTABLESIZE && yycheck[yyn] == yystate)",
+X    "        yystate = yytable[yyn];",
+X    "    else",
+X    "        yystate = yydgoto[yym];",
+X    "#if YYDEBUG",
+X    "    if (yydebug)",
+X    "        printf(\"%sdebug: after reduction, shifting from state %d \\",
+X    "to state %d\\n\", YYPREFIX, *yyssp, yystate);",
+X    "#endif",
+X    "    if (yyssp >= yyss + yystacksize - 1)",
+X    "    {",
+X    "        goto yyoverflow;",
+X    "    }",
+X    "    *++yyssp = yystate;",
+X    "    *++yyvsp = yyval;",
+X    "    goto yyloop;",
+X    "yyoverflow:",
+X    "    yyerror(\"yacc stack overflow\");",
+X    "yyabort:",
+X    "    return (1);",
+X    "yyaccept:",
+X    "    return (0);",
+X    "}",
+X    0
+X};
+X
+X
+Xwrite_section(section)
+Xchar *section[];
+X{
+X    register int c;
+X    register int i;
+X    register char *s;
+X    register FILE *f;
+X
+X    f = code_file;
+X    for (i = 0; s = section[i]; ++i)
+X    {
+X	++outline;
+X	while (c = *s)
+X	{
+X	    putc(c, f);
+X	    ++s;
+X	}
+X	putc('\n', f);
+X    }
+X}
+END_OF_FILE
+if test 8596 -ne `wc -c <'skeleton.c'`; then
+    echo shar: \"'skeleton.c'\" unpacked with wrong size!
+fi
+# end of 'skeleton.c'
+fi
+if test -f 'symtab.c' -a "${1}" != "-c" ; then 
+  echo shar: Will not clobber existing file \"'symtab.c'\"
+else
+echo shar: Extracting \"'symtab.c'\" \(1841 characters\)
+sed "s/^X//" >'symtab.c' <<'END_OF_FILE'
+X#include "defs.h"
+X
+X
+X/* TABLE_SIZE is the number of entries in the symbol table. */
+X/* TABLE_SIZE must be a power of two.			    */
+X
+X#define	TABLE_SIZE 1024
+X
+X
+Xbucket **symbol_table;
+Xbucket *first_symbol;
+Xbucket *last_symbol;
+X
+X
+Xint
+Xhash(name)
+Xchar *name;
+X{
+X    register char *s;
+X    register int c, k;
+X
+X    assert(name && *name);
+X    s = name;
+X    k = *s;
+X    while (c = *++s)
+X	k = (31*k + c) & (TABLE_SIZE - 1);
+X
+X    return (k);
+X}
+X
+X
+Xbucket *
+Xmake_bucket(name)
+Xchar *name;
+X{
+X    register bucket *bp;
+X
+X    assert(name);
+X    bp = (bucket *) MALLOC(sizeof(bucket));
+X    if (bp == 0) no_space();
+X    bp->link = 0;
+X    bp->next = 0;
+X    bp->name = MALLOC(strlen(name) + 1);
+X    if (bp->name == 0) no_space();
+X    bp->tag = 0;
+X    bp->value = UNDEFINED;
+X    bp->index = 0;
+X    bp->prec = 0;
+X    bp-> class = UNKNOWN;
+X    bp->assoc = TOKEN;
+X
+X    if (bp->name == 0) no_space();
+X    strcpy(bp->name, name);
+X
+X    return (bp);
+X}
+X
+X
+Xbucket *
+Xlookup(name)
+Xchar *name;
+X{
+X    register bucket *bp, **bpp;
+X
+X    bpp = symbol_table + hash(name);
+X    bp = *bpp;
+X
+X    while (bp)
+X    {
+X	if (strcmp(name, bp->name) == 0) return (bp);
+X	bpp = &bp->link;
+X	bp = *bpp;
+X    }
+X
+X    *bpp = bp = make_bucket(name);
+X    last_symbol->next = bp;
+X    last_symbol = bp;
+X
+X    return (bp);
+X}
+X
+X
+Xcreate_symbol_table()
+X{
+X    register int i;
+X    register bucket *bp;
+X
+X    symbol_table = (bucket **) MALLOC(TABLE_SIZE*sizeof(bucket *));
+X    if (symbol_table == 0) no_space();
+X    for (i = 0; i < TABLE_SIZE; i++)
+X	symbol_table[i] = 0;
+X
+X    bp = make_bucket("error");
+X    bp->index = 1;
+X    bp->class = TERM;
+X
+X    first_symbol = bp;
+X    last_symbol = bp;
+X    symbol_table[hash("error")] = bp;
+X}
+X
+X
+Xfree_symbol_table()
+X{
+X    FREE(symbol_table);
+X    symbol_table = 0;
+X}
+X
+X
+Xfree_symbols()
+X{
+X    register bucket *p, *q;
+X
+X    for (p = first_symbol; p; p = q)
+X    {
+X	q = p->next;
+X	FREE(p);
+X    }
+X}
+END_OF_FILE
+if test 1841 -ne `wc -c <'symtab.c'`; then
+    echo shar: \"'symtab.c'\" unpacked with wrong size!
+fi
+# end of 'symtab.c'
+fi
+if test ! -d 'test' ; then
+    echo shar: Creating directory \"'test'\"
+    mkdir 'test'
+fi
+if test -f 'test/error.output' -a "${1}" != "-c" ; then 
+  echo shar: Will not clobber existing file \"'test/error.output'\"
+else
+echo shar: Extracting \"'test/error.output'\" \(262 characters\)
+sed "s/^X//" >'test/error.output' <<'END_OF_FILE'
+X   0  $accept : S $end
+X
+X   1  S : error
+X
+Xstate 0
+X	$accept : . S $end  (0)
+X
+X	error  shift 1
+X	.  error
+X
+X	S  goto 2
+X
+X
+Xstate 1
+X	S : error .  (1)
+X
+X	.  reduce 1
+X
+X
+Xstate 2
+X	$accept : S . $end  (0)
+X
+X	$end  accept
+X
+X
+X2 terminals, 2 nonterminals
+X2 grammar rules, 3 states
+END_OF_FILE
+if test 262 -ne `wc -c <'test/error.output'`; then
+    echo shar: \"'test/error.output'\" unpacked with wrong size!
+fi
+# end of 'test/error.output'
+fi
+if test -f 'test/error.tab.c' -a "${1}" != "-c" ; then 
+  echo shar: Will not clobber existing file \"'test/error.tab.c'\"
+else
+echo shar: Extracting \"'test/error.tab.c'\" \(6617 characters\)
+sed "s/^X//" >'test/error.tab.c' <<'END_OF_FILE'
+X#ifndef lint
+Xstatic char yysccsid[] = "@(#)yaccpar	1.9 (Berkeley) 02/21/93";
+X#endif
+X#define YYBYACC 1
+X#define YYMAJOR 1
+X#define YYMINOR 9
+X#define yyclearin (yychar=(-1))
+X#define yyerrok (yyerrflag=0)
+X#define YYRECOVERING (yyerrflag!=0)
+X#define YYPREFIX "yy"
+X#define YYERRCODE 256
+Xshort yylhs[] = {                                        -1,
+X    0,
+X};
+Xshort yylen[] = {                                         2,
+X    1,
+X};
+Xshort yydefred[] = {                                      0,
+X    1,    0,
+X};
+Xshort yydgoto[] = {                                       2,
+X};
+Xshort yysindex[] = {                                   -256,
+X    0,    0,
+X};
+Xshort yyrindex[] = {                                      0,
+X    0,    0,
+X};
+Xshort yygindex[] = {                                      0,
+X};
+X#define YYTABLESIZE 0
+Xshort yytable[] = {                                       1,
+X};
+Xshort yycheck[] = {                                     256,
+X};
+X#define YYFINAL 2
+X#ifndef YYDEBUG
+X#define YYDEBUG 0
+X#endif
+X#define YYMAXTOKEN 0
+X#if YYDEBUG
+Xchar *yyname[] = {
+X"end-of-file",
+X};
+Xchar *yyrule[] = {
+X"$accept : S",
+X"S : error",
+X};
+X#endif
+X#ifndef YYSTYPE
+Xtypedef int YYSTYPE;
+X#endif
+X#ifdef YYSTACKSIZE
+X#undef YYMAXDEPTH
+X#define YYMAXDEPTH YYSTACKSIZE
+X#else
+X#ifdef YYMAXDEPTH
+X#define YYSTACKSIZE YYMAXDEPTH
+X#else
+X#define YYSTACKSIZE 500
+X#define YYMAXDEPTH 500
+X#endif
+X#endif
+Xint yydebug;
+Xint yynerrs;
+Xint yyerrflag;
+Xint yychar;
+Xshort *yyssp;
+XYYSTYPE *yyvsp;
+XYYSTYPE yyval;
+XYYSTYPE yylval;
+Xshort yyss[YYSTACKSIZE];
+XYYSTYPE yyvs[YYSTACKSIZE];
+X#define yystacksize YYSTACKSIZE
+X#line 4 "error.y"
+Xmain(){printf("yyparse() = %d\n",yyparse());}
+Xyylex(){return-1;}
+Xyyerror(s)char*s;{printf("%s\n",s);}
+X#line 80 "error.tab.c"
+X#define YYABORT goto yyabort
+X#define YYREJECT goto yyabort
+X#define YYACCEPT goto yyaccept
+X#define YYERROR goto yyerrlab
+Xint
+Xyyparse()
+X{
+X    register int yym, yyn, yystate;
+X#if YYDEBUG
+X    register char *yys;
+X    extern char *getenv();
+X
+X    if (yys = getenv("YYDEBUG"))
+X    {
+X        yyn = *yys;
+X        if (yyn >= '0' && yyn <= '9')
+X            yydebug = yyn - '0';
+X    }
+X#endif
+X
+X    yynerrs = 0;
+X    yyerrflag = 0;
+X    yychar = (-1);
+X
+X    yyssp = yyss;
+X    yyvsp = yyvs;
+X    *yyssp = yystate = 0;
+X
+Xyyloop:
+X    if (yyn = yydefred[yystate]) goto yyreduce;
+X    if (yychar < 0)
+X    {
+X        if ((yychar = yylex()) < 0) yychar = 0;
+X#if YYDEBUG
+X        if (yydebug)
+X        {
+X            yys = 0;
+X            if (yychar <= YYMAXTOKEN) yys = yyname[yychar];
+X            if (!yys) yys = "illegal-symbol";
+X            printf("%sdebug: state %d, reading %d (%s)\n",
+X                    YYPREFIX, yystate, yychar, yys);
+X        }
+X#endif
+X    }
+X    if ((yyn = yysindex[yystate]) && (yyn += yychar) >= 0 &&
+X            yyn <= YYTABLESIZE && yycheck[yyn] == yychar)
+X    {
+X#if YYDEBUG
+X        if (yydebug)
+X            printf("%sdebug: state %d, shifting to state %d\n",
+X                    YYPREFIX, yystate, yytable[yyn]);
+X#endif
+X        if (yyssp >= yyss + yystacksize - 1)
+X        {
+X            goto yyoverflow;
+X        }
+X        *++yyssp = yystate = yytable[yyn];
+X        *++yyvsp = yylval;
+X        yychar = (-1);
+X        if (yyerrflag > 0)  --yyerrflag;
+X        goto yyloop;
+X    }
+X    if ((yyn = yyrindex[yystate]) && (yyn += yychar) >= 0 &&
+X            yyn <= YYTABLESIZE && yycheck[yyn] == yychar)
+X    {
+X        yyn = yytable[yyn];
+X        goto yyreduce;
+X    }
+X    if (yyerrflag) goto yyinrecovery;
+X#ifdef lint
+X    goto yynewerror;
+X#endif
+Xyynewerror:
+X    yyerror("syntax error");
+X#ifdef lint
+X    goto yyerrlab;
+X#endif
+Xyyerrlab:
+X    ++yynerrs;
+Xyyinrecovery:
+X    if (yyerrflag < 3)
+X    {
+X        yyerrflag = 3;
+X        for (;;)
+X        {
+X            if ((yyn = yysindex[*yyssp]) && (yyn += YYERRCODE) >= 0 &&
+X                    yyn <= YYTABLESIZE && yycheck[yyn] == YYERRCODE)
+X            {
+X#if YYDEBUG
+X                if (yydebug)
+X                    printf("%sdebug: state %d, error recovery shifting\
+X to state %d\n", YYPREFIX, *yyssp, yytable[yyn]);
+X#endif
+X                if (yyssp >= yyss + yystacksize - 1)
+X                {
+X                    goto yyoverflow;
+X                }
+X                *++yyssp = yystate = yytable[yyn];
+X                *++yyvsp = yylval;
+X                goto yyloop;
+X            }
+X            else
+X            {
+X#if YYDEBUG
+X                if (yydebug)
+X                    printf("%sdebug: error recovery discarding state %d\n",
+X                            YYPREFIX, *yyssp);
+X#endif
+X                if (yyssp <= yyss) goto yyabort;
+X                --yyssp;
+X                --yyvsp;
+X            }
+X        }
+X    }
+X    else
+X    {
+X        if (yychar == 0) goto yyabort;
+X#if YYDEBUG
+X        if (yydebug)
+X        {
+X            yys = 0;
+X            if (yychar <= YYMAXTOKEN) yys = yyname[yychar];
+X            if (!yys) yys = "illegal-symbol";
+X            printf("%sdebug: state %d, error recovery discards token %d (%s)\n",
+X                    YYPREFIX, yystate, yychar, yys);
+X        }
+X#endif
+X        yychar = (-1);
+X        goto yyloop;
+X    }
+Xyyreduce:
+X#if YYDEBUG
+X    if (yydebug)
+X        printf("%sdebug: state %d, reducing by rule %d (%s)\n",
+X                YYPREFIX, yystate, yyn, yyrule[yyn]);
+X#endif
+X    yym = yylen[yyn];
+X    yyval = yyvsp[1-yym];
+X    switch (yyn)
+X    {
+X    }
+X    yyssp -= yym;
+X    yystate = *yyssp;
+X    yyvsp -= yym;
+X    yym = yylhs[yyn];
+X    if (yystate == 0 && yym == 0)
+X    {
+X#if YYDEBUG
+X        if (yydebug)
+X            printf("%sdebug: after reduction, shifting from state 0 to\
+X state %d\n", YYPREFIX, YYFINAL);
+X#endif
+X        yystate = YYFINAL;
+X        *++yyssp = YYFINAL;
+X        *++yyvsp = yyval;
+X        if (yychar < 0)
+X        {
+X            if ((yychar = yylex()) < 0) yychar = 0;
+X#if YYDEBUG
+X            if (yydebug)
+X            {
+X                yys = 0;
+X                if (yychar <= YYMAXTOKEN) yys = yyname[yychar];
+X                if (!yys) yys = "illegal-symbol";
+X                printf("%sdebug: state %d, reading %d (%s)\n",
+X                        YYPREFIX, YYFINAL, yychar, yys);
+X            }
+X#endif
+X        }
+X        if (yychar == 0) goto yyaccept;
+X        goto yyloop;
+X    }
+X    if ((yyn = yygindex[yym]) && (yyn += yystate) >= 0 &&
+X            yyn <= YYTABLESIZE && yycheck[yyn] == yystate)
+X        yystate = yytable[yyn];
+X    else
+X        yystate = yydgoto[yym];
+X#if YYDEBUG
+X    if (yydebug)
+X        printf("%sdebug: after reduction, shifting from state %d \
+Xto state %d\n", YYPREFIX, *yyssp, yystate);
+X#endif
+X    if (yyssp >= yyss + yystacksize - 1)
+X    {
+X        goto yyoverflow;
+X    }
+X    *++yyssp = yystate;
+X    *++yyvsp = yyval;
+X    goto yyloop;
+Xyyoverflow:
+X    yyerror("yacc stack overflow");
+Xyyabort:
+X    return (1);
+Xyyaccept:
+X    return (0);
+X}
+END_OF_FILE
+if test 6617 -ne `wc -c <'test/error.tab.c'`; then
+    echo shar: \"'test/error.tab.c'\" unpacked with wrong size!
+fi
+# end of 'test/error.tab.c'
+fi
+if test -f 'test/error.tab.h' -a "${1}" != "-c" ; then 
+  echo shar: Will not clobber existing file \"'test/error.tab.h'\"
+else
+echo shar: Extracting \"'test/error.tab.h'\" \(0 characters\)
+sed "s/^X//" >'test/error.tab.h' <<'END_OF_FILE'
+END_OF_FILE
+if test 0 -ne `wc -c <'test/error.tab.h'`; then
+    echo shar: \"'test/error.tab.h'\" unpacked with wrong size!
+fi
+# end of 'test/error.tab.h'
+fi
+if test -f 'test/error.y' -a "${1}" != "-c" ; then 
+  echo shar: Will not clobber existing file \"'test/error.y'\"
+else
+echo shar: Extracting \"'test/error.y'\" \(117 characters\)
+sed "s/^X//" >'test/error.y' <<'END_OF_FILE'
+X%%
+XS: error
+X%%
+Xmain(){printf("yyparse() = %d\n",yyparse());}
+Xyylex(){return-1;}
+Xyyerror(s)char*s;{printf("%s\n",s);}
+END_OF_FILE
+if test 117 -ne `wc -c <'test/error.y'`; then
+    echo shar: \"'test/error.y'\" unpacked with wrong size!
+fi
+# end of 'test/error.y'
+fi
+if test -f 'test/ftp.tab.h' -a "${1}" != "-c" ; then 
+  echo shar: Will not clobber existing file \"'test/ftp.tab.h'\"
+else
+echo shar: Extracting \"'test/ftp.tab.h'\" \(1038 characters\)
+sed "s/^X//" >'test/ftp.tab.h' <<'END_OF_FILE'
+X#define A 257
+X#define B 258
+X#define C 259
+X#define E 260
+X#define F 261
+X#define I 262
+X#define L 263
+X#define N 264
+X#define P 265
+X#define R 266
+X#define S 267
+X#define T 268
+X#define SP 269
+X#define CRLF 270
+X#define COMMA 271
+X#define STRING 272
+X#define NUMBER 273
+X#define USER 274
+X#define PASS 275
+X#define ACCT 276
+X#define REIN 277
+X#define QUIT 278
+X#define PORT 279
+X#define PASV 280
+X#define TYPE 281
+X#define STRU 282
+X#define MODE 283
+X#define RETR 284
+X#define STOR 285
+X#define APPE 286
+X#define MLFL 287
+X#define MAIL 288
+X#define MSND 289
+X#define MSOM 290
+X#define MSAM 291
+X#define MRSQ 292
+X#define MRCP 293
+X#define ALLO 294
+X#define REST 295
+X#define RNFR 296
+X#define RNTO 297
+X#define ABOR 298
+X#define DELE 299
+X#define CWD 300
+X#define LIST 301
+X#define NLST 302
+X#define SITE 303
+X#define STAT 304
+X#define HELP 305
+X#define NOOP 306
+X#define MKD 307
+X#define RMD 308
+X#define PWD 309
+X#define CDUP 310
+X#define STOU 311
+X#define SMNT 312
+X#define SYST 313
+X#define SIZE 314
+X#define MDTM 315
+X#define UMASK 316
+X#define IDLE 317
+X#define CHMOD 318
+X#define LEXERR 319
+END_OF_FILE
+if test 1038 -ne `wc -c <'test/ftp.tab.h'`; then
+    echo shar: \"'test/ftp.tab.h'\" unpacked with wrong size!
+fi
+# end of 'test/ftp.tab.h'
+fi
+if test -f 'verbose.c' -a "${1}" != "-c" ; then 
+  echo shar: Will not clobber existing file \"'verbose.c'\"
+else
+echo shar: Extracting \"'verbose.c'\" \(6329 characters\)
+sed "s/^X//" >'verbose.c' <<'END_OF_FILE'
+X
+X#include "defs.h"
+X
+X
+Xstatic short *null_rules;
+X
+Xverbose()
+X{
+X    register int i;
+X
+X    if (!vflag) return;
+X
+X    null_rules = (short *) MALLOC(nrules*sizeof(short));
+X    if (null_rules == 0) no_space();
+X    fprintf(verbose_file, "\f\n");
+X    for (i = 0; i < nstates; i++)
+X	print_state(i);
+X    FREE(null_rules);
+X
+X    if (nunused)
+X	log_unused();
+X    if (SRtotal || RRtotal)
+X	log_conflicts();
+X
+X    fprintf(verbose_file, "\n\n%d terminals, %d nonterminals\n", ntokens,
+X	    nvars);
+X    fprintf(verbose_file, "%d grammar rules, %d states\n", nrules - 2, nstates);
+X}
+X
+X
+Xlog_unused()
+X{
+X    register int i;
+X    register short *p;
+X
+X    fprintf(verbose_file, "\n\nRules never reduced:\n");
+X    for (i = 3; i < nrules; ++i)
+X    {
+X	if (!rules_used[i])
+X	{
+X	    fprintf(verbose_file, "\t%s :", symbol_name[rlhs[i]]);
+X	    for (p = ritem + rrhs[i]; *p >= 0; ++p)
+X		fprintf(verbose_file, " %s", symbol_name[*p]);
+X	    fprintf(verbose_file, "  (%d)\n", i - 2);
+X	}
+X    }
+X}
+X
+X
+Xlog_conflicts()
+X{
+X    register int i;
+X
+X    fprintf(verbose_file, "\n\n");
+X    for (i = 0; i < nstates; i++)
+X    {
+X	if (SRconflicts[i] || RRconflicts[i])
+X	{
+X	    fprintf(verbose_file, "State %d contains ", i);
+X	    if (SRconflicts[i] == 1)
+X		fprintf(verbose_file, "1 shift/reduce conflict");
+X	    else if (SRconflicts[i] > 1)
+X		fprintf(verbose_file, "%d shift/reduce conflicts",
+X			SRconflicts[i]);
+X	    if (SRconflicts[i] && RRconflicts[i])
+X		fprintf(verbose_file, ", ");
+X	    if (RRconflicts[i] == 1)
+X		fprintf(verbose_file, "1 reduce/reduce conflict");
+X	    else if (RRconflicts[i] > 1)
+X		fprintf(verbose_file, "%d reduce/reduce conflicts",
+X			RRconflicts[i]);
+X	    fprintf(verbose_file, ".\n");
+X	}
+X    }
+X}
+X
+X
+Xprint_state(state)
+Xint state;
+X{
+X    if (state)
+X	fprintf(verbose_file, "\n\n");
+X    if (SRconflicts[state] || RRconflicts[state])
+X	print_conflicts(state);
+X    fprintf(verbose_file, "state %d\n", state);
+X    print_core(state);
+X    print_nulls(state);
+X    print_actions(state);
+X}
+X
+X
+Xprint_conflicts(state)
+Xint state;
+X{
+X    register int symbol, act, number;
+X    register action *p;
+X
+X    symbol = -1;
+X    for (p = parser[state]; p; p = p->next)
+X    {
+X	if (p->suppressed == 2)
+X	    continue;
+X
+X	if (p->symbol != symbol)
+X	{
+X	    symbol = p->symbol;
+X	    number = p->number;
+X	    if (p->action_code == SHIFT)
+X		act = SHIFT;
+X	    else
+X		act = REDUCE;
+X	}
+X	else if (p->suppressed == 1)
+X	{
+X	    if (state == final_state && symbol == 0)
+X	    {
+X		fprintf(verbose_file, "%d: shift/reduce conflict \
+X(accept, reduce %d) on $end\n", state, p->number - 2);
+X	    }
+X	    else
+X	    {
+X		if (act == SHIFT)
+X		{
+X		    fprintf(verbose_file, "%d: shift/reduce conflict \
+X(shift %d, reduce %d) on %s\n", state, number, p->number - 2,
+X			    symbol_name[symbol]);
+X		}
+X		else
+X		{
+X		    fprintf(verbose_file, "%d: reduce/reduce conflict \
+X(reduce %d, reduce %d) on %s\n", state, number - 2, p->number - 2,
+X			    symbol_name[symbol]);
+X		}
+X	    }
+X	}
+X    }
+X}
+X
+X
+Xprint_core(state)
+Xint state;
+X{
+X    register int i;
+X    register int k;
+X    register int rule;
+X    register core *statep;
+X    register short *sp;
+X    register short *sp1;
+X
+X    statep = state_table[state];
+X    k = statep->nitems;
+X
+X    for (i = 0; i < k; i++)
+X    {
+X	sp1 = sp = ritem + statep->items[i];
+X
+X	while (*sp >= 0) ++sp;
+X	rule = -(*sp);
+X	fprintf(verbose_file, "\t%s : ", symbol_name[rlhs[rule]]);
+X
+X        for (sp = ritem + rrhs[rule]; sp < sp1; sp++)
+X	    fprintf(verbose_file, "%s ", symbol_name[*sp]);
+X
+X	putc('.', verbose_file);
+X
+X	while (*sp >= 0)
+X	{
+X	    fprintf(verbose_file, " %s", symbol_name[*sp]);
+X	    sp++;
+X	}
+X	fprintf(verbose_file, "  (%d)\n", -2 - *sp);
+X    }
+X}
+X
+X
+Xprint_nulls(state)
+Xint state;
+X{
+X    register action *p;
+X    register int i, j, k, nnulls;
+X
+X    nnulls = 0;
+X    for (p = parser[state]; p; p = p->next)
+X    {
+X	if (p->action_code == REDUCE &&
+X		(p->suppressed == 0 || p->suppressed == 1))
+X	{
+X	    i = p->number;
+X	    if (rrhs[i] + 1 == rrhs[i+1])
+X	    {
+X		for (j = 0; j < nnulls && i > null_rules[j]; ++j)
+X		    continue;
+X
+X		if (j == nnulls)
+X		{
+X		    ++nnulls;
+X		    null_rules[j] = i;
+X		}
+X		else if (i != null_rules[j])
+X		{
+X		    ++nnulls;
+X		    for (k = nnulls - 1; k > j; --k)
+X			null_rules[k] = null_rules[k-1];
+X		    null_rules[j] = i;
+X		}
+X	    }
+X	}
+X    }
+X
+X    for (i = 0; i < nnulls; ++i)
+X    {
+X	j = null_rules[i];
+X	fprintf(verbose_file, "\t%s : .  (%d)\n", symbol_name[rlhs[j]],
+X		j - 2);
+X    }
+X    fprintf(verbose_file, "\n");
+X}
+X
+X
+Xprint_actions(stateno)
+Xint stateno;
+X{
+X    register action *p;
+X    register shifts *sp;
+X    register int as;
+X
+X    if (stateno == final_state)
+X	fprintf(verbose_file, "\t$end  accept\n");
+X
+X    p = parser[stateno];
+X    if (p)
+X    {
+X	print_shifts(p);
+X	print_reductions(p, defred[stateno]);
+X    }
+X
+X    sp = shift_table[stateno];
+X    if (sp && sp->nshifts > 0)
+X    {
+X	as = accessing_symbol[sp->shift[sp->nshifts - 1]];
+X	if (ISVAR(as))
+X	    print_gotos(stateno);
+X    }
+X}
+X
+X
+Xprint_shifts(p)
+Xregister action *p;
+X{
+X    register int count;
+X    register action *q;
+X
+X    count = 0;
+X    for (q = p; q; q = q->next)
+X    {
+X	if (q->suppressed < 2 && q->action_code == SHIFT)
+X	    ++count;
+X    }
+X
+X    if (count > 0)
+X    {
+X	for (; p; p = p->next)
+X	{
+X	    if (p->action_code == SHIFT && p->suppressed == 0)
+X		fprintf(verbose_file, "\t%s  shift %d\n",
+X			    symbol_name[p->symbol], p->number);
+X	}
+X    }
+X}
+X
+X
+Xprint_reductions(p, defred)
+Xregister action *p;
+Xregister int defred;
+X{
+X    register int k, anyreds;
+X    register action *q;
+X
+X    anyreds = 0;
+X    for (q = p; q ; q = q->next)
+X    {
+X	if (q->action_code == REDUCE && q->suppressed < 2)
+X	{
+X	    anyreds = 1;
+X	    break;
+X	}
+X    }
+X
+X    if (anyreds == 0)
+X	fprintf(verbose_file, "\t.  error\n");
+X    else
+X    {
+X	for (; p; p = p->next)
+X	{
+X	    if (p->action_code == REDUCE && p->number != defred)
+X	    {
+X		k = p->number - 2;
+X		if (p->suppressed == 0)
+X		    fprintf(verbose_file, "\t%s  reduce %d\n",
+X			    symbol_name[p->symbol], k);
+X	    }
+X	}
+X
+X        if (defred > 0)
+X	    fprintf(verbose_file, "\t.  reduce %d\n", defred - 2);
+X    }
+X}
+X
+X
+Xprint_gotos(stateno)
+Xint stateno;
+X{
+X    register int i, k;
+X    register int as;
+X    register short *to_state;
+X    register shifts *sp;
+X
+X    putc('\n', verbose_file);
+X    sp = shift_table[stateno];
+X    to_state = sp->shift;
+X    for (i = 0; i < sp->nshifts; ++i)
+X    {
+X	k = to_state[i];
+X	as = accessing_symbol[k];
+X	if (ISVAR(as))
+X	    fprintf(verbose_file, "\t%s  goto %d\n", symbol_name[as], k);
+X    }
+X}
+X
+END_OF_FILE
+if test 6329 -ne `wc -c <'verbose.c'`; then
+    echo shar: \"'verbose.c'\" unpacked with wrong size!
+fi
+# end of 'verbose.c'
+fi
+if test -f 'warshall.c' -a "${1}" != "-c" ; then 
+  echo shar: Will not clobber existing file \"'warshall.c'\"
+else
+echo shar: Extracting \"'warshall.c'\" \(1191 characters\)
+sed "s/^X//" >'warshall.c' <<'END_OF_FILE'
+X#include "defs.h"
+X
+Xtransitive_closure(R, n)
+Xunsigned *R;
+Xint n;
+X{
+X    register int rowsize;
+X    register unsigned i;
+X    register unsigned *rowj;
+X    register unsigned *rp;
+X    register unsigned *rend;
+X    register unsigned *ccol;
+X    register unsigned *relend;
+X    register unsigned *cword;
+X    register unsigned *rowi;
+X
+X    rowsize = WORDSIZE(n);
+X    relend = R + n*rowsize;
+X
+X    cword = R;
+X    i = 0;
+X    rowi = R;
+X    while (rowi < relend)
+X    {
+X	ccol = cword;
+X	rowj = R;
+X
+X	while (rowj < relend)
+X	{
+X	    if (*ccol & (1 << i))
+X	    {
+X		rp = rowi;
+X		rend = rowj + rowsize;
+X		while (rowj < rend)
+X		    *rowj++ |= *rp++;
+X	    }
+X	    else
+X	    {
+X		rowj += rowsize;
+X	    }
+X
+X	    ccol += rowsize;
+X	}
+X
+X	if (++i >= BITS_PER_WORD)
+X	{
+X	    i = 0;
+X	    cword++;
+X	}
+X
+X	rowi += rowsize;
+X    }
+X}
+X
+Xreflexive_transitive_closure(R, n)
+Xunsigned *R;
+Xint n;
+X{
+X    register int rowsize;
+X    register unsigned i;
+X    register unsigned *rp;
+X    register unsigned *relend;
+X
+X    transitive_closure(R, n);
+X
+X    rowsize = WORDSIZE(n);
+X    relend = R + n*rowsize;
+X
+X    i = 0;
+X    rp = R;
+X    while (rp < relend)
+X    {
+X	*rp |= (1 << i);
+X	if (++i >= BITS_PER_WORD)
+X	{
+X	    i = 0;
+X	    rp++;
+X	}
+X
+X	rp += rowsize;
+X    }
+X}
+END_OF_FILE
+if test 1191 -ne `wc -c <'warshall.c'`; then
+    echo shar: \"'warshall.c'\" unpacked with wrong size!
+fi
+# end of 'warshall.c'
+fi
+if test -f 'yacc.1' -a "${1}" != "-c" ; then 
+  echo shar: Will not clobber existing file \"'yacc.1'\"
+else
+echo shar: Extracting \"'yacc.1'\" \(2353 characters\)
+sed "s/^X//" >'yacc.1' <<'END_OF_FILE'
+X.\"	%W%	%R% (Berkeley) %E%
+X.\"
+X.TH YACC 1 "July\ 15,\ 1990"
+X.UC 6
+X.SH NAME
+XYacc \- an LALR(1) parser generator
+X.SH SYNOPSIS
+X.B yacc [ -dlrtv ] [ -b
+X.I file_prefix
+X.B ] [ -p
+X.I symbol_prefix
+X.B ]
+X.I filename
+X.SH DESCRIPTION
+X.I Yacc
+Xreads the grammar specification in the file
+X.I filename
+Xand generates an LR(1) parser for it.
+XThe parsers consist of a set of LALR(1) parsing tables and a driver routine
+Xwritten in the C programming language.
+X.I Yacc
+Xnormally writes the parse tables and the driver routine to the file
+X.IR y.tab.c.
+X.PP
+XThe following options are available:
+X.RS
+X.TP
+X\fB-b \fIfile_prefix\fR
+XThe
+X.B -b
+Xoption changes the prefix prepended to the output file names to
+Xthe string denoted by
+X.IR file_prefix.
+XThe default prefix is the character
+X.IR y.
+X.TP
+X.B -d
+XThe \fB-d\fR option causes the header file
+X.IR y.tab.h
+Xto be written.
+X.TP
+X.B -l
+XIf the
+X.B -l
+Xoption is not specified,
+X.I yacc
+Xwill insert \#line directives in the generated code.
+XThe \#line directives let the C compiler relate errors in the
+Xgenerated code to the user's original code.
+XIf the \fB-l\fR option is specified,
+X.I yacc
+Xwill not insert the \#line directives.
+X\&\#line directives specified by the user will be retained.
+X.TP
+X\fB-p \fIsymbol_prefix\fR
+XThe
+X.B -p
+Xoption changes the prefix prepended to yacc-generated symbols to
+Xthe string denoted by
+X.IR symbol_prefix.
+XThe default prefix is the string
+X.IR yy.
+X.TP
+X.B -r
+XThe
+X.B -r
+Xoption causes
+X.I yacc
+Xto produce separate files for code and tables.  The code file
+Xis named
+X.IR y.code.c,
+Xand the tables file is named
+X.IR y.tab.c.
+X.TP
+X.B -t
+XThe
+X.B -t
+Xoption changes the preprocessor directives generated by
+X.I yacc
+Xso that debugging statements will be incorporated in the compiled code.
+X.TP
+X.B -v
+XThe
+X.B -v
+Xoption causes a human-readable description of the generated parser to
+Xbe written to the file
+X.IR y.output.
+X.RE
+X.PP
+XIf the environment variable TMPDIR is set, the string denoted by
+XTMPDIR will be used as the name of the directory where the temporary
+Xfiles are created.
+X.SH FILES
+X.IR y.code.c
+X.br
+X.IR y.tab.c
+X.br
+X.IR y.tab.h
+X.br
+X.IR y.output
+X.br
+X.IR /tmp/yacc.aXXXXXX
+X.br
+X.IR /tmp/yacc.tXXXXXX
+X.br
+X.IR /tmp/yacc.uXXXXXX
+X.SH DIAGNOSTICS
+XIf there are rules that are never reduced, the number of such rules is
+Xreported on standard error.
+XIf there are any LALR(1) conflicts, the number of conflicts is reported
+Xon standard error.
+END_OF_FILE
+if test 2353 -ne `wc -c <'yacc.1'`; then
+    echo shar: \"'yacc.1'\" unpacked with wrong size!
+fi
+# end of 'yacc.1'
+fi
+echo shar: End of archive 1 \(of 3\).
+cp /dev/null ark1isdone
+MISSING=""
+for I in 1 2 3 ; do
+    if test ! -f ark${I}isdone ; then
+	MISSING="${MISSING} ${I}"
+    fi
+done
+if test "${MISSING}" = "" ; then
+    echo You have unpacked all 3 archives.
+    rm -f ark[1-9]isdone
+else
+    echo You still need to unpack the following archives:
+    echo "        " ${MISSING}
+fi
+##  End of shell archive.
+exit 0
