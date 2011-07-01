@@ -1,3 +1,3 @@
 #!/bin/bash
 
-echo "preinstall_as_root"
+echo "Dummy preinstall as root"

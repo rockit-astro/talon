@@ -83,4 +83,4 @@ target_link_libraries (xephem astro m Xm Xt)
 
 install (TARGETS xephem DESTINATION bin)
 install(DIRECTORY auxil DESTINATION ${CORE_INSTALL_DIR}/xephem)
-install(DIRECTORY fifos DESTINATION ${CORE_INSTALL_DIR}/xephem)
+#install(DIRECTORY fifos DESTINATION ${CORE_INSTALL_DIR}/xephem)
