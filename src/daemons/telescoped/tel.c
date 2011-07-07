@@ -29,6 +29,21 @@
 #include "teled.h"
 
 //ICE
+#define TELESCOPED_DEBUG
+#if defined(TELESCOPED_DEBUG)
+//void debug_printf(char* format, ...)
+//{
+//        va_list args;
+//        va_start(args, format);
+//        printf(format, args);
+//        va_end(args);
+//}
+#define debug_printf printf
+#else
+#define debug_printf {}
+#endif /* NDEBUG */
+
+
 int xtrack_mode;
 static double xstrack; /* when current xtrack started */
 static double xttrack;
@@ -1062,25 +1077,29 @@ static void buildTrack(Now *np, Obj *op)
 			{
 				scale = mip->esign * mip->estep / (2 * PI);
 				csi_w(cfd, "etrack");
-				//		printf ("etrack");
+				debug_printf ("etrack");
 			}
 			else
 			{
 				scale = mip->sign * mip->step / (2 * PI);
 				csi_w(cfd, "mtrack");
-				//		printf ("mtrack");
+				debug_printf ("mtrack");
 			}
 			csi_w(cfd, "(0,%.0f", 1000. * TRACKINT / PPTRACK + .5);
-			//	    printf ("(0,%.0f", 1000.*TRACKINT/PPTRACK+.5);
+			debug_printf ("(0,%.0f", 1000.*TRACKINT/PPTRACK+.5);
 
 			/* TODO: pack into longer commands */
 			for (i = 0; i < PPTRACK; i++)
 			{
 				csi_w(cfd, ",%.0f", scale * xyrp[i] + .5);
-				//		printf (",%.0f", scale*xyrp[i]+.5);
+				debug_printf (",%.0f", scale*xyrp[i]+.5);
 			}
 			csi_w(cfd, ");");
-			//	    printf (");\n");
+			debug_printf (");\n");
+
+//			debug_printf ("mip->esign = %d\tmip->estep = %d\n", mip->esign, mip->estep);
+//			debug_printf ("scale = %.10f\txyrp = %.10f\n", scale, xyrp[0]);
+
 
 		}// !virtual_mode
 	}
@@ -1339,7 +1358,7 @@ static int trackObj(Obj *op, int first)
 	}
 
 	/* find desired topocentric apparent place and axes @ clocknow */
-	if (mip->xtrack)
+	if (mip->xtrack && !virtual_mode)
 		now.n_mjd = xstrack + clocknow / (SPD * 1000.);
 	else
 		now.n_mjd = strack + clocknow / (SPD * 1000.);
@@ -1402,39 +1421,39 @@ static int trackObj(Obj *op, int first)
 		break;
 	}
 
-	//ICE
-	if (xtrack_mode && virtual_mode == 0)
-	{
-		if (HMOT->xtrack)
-		{
-			char strHAVg[32];
-			csi_wr(MIPSFD(HMOT), strHAVg, 32, "xgetvar(1);");
-			char strHAerr[32];
-			csi_wr(MIPSFD(HMOT), strHAerr, 32, "xgetvar(2);");
-			char strHAvel[32];
-			csi_wr(MIPSFD(HMOT), strHAvel, 32, "xgetvar(6);");
-			strHAVg[strlen(strHAVg) - 1] = 0;
-			strHAerr[strlen(strHAerr) - 1] = 0;
-			strHAvel[strlen(strHAvel) - 1] = 0;
-			printf("HAvel = %s\tHAVg = %s\tHAerr = %s\t\t", strHAvel, strHAVg, strHAerr);
-		}
-
-		if (DMOT->xtrack)
-		{
-			char strDECVg[32];
-			csi_wr(MIPSFD(DMOT), strDECVg, 32, "xgetvar(1);");
-			char strDECerr[32];
-			csi_wr(MIPSFD(DMOT), strDECerr, 32, "xgetvar(2);");
-			char strDECvel[32];
-			csi_wr(MIPSFD(DMOT), strDECvel, 32, "xgetvar(6);");
-			strDECVg[strlen(strDECVg) - 1] = 0;
-			strDECerr[strlen(strDECerr) - 1] = 0;
-			strDECvel[strlen(strDECvel) - 1] = 0;
-			printf("DECvel = %s\tDECVg = %s\tHAerr = %s\t\t", strDECvel, strDECVg, strDECerr);
-		}
-		printf("\n");
-	}
-	//ICE
+//	//ICE
+//	if (xtrack_mode && virtual_mode == 0)
+//	{
+//		if (HMOT->xtrack)
+//		{
+//			char strHAVg[32];
+//			csi_wr(MIPSFD(HMOT), strHAVg, 32, "xgetvar(1);");
+//			char strHAerr[32];
+//			csi_wr(MIPSFD(HMOT), strHAerr, 32, "xgetvar(2);");
+//			char strHAvel[32];
+//			csi_wr(MIPSFD(HMOT), strHAvel, 32, "xgetvar(6);");
+//			strHAVg[strlen(strHAVg) - 1] = 0;
+//			strHAerr[strlen(strHAerr) - 1] = 0;
+//			strHAvel[strlen(strHAvel) - 1] = 0;
+//			printf("HAvel = %s\tHAVg = %s\tHAerr = %s\t\t", strHAvel, strHAVg, strHAerr);
+//		}
+//
+//		if (DMOT->xtrack)
+//		{
+//			char strDECVg[32];
+//			csi_wr(MIPSFD(DMOT), strDECVg, 32, "xgetvar(1);");
+//			char strDECerr[32];
+//			csi_wr(MIPSFD(DMOT), strDECerr, 32, "xgetvar(2);");
+//			char strDECvel[32];
+//			csi_wr(MIPSFD(DMOT), strDECvel, 32, "xgetvar(6);");
+//			strDECVg[strlen(strDECVg) - 1] = 0;
+//			strDECerr[strlen(strDECerr) - 1] = 0;
+//			strDECvel[strlen(strDECvel) - 1] = 0;
+//			printf("DECvel = %s\tDECVg = %s\tHAerr = %s\t\t", strDECvel, strDECVg, strDECerr);
+//		}
+//		printf("\n");
+//	}
+//	//ICE
 
 	/* ok */
 	return (0);
@@ -2144,7 +2163,7 @@ static void initCfg()
 	mip->axis = HAXIS;
 	mip->have = HHAVE;
 	//ICE haveenc mode variable XTRACK at telescope.cfg
-	mip->xtrack = HXTRACK;
+	mip->xtrack = HXTRACK && !virtual_mode;
 	mip->haveenc = HHAVEENC;
 	//ICE
 	//ICEmip->haveenc = 1;
@@ -2199,7 +2218,7 @@ static void initCfg()
 	mip->axis = DAXIS;
 	mip->have = DHAVE;
 	//ICE haveenc mode variable XTRACK at telescope.cfg
-	mip->xtrack = DXTRACK;
+	mip->xtrack = DXTRACK && !virtual_mode;
 	mip->haveenc = DHAVEENC;
 	//ICE
 	//ICE mip->haveenc = 1;
