@@ -1,0 +1,118 @@
+#!/usr/bin/perl -w
+#
+# Read the temperature logfile, write it to a file to an include file
+# for the webpage. Use ncftpput (thanks mike!) to move the file to a
+# remote server.
+#
+# Sensor #0 is the Window
+# Sensor #1 is the inside of the Linux box
+#
+# Dec 18 21:46:47  Sensor 0 C: 8.81 F: 47.86
+# Dec 18 21:46:47  Sensor 1 C: 26.41 F: 79.54
+#
+$led_file = "/tmp/Temp.led";
+$inc_file = "/tmp/nexus_temp.inc";
+$log_file = "/var/log/temperature";
+$ftp_bin = "/usr/local/bin/ncftpput";
+$ip_up = "/usr/sbin/dip /etc/ppp/host.dip";
+$ftp_user = "user";
+$ftp_pass = "password";
+$ftp_host = "ftp.host.com";
+$dest_dir = "/home/user/public_html";
+
+open( INCFILE, ">$inc_file") || die "Can't open $inc_file";
+print INCFILE "<HR>\n";
+print INCFILE "<CENTER>\n";
+
+print INCFILE "Nexus Computing's current temperatures are<P>\n";
+
+# Start the script for the Java LED display
+open( LEDFILE, ">$led_file") || die "Can't open $led_file";
+print LEDFILE "Do\n";
+
+# Run tail -2 /var/log/temperature and parse the output
+open( TEMPLOG, "tail -2 $log_file |") || die "Can't fork: $!";
+
+while( <TEMPLOG> )
+{
+
+  # Get the time and date, sensor number, temperature in c and f
+  ($month,$day,$time,$d1,$sensor,$d1,$centigrade,$d1,$farenheight) = split( " ", $_ );
+
+  if( $sensor eq '0' )
+  {
+    print INCFILE "The modems are at $farenheight\xB0 F ($centigrade\xB0 C)<BR>\n";
+
+    print LEDFILE "  ScrollLeft delay=30 startspace=20 endspace=20 text=";
+    print LEDFILE "The modems are at $farenheight\xB0 F ($centigrade\xB0 C) ";
+  }
+
+  if( $sensor eq '1' )
+  {
+    print INCFILE "The room is a ";
+    print LEDFILE "and the room is a ";
+
+    if( $farenheight < 40.0 )
+    {
+      print INCFILE "freezing";
+      print LEDFILE "\\bfreezing ";
+    }
+
+    if( $farenheight >= 40.0 and $farenheight < 70.0 )
+    {
+      print INCFILE "chilly";
+      print LEDFILE "\\cchilly ";
+    }
+
+    if( $farenheight >= 70.0 and $farenheight < 80.0 )
+    {
+      print INCFILE "comfortable";
+      print LEDFILE "\\ycomfortable ";
+    }
+
+    if( $farenheight >= 80.0 and $farenheight < 100.0 )
+    {
+      print INCFILE "balmy";
+      print LEDFILE "\\ybalmy ";
+    }
+
+    if( $farenheight >= 100.0 )
+    {
+      print INCFILE "blistering";
+      print LEDFILE "\\rblistering ";
+    }
+
+    print INCFILE " $farenheight\xB0 F ($centigrade\xB0 C)<BR>\n";
+    print LEDFILE "\\r$farenheight\xB0 F ($centigrade\xB0 C) ";
+  }
+}
+
+print INCFILE "Last updated: $month $day $time<BR>\n";
+print INCFILE "<PRE>These temperatures generated with ";
+print INCFILE "<A HREF=\"http://www.eskimo.com/~nexus/digitemp.shtml\">";
+print INCFILE "DigiTemp</A></PRE><BR>\n";
+print INCFILE "</CENTER>\n";
+
+close( TEMPLOG );
+close( INCFILE );
+
+print LEDFILE "Last updated on $month $day at $time\n";
+print LEDFILE "Repeat times=-1\n";
+
+close( LEDFILE );
+
+# Send it to the server
+# Fire up the link
+system $ip_up;
+
+# Wait a little bit to let ppp0 come up
+sleep 60;
+
+# Send it to the server
+system $ftp_bin,"-u",$ftp_user,"-p",$ftp_pass,$ftp_host,$dest_dir,$inc_file;
+system $ftp_bin,"-u",$ftp_user,"-p",$ftp_pass,$ftp_host,$dest_dir,$led_file;
+
+# Shut down the link
+system "ppp-off";
+
+# done!
