@@ -1162,10 +1162,9 @@ static void updateXVEL(float p0, float t0, float vel)
 	xdt = xcalculate_delta(xtick);
 	xt = (vel * xtime) + xdp + xdt + (float) cvg(CV_XDELTA);
 	xt *= esign;
-	perr = xg - xt;
+	xperr = xg - xt;
 
-	if (lastxt != xt)
-		xperr = xfilt0 / xfilt1 * xperr + (xfilt1 - xfilt0) / xfilt1 * perr;
+	perr = (float) ((long int) xperr);
 
 	if (xpos1.t != xpos0.t)
 		xposvel = (xpos1.x - xpos0.x) / ((xpos1.t - xpos0.t) * SPCT);
@@ -1177,37 +1176,7 @@ static void updateXVEL(float p0, float t0, float vel)
 	else
 		xdeltavel = 0;
 
-	vg = esign * (vel + xposvel + xdeltavel) - Kv * Ag / Vg * xperr;
-
-	/*
-	 if (lastxt != ((long) xt) || vg < 1.0 || abserr > 1.0)
-	 {
-	 xperr = 7.0/8.0*xperr + 1.0/8.0*perr;
-	 }
-	 abserr = fsign(xperr) * (xperr);
-
-
-	 if (xpos1.t != xpos0.t)
-	 xposvel = (xpos1.x - xpos0.x) / ((xpos1.t - xpos0.t) * SPCT);
-	 else
-	 xposvel = 0;
-
-	 if (xdelta1.t != xdelta0.t)
-	 xdeltavel = (xdelta1.x - xdelta0.x) / ((xdelta1.t - xdelta0.t) * SPCT);
-	 else
-	 xdeltavel = 0;
-
-
-	 if (abserr > XFINE_TUNE_POS)
-	 {
-
-	 vg = esign * (vel + xposvel + xdeltavel) - Kv * Ag / Vg * xperr;
-	 }
-	 else
-	 {
-	 vg = esign * (vel + xposvel + xdeltavel) - Kv * 10 / MOTCONRATE * xperr;
-	 }
-	 */
+	vg = esign * (vel + xposvel + xdeltavel) - Kv * Ag / Vg * perr;
 
 	/* constrain vg to Vg and Ag */
 	(void) clamp(&vg, Vg);
