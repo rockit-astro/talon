@@ -31,16 +31,11 @@
 //ICE
 #define TELESCOPED_DEBUG
 #if defined(TELESCOPED_DEBUG)
-//void debug_printf(char* format, ...)
-//{
-//        va_list args;
-//        va_start(args, format);
-//        printf(format, args);
-//        va_end(args);
-//}
 #define debug_printf printf
+#define debug_fflush fflush
 #else
 #define debug_printf {}
+#define debug_fflush {}
 #endif /* NDEBUG */
 
 
