@@ -147,7 +147,7 @@ axis_home (MotorInfo *mip, FifoId fid, int first)
 }
 
 //ICE
-#define NO_HOME_CHECK
+//#define NO_HOME_CHECK
 //ICE
 /* Check to see if we have homed this axis yet */
 int axisHomedCheck(MotorInfo *mip, char msgbuf[])
