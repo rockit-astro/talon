@@ -1421,39 +1421,52 @@ static int trackObj(Obj *op, int first)
 		break;
 	}
 
-//	//ICE
-//	if (xtrack_mode && virtual_mode == 0)
-//	{
-//		if (HMOT->xtrack)
-//		{
-//			char strHAVg[32];
-//			csi_wr(MIPSFD(HMOT), strHAVg, 32, "xgetvar(1);");
-//			char strHAerr[32];
-//			csi_wr(MIPSFD(HMOT), strHAerr, 32, "xgetvar(2);");
-//			char strHAvel[32];
-//			csi_wr(MIPSFD(HMOT), strHAvel, 32, "xgetvar(6);");
-//			strHAVg[strlen(strHAVg) - 1] = 0;
-//			strHAerr[strlen(strHAerr) - 1] = 0;
-//			strHAvel[strlen(strHAvel) - 1] = 0;
-//			printf("HAvel = %s\tHAVg = %s\tHAerr = %s\t\t", strHAvel, strHAVg, strHAerr);
-//		}
-//
-//		if (DMOT->xtrack)
-//		{
-//			char strDECVg[32];
-//			csi_wr(MIPSFD(DMOT), strDECVg, 32, "xgetvar(1);");
-//			char strDECerr[32];
-//			csi_wr(MIPSFD(DMOT), strDECerr, 32, "xgetvar(2);");
-//			char strDECvel[32];
-//			csi_wr(MIPSFD(DMOT), strDECvel, 32, "xgetvar(6);");
-//			strDECVg[strlen(strDECVg) - 1] = 0;
-//			strDECerr[strlen(strDECerr) - 1] = 0;
-//			strDECvel[strlen(strDECvel) - 1] = 0;
-//			printf("DECvel = %s\tDECVg = %s\tHAerr = %s\t\t", strDECvel, strDECVg, strDECerr);
-//		}
-//		printf("\n");
-//	}
-//	//ICE
+//ICE
+#ifdef TELESCOPED_DEBUG
+	if (xtrack_mode && virtual_mode == 0)
+	{
+		if (HMOT->xtrack)
+		{
+			char strHAvel[32];
+			csi_wr(MIPSFD(HMOT), strHAvel, 32, "xgetvar(6);");
+			strHAvel[strlen(strHAvel) - 1] = 0;
+			debug_printf("HAvel = %s\t", strHAvel);
+
+			char strHAVg[32];
+			csi_wr(MIPSFD(HMOT), strHAVg, 32, "xgetvar(1);");
+			strHAVg[strlen(strHAVg) - 1] = 0;
+			debug_printf("HAVg = %s\t", strHAVg);
+
+			char strHAerr[32];
+			csi_wr(MIPSFD(HMOT), strHAerr, 32, "xgetvar(2);");
+			strHAerr[strlen(strHAerr) - 1] = 0;
+			debug_printf("HAerr = %s\t", strHAerr);
+		}
+		debug_printf("\t");
+
+		if (DMOT->xtrack)
+		{
+			char strDECvel[32];
+			csi_wr(MIPSFD(DMOT), strDECvel, 32, "xgetvar(6);");
+			strDECvel[strlen(strDECvel) - 1] = 0;
+			debug_printf("DECvel = %s\t", strDECvel);
+
+			char strDECVg[32];
+			csi_wr(MIPSFD(DMOT), strDECVg, 32, "xgetvar(1);");
+			strDECVg[strlen(strDECVg) - 1] = 0;
+			debug_printf("DECVg = %s\t", strDECVg);
+
+			char strDECerr[32];
+			csi_wr(MIPSFD(DMOT), strDECerr, 32, "xgetvar(2);");
+			strDECerr[strlen(strDECerr) - 1] = 0;
+			debug_printf("DECerr = %s\t", strDECerr);
+		}
+		debug_printf("\n");
+	}
+
+	debug_fflush(stdout);
+#endif
+//ICE
 
 	/* ok */
 	return (0);
