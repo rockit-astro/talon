@@ -945,16 +945,11 @@ void xdelta_add(VType time, VType delta)
 
 typedef enum xvar_enum
 {
-	XTRACK_VMEAN = 0,
+	XTRACK_POS = 0,
 	XTRACK_VEL,
 	XTRACK_PERR,
-	XTRACK_DELTA,
-	XTRACK_TIME,
-	XTRACK_LAUNCH_STATE,
 	XTRACK_POSVEL,
-	XTRACK_POS,
-	XFILT0,
-	XFILT1
+	XTRACK_TIME,
 } xvar;
 
 static long xenc;
@@ -994,29 +989,10 @@ static float xtick_start;
 
 static void xsetvar(int par, int val, int dec)
 {
+/*
 	float tmp;
 	tmp = (float) val + ((float) dec) / 1000.0;
-
-	if (par == XTRACK_VMEAN)
-		vmean = tmp;
-	else if (par == XTRACK_VEL)
-		vg = tmp;
-	else if (par == XTRACK_PERR)
-		perr = tmp;
-	else if (par == XTRACK_DELTA)
-		xdt = tmp;
-	else if (par == XTRACK_TIME)
-		xtime = tmp;
-	else if (par == XTRACK_LAUNCH_STATE)
-		xlaunch_state = tmp;
-	else if (par == XTRACK_POSVEL)
-		xposvel = tmp;
-	else if (par == XTRACK_POS)
-		xg = tmp;
-	else if (par == XFILT0)
-		xfilt0 = tmp;
-	else if (par == XFILT1)
-		xfilt1 = tmp;
+*/
 	return;
 }
 
@@ -1025,32 +1001,30 @@ static void xgetvar(int par)
 	float tmp;
 	long val, dec;
 
-	if (par == XTRACK_VMEAN)
-		tmp = vmean;
+	if (par == XTRACK_POS)
+		tmp = xg;
 	else if (par == XTRACK_VEL)
 		tmp = vg;
 	else if (par == XTRACK_PERR)
 		tmp = perr;
-	else if (par == XTRACK_DELTA)
-		tmp = xdt;
-	else if (par == XTRACK_TIME)
-		tmp = xtime;
-	else if (par == XTRACK_LAUNCH_STATE)
-		tmp = xlaunch_state;
 	else if (par == XTRACK_POSVEL)
 		tmp = xposvel;
-	else if (par == XTRACK_POS)
-		tmp = xg;
-	else if (par == XFILT0)
-		tmp = xfilt0;
-	else if (par == XFILT1)
-		tmp = xfilt1;
+	else if (par == XTRACK_TIME)
+		tmp = xtime;
+	else
+	{
+		printf("unknown param=%d\n", par);
+		return;
+	}
 
 	val = (long) tmp;
-	dec = (long) (1000.0 * (tmp - (float) val));
-	if (tmp < 0)
+	if (val<0) val = -val;
 
-		printf("-%ld.%03ld\n", -val, -dec);
+	dec = (long) (1000.0 * (float) (tmp - (float) val));
+	if (dec<0) dec = -dec;
+
+	if (tmp < 0)
+		printf("-%ld.%03ld\n", val, dec);
 	else
 		printf(" %ld.%03ld\n", val, dec);
 
