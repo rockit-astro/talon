@@ -38,7 +38,6 @@
 #define debug_fflush {}
 #endif /* NDEBUG */
 
-
 int xtrack_mode;
 static double xstrack; /* when current xtrack started */
 static double xttrack;
@@ -157,14 +156,14 @@ void tel_msg(msg)
 		tel_jog(1, jog_dir, VEL_MAX); // Slow/fast jog
 	else if (sscanf(msg, "Offset %lf,%lf", &a, &b) == 2)
 		offsetTracking(1, a, b);
-//ICE
+	//ICE
 	else if (sscanf(msg, "xdelta(%lf,%lf)", &a, &b) == 2)
 	{
 		printf("HA = %lf DEC = %lf\n", a, b);
 		fflush(stdout);
 		tel_set_xdelta(a, b);
 	}
-//ICE
+	//ICE
 	else
 		tel_stop(1);
 }
@@ -607,8 +606,8 @@ static void tel_op(int first, ...)
 		telstatshmp->jogging_ison = 0;
 
 		obj_cir(np, op); /* just for sayWhere */
-		toTTS("The telescope is slewing towards %s, %s.", op->o_name, sayWhere(
-				op->s_alt, op->s_az));
+		toTTS("The telescope is slewing towards %s, %s.", op->o_name,
+				sayWhere(op->s_alt, op->s_az));
 	}
 
 	if (trackObj(&o, first) < 0)
@@ -692,35 +691,35 @@ static void tel_altaz(int first, ...)
 
 				if (virtual_mode)
 				{
-					vmcSetTargetPosition(mip->axis, mip->sign * mip->step
-							* mip->dpos / (2 * PI));
+					vmcSetTargetPosition(mip->axis,
+							mip->sign * mip->step * mip->dpos / (2 * PI));
 				}
 				else
 				{
 					//ICE
 					double timeout = (mip->dpos - mip->cpos) / mip->maxvel;
-					csi_w(MIPSFD(mip), "timeout=%d;", 2000 + abs(1000.0
-							* timeout)); //2 senconds more time (miliseconds)
+					csi_w(MIPSFD(mip), "timeout=%d;",
+							2000 + abs(1000.0 * timeout)); //2 senconds more time (miliseconds)
 					printf("timeout=%d;", 2000 + abs(1000.0 * timeout)); //2 senconds more time (miliseconds)
 					sleep(1);
 					//ICE
 
 					if (mip->haveenc)
 					{
-						csi_w(MIPCFD(mip), "etpos=%.0f;", mip->esign
-								* mip->estep * mip->dpos / (2 * PI));
+						csi_w(MIPCFD(mip), "etpos=%.0f;",
+								mip->esign * mip->estep * mip->dpos / (2 * PI));
 						//ICE
-						printf("Slew to etpos=%.0f\n", mip->esign * mip->estep
-								* mip->dpos / (2 * PI));
+						printf("Slew to etpos=%.0f\n",
+								mip->esign * mip->estep * mip->dpos / (2 * PI));
 						//ICE
 					}
 					else
 					{
-						csi_w(MIPCFD(mip), "mtpos=%.0f;", mip->sign * mip->step
-								* mip->dpos / (2 * PI));
+						csi_w(MIPCFD(mip), "mtpos=%.0f;",
+								mip->sign * mip->step * mip->dpos / (2 * PI));
 						//ICE
-						printf("Slew to mtpos=%.0f\n", mip->sign * mip->step
-								* mip->dpos / (2 * PI));
+						printf("Slew to mtpos=%.0f\n",
+								mip->sign * mip->step * mip->dpos / (2 * PI));
 						//ICE
 					}
 				}
@@ -824,20 +823,20 @@ static void tel_hadec(int first, ...)
 
 				if (virtual_mode)
 				{
-					vmcSetTargetPosition(mip->axis, mip->sign * mip->step
-							* mip->dpos / (2 * PI));
+					vmcSetTargetPosition(mip->axis,
+							mip->sign * mip->step * mip->dpos / (2 * PI));
 				}
 				else
 				{
 					if (mip->haveenc)
 					{
-						csi_w(MIPCFD(mip), "etpos=%.0f;", mip->esign
-								* mip->estep * mip->dpos / (2 * PI));
+						csi_w(MIPCFD(mip), "etpos=%.0f;",
+								mip->esign * mip->estep * mip->dpos / (2 * PI));
 					}
 					else
 					{
-						csi_w(MIPCFD(mip), "mtpos=%.0f;", mip->sign * mip->step
-								* mip->dpos / (2 * PI));
+						csi_w(MIPCFD(mip), "mtpos=%.0f;",
+								mip->sign * mip->step * mip->dpos / (2 * PI));
 					}
 				}
 			}
@@ -1058,8 +1057,8 @@ static void buildTrack(Now *np, Obj *op)
 
 			xyrp = xyr[mip - telstatshmp->minfo];
 			//	    tdlog ("Creating track profile:");
-			vmcSetTrackPath(mip->axis, PPTRACK, 0, 1000.0 * TRACKINT / PPTRACK
-					+ 0.5, xyrp);
+			vmcSetTrackPath(mip->axis, PPTRACK, 0,
+					1000.0 * TRACKINT / PPTRACK + 0.5, xyrp);
 
 		}
 		else
@@ -1072,28 +1071,28 @@ static void buildTrack(Now *np, Obj *op)
 			{
 				scale = mip->esign * mip->estep / (2 * PI);
 				csi_w(cfd, "etrack");
-				debug_printf ("etrack");
+				debug_printf("etrack");
 			}
 			else
 			{
 				scale = mip->sign * mip->step / (2 * PI);
 				csi_w(cfd, "mtrack");
-				debug_printf ("mtrack");
+				debug_printf("mtrack");
 			}
 			csi_w(cfd, "(0,%.0f", 1000. * TRACKINT / PPTRACK + .5);
-			debug_printf ("(0,%.0f", 1000.*TRACKINT/PPTRACK+.5);
+			debug_printf("(0,%.0f", 1000. * TRACKINT / PPTRACK + .5);
 
 			/* TODO: pack into longer commands */
 			for (i = 0; i < PPTRACK; i++)
 			{
 				csi_w(cfd, ",%.0f", scale * xyrp[i] + .5);
-				debug_printf (",%.0f", scale*xyrp[i]+.5);
+				debug_printf(",%.0f", scale * xyrp[i] + .5);
 			}
 			csi_w(cfd, ");");
-			debug_printf (");\n");
+			debug_printf(");\n");
 
-//			debug_printf ("mip->esign = %d\tmip->estep = %d\n", mip->esign, mip->estep);
-//			debug_printf ("scale = %.10f\txyrp = %.10f\n", scale, xyrp[0]);
+			//			debug_printf ("mip->esign = %d\tmip->estep = %d\n", mip->esign, mip->estep);
+			//			debug_printf ("scale = %.10f\txyrp = %.10f\n", scale, xyrp[0]);
 
 
 		}// !virtual_mode
@@ -1115,26 +1114,26 @@ static void tel_set_xdelta(double HA, double DEC)
 	if (HMOT->have && HMOT->xtrack)
 	{
 		double radsHA = HA * (2 * PI) / 360.0;
-		stepsHA = HMOT->esign * HMOT->estep * radsHA / (2* PI);
+		stepsHA = HMOT->esign * HMOT->estep * radsHA / (2 * PI);
 		csi_w(MIPCFD(HMOT), "xdel=%d;", stepsHA);
 		printf("HA xdelta %d encoder steps\n", stepsHA);
 	}
-	else printf("HA axis not present or not in xtrack mode\n");
-
+	else
+		printf("HA axis not present or not in xtrack mode\n");
 
 	if (DMOT->have && DMOT->xtrack)
 	{
 		double radsDEC = DEC * (2 * PI) / 360.0;
-		stepsDEC = HMOT->esign * DMOT->estep * radsDEC / (2* PI);
+		stepsDEC = HMOT->esign * DMOT->estep * radsDEC / (2 * PI);
 		csi_w(MIPCFD(DMOT), "xdel=%d;", stepsDEC);
 		printf("DEC xdelta %d encoder steps\n", stepsDEC);
 	}
-	else printf("DEC axis not present or not in xtrack mode\n");
+	else
+		printf("DEC axis not present or not in xtrack mode\n");
 
 	fflush(stdout);
 	return;
 }
-
 
 static int buildXTrack(Now *np, Obj *op)
 {
@@ -1165,7 +1164,7 @@ static int buildXTrack(Now *np, Obj *op)
 			//			printf("ttrack = %.0f\n", ttrack);
 			if (mip->have && mip->xtrack)
 			{
-//#warning "@@@@@@@@@@@@@@@@@@@@@@@@@ONLY FOR TEST @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"	tel.c	/saft/daemons/telescoped.csi	line 215	C/C++ Problem
+				//#warning "@@@@@@@@@@@@@@@@@@@@@@@@@ONLY FOR TEST @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"	tel.c	/saft/daemons/telescoped.csi	line 215	C/C++ Problem
 				// make sure we're homed to begin with
 				char buf[128];
 				if (axisHomedCheck(mip, buf))
@@ -1176,7 +1175,7 @@ static int buildXTrack(Now *np, Obj *op)
 					toTTS("Error: %s", buf);
 					return -1;
 				}
-//#warning "@@@@@@@@@@@@@@@@@@@@@@@@@ONLY FOR TEST @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"	tel.c	/saft/daemons/telescoped.csi	line 215	C/C++ Problem
+				//#warning "@@@@@@@@@@@@@@@@@@@@@@@@@ONLY FOR TEST @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"	tel.c	/saft/daemons/telescoped.csi	line 215	C/C++ Problem
 
 				axis = mip - telstatshmp->minfo;
 				xyrp = xyr[axis];
@@ -1192,12 +1191,12 @@ static int buildXTrack(Now *np, Obj *op)
 					csi_w(cfd, "clock=0;");
 					csi_w(MIPSFD(mip), "timeout=%d;", 1000); //1 second
 					csi_w(cfd, "xtrack(%d,%.0f,%.0f,%.0f,%.0f,%.0f);",
-							mip->haveenc ? 1 : 0, 0.0, round(xttrack), round(
-									pos), 0.0, 0.0);
+							mip->haveenc ? 1 : 0, 0.0, round(xttrack),
+							round(pos), 0.0, 0.0);
 					printf(
 							"axis=%d time=%.0f -> xtrack(%d,%.0f,%.0f,%.0f,%.0f,%.0f)\n",
-							axis, tnow, mip->haveenc ? 1 : 0, 0.0, round(
-									xttrack), round(pos), 0.0, 0.0);
+							axis, tnow, mip->haveenc ? 1 : 0, 0.0,
+							round(xttrack), round(pos), 0.0, 0.0);
 				}
 				else
 				{
@@ -1211,6 +1210,23 @@ static int buildXTrack(Now *np, Obj *op)
 		}
 		xttrack += XTRACKINT;
 	}
+	return 0;
+}
+
+double xgetvar(int sfd, int index)
+{
+	double value;
+	char str[32];
+	char msg[32];
+	sprintf(msg, "xgetvar(%d);", index);
+	csi_wr(sfd, str, sizeof(str), msg);
+	str[strlen(str) - 1] = 0;
+	if (sscanf(str, "%lf", &value) == 1)
+	{
+		return value;
+	}
+	printf("%s\n", str);
+
 	return 0;
 }
 //ICE
@@ -1298,7 +1314,7 @@ static int trackObj(Obj *op, int first)
 				{
 					if (mip->have && !mip->xtrack)
 					{
-//#warning "@@@@@@@@@@@@@@@@@@@@@@@@@ONLY FOR TEST @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"	tel.c	/saft/daemons/telescoped.csi	line 215	C/C++ Problem
+						//#warning "@@@@@@@@@@@@@@@@@@@@@@@@@ONLY FOR TEST @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"	tel.c	/saft/daemons/telescoped.csi	line 215	C/C++ Problem
 						// make sure we're homed to begin with
 						char buf[128];
 						if (axisHomedCheck(mip, buf))
@@ -1309,7 +1325,7 @@ static int trackObj(Obj *op, int first)
 							toTTS("Error: %s", buf);
 							return -1;
 						}
-//#warning "@@@@@@@@@@@@@@@@@@@@@@@@@ONLY FOR TEST @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"	tel.c	/saft/daemons/telescoped.csi	line 215	C/C++ Problem
+						//#warning "@@@@@@@@@@@@@@@@@@@@@@@@@ONLY FOR TEST @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"	tel.c	/saft/daemons/telescoped.csi	line 215	C/C++ Problem
 						if (virtual_mode)
 						{
 							vmcSetTrackingOffset(mip->axis, 0);
@@ -1328,6 +1344,9 @@ static int trackObj(Obj *op, int first)
 	}
 	//ICE
 
+	/* update actual position info */
+	readRaw();
+
 	/* quick, get current value of typical clock.
 	 * use this to compute desired to avoid host computer time jitter
 	 */
@@ -1336,13 +1355,15 @@ static int trackObj(Obj *op, int first)
 	{
 		clocknow = vmcGetClock(mip->axis);
 	}
+//	else if (mip->xtrack)
+//	{
+//		clocknow = (int) (xgetvar(MIPSFD(mip), 4) * 1000.0);
+//	}
 	else
 	{
 		clocknow = csi_rix(MIPSFD(mip), "=clock;");
 	}
 
-	/* update actual position info */
-	readRaw();
 	mkCook();
 
 	/* check axes */
@@ -1405,8 +1426,12 @@ static int trackObj(Obj *op, int first)
 	case TS_TRACKING:
 		if (!telstatshmp->jogging_ison && onTarget(&mip) < 0)
 		{
-//			fifoWrite(Tel_Id, 4, "Axis %d lost tracking lock", mip->axis);
-			fifoWrite(Tel_Id, 4, "Axis %d lost tracking lock deltaradians=%f (set TRACKACC telescope.cfg)", mip->axis, delra(mip->cpos - mip->dpos));
+			//			fifoWrite(Tel_Id, 4, "Axis %d lost tracking lock", mip->axis);
+			fifoWrite(
+					Tel_Id,
+					4,
+					"Axis %d lost tracking lock deltaradians=%f (set TRACKACC telescope.cfg)",
+					mip->axis, delra(mip->cpos - mip->dpos));
 			toTTS("The telescope has lost tracking lock.");
 			telstatshmp->telstate = TS_HUNTING;
 		}
@@ -1416,52 +1441,39 @@ static int trackObj(Obj *op, int first)
 		break;
 	}
 
-//ICE
+	//ICE
 #ifdef TELESCOPED_DEBUG
 	if (xtrack_mode && virtual_mode == 0)
 	{
 		if (HMOT->xtrack)
 		{
-			char strHAvel[32];
-			csi_wr(MIPSFD(HMOT), strHAvel, 32, "xgetvar(6);");
-			strHAvel[strlen(strHAvel) - 1] = 0;
-			debug_printf("HAvel = %s\t", strHAvel);
+			debug_printf("clock = %lf\t", clocknow/1000.0);
 
-			char strHAVg[32];
-			csi_wr(MIPSFD(HMOT), strHAVg, 32, "xgetvar(1);");
-			strHAVg[strlen(strHAVg) - 1] = 0;
-			debug_printf("HAVg = %s\t", strHAVg);
 
-			char strHAerr[32];
-			csi_wr(MIPSFD(HMOT), strHAerr, 32, "xgetvar(2);");
-			strHAerr[strlen(strHAerr) - 1] = 0;
-			debug_printf("HAerr = %s\t", strHAerr);
+			double HAVel = xgetvar(MIPSFD(HMOT), 3);
+			debug_printf("HAvel = %lf\t", HAVel);
+			double HAVg = xgetvar(MIPSFD(HMOT), 1);
+			debug_printf("HAvg = %lf\t", HAVg);
+			double HAerr = xgetvar(MIPSFD(HMOT), 2);
+			debug_printf("HAerr = %lf\t", HAerr);
 		}
 		debug_printf("\t");
 
 		if (DMOT->xtrack)
 		{
-			char strDECvel[32];
-			csi_wr(MIPSFD(DMOT), strDECvel, 32, "xgetvar(6);");
-			strDECvel[strlen(strDECvel) - 1] = 0;
-			debug_printf("DECvel = %s\t", strDECvel);
-
-			char strDECVg[32];
-			csi_wr(MIPSFD(DMOT), strDECVg, 32, "xgetvar(1);");
-			strDECVg[strlen(strDECVg) - 1] = 0;
-			debug_printf("DECVg = %s\t", strDECVg);
-
-			char strDECerr[32];
-			csi_wr(MIPSFD(DMOT), strDECerr, 32, "xgetvar(2);");
-			strDECerr[strlen(strDECerr) - 1] = 0;
-			debug_printf("DECerr = %s\t", strDECerr);
+			double DECVel = xgetvar(MIPSFD(DMOT), 3);
+			debug_printf("DECvel = %lf\t", DECVel);
+			double DECVg = xgetvar(MIPSFD(DMOT), 1);
+			debug_printf("DECvg = %lf\t", DECVg);
+			double DECerr = xgetvar(MIPSFD(DMOT), 2);
+			debug_printf("DECerr = %lf\t", DECerr);
 		}
 		debug_printf("\n");
 	}
 
 	debug_fflush(stdout);
 #endif
-//ICE
+	//ICE
 
 	/* ok */
 	return (0);
@@ -1607,6 +1619,20 @@ static void readRaw()
 			mip->raw = vmcGetPosition(mip->axis);
 			mip->cpos = (2 * PI) * mip->sign * mip->raw / mip->step;
 		}
+//		else if (mip->xtrack)
+//		{
+//			mip->raw = (int) xgetvar(MIPSFD(mip), 0);
+//			if (mip->haveenc)
+//			{
+//				mip->cpos = (2 * PI) * mip->esign * mip->raw / mip->estep;
+//			}
+//			else
+//			{
+//				mip->cpos = (2 * PI) * mip->sign  * mip->raw / mip->step;
+//			}
+////			debug_printf("mip->raw[%d] = %d\t", MIPSFD(mip), mip->raw);
+////			debug_printf("mip->cpos[%d] = %lf\n", MIPSFD(mip), mip->cpos);
+//		}
 		else
 		{
 			if (mip->haveenc)
