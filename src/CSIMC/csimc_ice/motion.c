@@ -1235,9 +1235,8 @@ static void updateXLAUNCH(long p0, float t0, float vel)
 
 }
 
-static void updateXTRACK(void)
+static float getXg()
 {
-
 	Long L;
 	if (xenc)
 	{
@@ -1250,7 +1249,12 @@ static void updateXTRACK(void)
 		getMotPos(&L);
 		tnow = getClock();
 	}
-	xg = (float) L.l;
+	return (float) L.l;
+}
+
+static void updateXTRACK(void)
+{
+	xg = getXg();
 
 	if (tnow < xtick0)
 	{
@@ -1323,6 +1327,7 @@ static int xstartTrack(VType enc, VType time, VType t0, VType p0, VType vel,
 
 	vmean = 0;
 	vg = 0;
+	xg = getXg();
 	perr = 0;
 	xtime = 0;
 	xposvel = 0;
