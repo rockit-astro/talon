@@ -79,7 +79,7 @@ include_directories ("${CORE_LIBS_DIR}/astro")
 
 add_executable(xephem ${XEPHEM_SRC})
 
-target_link_libraries (xephem astro m Xm Xt)
+target_link_libraries (xephem astro m Xm Xt X11)
 
 install (TARGETS xephem DESTINATION bin)
 install(DIRECTORY auxil DESTINATION ${CORE_INSTALL_DIR}/xephem)

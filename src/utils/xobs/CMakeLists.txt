@@ -39,6 +39,6 @@ ENDIF(${CORE_64_BITS} EQUAL 1)
 
 add_executable(xobs ${XOBS_SRC})
 
-target_link_libraries (xobs astro camera ${ANDOR_LIBS} fli fits fs m misc xmisc wcs Xm Xt Xpm)
+target_link_libraries (xobs astro camera ${ANDOR_LIBS} fli fits fs m misc xmisc wcs Xm Xt Xpm X11)
 
 install (TARGETS xobs DESTINATION bin)
