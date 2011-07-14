@@ -6,7 +6,7 @@ plimit = 0x4;
 olevel=1;
 
 // Damping factor
-kv     = 4000;
+kv     = 2000;
 
 // these are just until telescoped starts
 maxvel = 7500;
