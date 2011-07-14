@@ -21,6 +21,6 @@ ENDIF(${CORE_64_BITS} EQUAL 1)
 
 add_executable(xcamera ${XCAMERA_SRC})
 
-target_link_libraries (xcamera ${ANDOR_LIBS} astro camera fits fli fs m misc xmisc wcs Xm Xt)
+target_link_libraries (xcamera ${ANDOR_LIBS} astro camera fits fli fs m misc xmisc wcs Xm Xt X11)
 
 install (TARGETS xcamera DESTINATION bin)
