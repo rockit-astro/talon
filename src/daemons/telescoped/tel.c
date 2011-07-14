@@ -697,11 +697,9 @@ static void tel_altaz(int first, ...)
 				else
 				{
 					//ICE
-					double timeout = (mip->dpos - mip->cpos) / mip->maxvel;
-					csi_w(MIPSFD(mip), "timeout=%d;",
-							2000 + abs(1000.0 * timeout)); //2 senconds more time (miliseconds)
-					printf("timeout=%d;", 2000 + abs(1000.0 * timeout)); //2 senconds more time (miliseconds)
-					sleep(1);
+					csi_w(MIPCFD(mip), "xdel=0;");
+					csi_w(MIPCFD(mip), "clock=0;");
+					csi_w(MIPCFD(mip), "timeout=300000;");
 					//ICE
 
 					if (mip->haveenc)
@@ -709,7 +707,7 @@ static void tel_altaz(int first, ...)
 						csi_w(MIPCFD(mip), "etpos=%.0f;",
 								mip->esign * mip->estep * mip->dpos / (2 * PI));
 						//ICE
-						printf("Slew to etpos=%.0f\n",
+						debug_printf("Slew to etpos=%.0f\n",
 								mip->esign * mip->estep * mip->dpos / (2 * PI));
 						//ICE
 					}
@@ -718,7 +716,7 @@ static void tel_altaz(int first, ...)
 						csi_w(MIPCFD(mip), "mtpos=%.0f;",
 								mip->sign * mip->step * mip->dpos / (2 * PI));
 						//ICE
-						printf("Slew to mtpos=%.0f\n",
+						debug_printf("Slew to mtpos=%.0f\n",
 								mip->sign * mip->step * mip->dpos / (2 * PI));
 						//ICE
 					}
@@ -745,7 +743,7 @@ static void tel_altaz(int first, ...)
 		active_func = NULL;
 	}
 	//ICE
-	printf("AMOT=%d\tZMOT=%d\n", HMOT->raw, DMOT->raw);
+	debug_printf("AMOT=%d\tZMOT=%d\n", HMOT->raw, DMOT->raw);
 	//ICE
 }
 
@@ -828,15 +826,29 @@ static void tel_hadec(int first, ...)
 				}
 				else
 				{
+					//ICE
+					csi_w(MIPCFD(mip), "xdel=0;");
+					csi_w(MIPCFD(mip), "clock=0;");
+					csi_w(MIPCFD(mip), "timeout=300000;");
+					//ICE
+					
 					if (mip->haveenc)
 					{
 						csi_w(MIPCFD(mip), "etpos=%.0f;",
 								mip->esign * mip->estep * mip->dpos / (2 * PI));
+						//ICE
+						debug_printf("Slew to etpos=%.0f\n",
+								mip->esign * mip->estep * mip->dpos / (2 * PI));
+						//ICE
 					}
 					else
 					{
 						csi_w(MIPCFD(mip), "mtpos=%.0f;",
 								mip->sign * mip->step * mip->dpos / (2 * PI));
+						//ICE
+						debug_printf("Slew to mtpos=%.0f\n",
+								mip->sign * mip->step * mip->dpos / (2 * PI));
+						//ICE								
 					}
 				}
 			}
@@ -861,7 +873,7 @@ static void tel_hadec(int first, ...)
 		active_func = NULL;
 	}
 	//ICE
-	printf("HMOT=%d\tDMOT=%d\n", HMOT->raw, DMOT->raw);
+	debug_printf("HMOT=%d\tDMOT=%d\n", HMOT->raw, DMOT->raw);
 	//ICE
 }
 
@@ -1116,20 +1128,20 @@ static void tel_set_xdelta(double HA, double DEC)
 		double radsHA = HA * (2 * PI) / 360.0;
 		stepsHA = HMOT->esign * HMOT->estep * radsHA / (2 * PI);
 		csi_w(MIPCFD(HMOT), "xdel=%d;", stepsHA);
-		printf("HA xdelta %d encoder steps\n", stepsHA);
+		debug_printf("HA xdelta %d encoder steps\n", stepsHA);
 	}
 	else
-		printf("HA axis not present or not in xtrack mode\n");
+		debug_printf("HA axis not present or not in xtrack mode\n");
 
 	if (DMOT->have && DMOT->xtrack)
 	{
 		double radsDEC = DEC * (2 * PI) / 360.0;
 		stepsDEC = HMOT->esign * DMOT->estep * radsDEC / (2 * PI);
 		csi_w(MIPCFD(DMOT), "xdel=%d;", stepsDEC);
-		printf("DEC xdelta %d encoder steps\n", stepsDEC);
+		debug_printf("DEC xdelta %d encoder steps\n", stepsDEC);
 	}
 	else
-		printf("DEC axis not present or not in xtrack mode\n");
+		debug_printf("DEC axis not present or not in xtrack mode\n");
 
 	fflush(stdout);
 	return;
@@ -1164,7 +1176,6 @@ static int buildXTrack(Now *np, Obj *op)
 			//			printf("ttrack = %.0f\n", ttrack);
 			if (mip->have && mip->xtrack)
 			{
-				//#warning "@@@@@@@@@@@@@@@@@@@@@@@@@ONLY FOR TEST @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"	tel.c	/saft/daemons/telescoped.csi	line 215	C/C++ Problem
 				// make sure we're homed to begin with
 				char buf[128];
 				if (axisHomedCheck(mip, buf))
@@ -1175,7 +1186,6 @@ static int buildXTrack(Now *np, Obj *op)
 					toTTS("Error: %s", buf);
 					return -1;
 				}
-				//#warning "@@@@@@@@@@@@@@@@@@@@@@@@@ONLY FOR TEST @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"	tel.c	/saft/daemons/telescoped.csi	line 215	C/C++ Problem
 
 				axis = mip - telstatshmp->minfo;
 				xyrp = xyr[axis];
@@ -1188,12 +1198,13 @@ static int buildXTrack(Now *np, Obj *op)
 				double pos = scale * (*xyrp);
 				if (xttrack == 0)
 				{
+					csi_w(cfd, "xdel=0;");
 					csi_w(cfd, "clock=0;");
-					csi_w(MIPSFD(mip), "timeout=%d;", 1000); //1 second
+					csi_w(cfd, "timeout=%d;", 1000); //1 second
 					csi_w(cfd, "xtrack(%d,%.0f,%.0f,%.0f,%.0f,%.0f);",
 							mip->haveenc ? 1 : 0, 0.0, round(xttrack),
 							round(pos), 0.0, 0.0);
-					printf(
+					debug_printf(
 							"axis=%d time=%.0f -> xtrack(%d,%.0f,%.0f,%.0f,%.0f,%.0f)\n",
 							axis, tnow, mip->haveenc ? 1 : 0, 0.0,
 							round(xttrack), round(pos), 0.0, 0.0);
@@ -1201,7 +1212,7 @@ static int buildXTrack(Now *np, Obj *op)
 				else
 				{
 					csi_w(cfd, "xpos(%.0f,%.0f);", round(xttrack), round(pos));
-					printf("axis=%d time=%.0f -> xpos(%.0f,%.0f);\n", axis,
+					debug_printf("axis=%d time=%.0f -> xpos(%.0f,%.0f);\n", axis,
 							tnow, round(xttrack), round(pos));
 				}
 
@@ -1225,7 +1236,7 @@ double xgetvar(int sfd, int index)
 	{
 		return value;
 	}
-	printf("%s\n", str);
+	debug_printf("%s\n", str);
 
 	return 0;
 }
@@ -1314,7 +1325,6 @@ static int trackObj(Obj *op, int first)
 				{
 					if (mip->have && !mip->xtrack)
 					{
-						//#warning "@@@@@@@@@@@@@@@@@@@@@@@@@ONLY FOR TEST @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"	tel.c	/saft/daemons/telescoped.csi	line 215	C/C++ Problem
 						// make sure we're homed to begin with
 						char buf[128];
 						if (axisHomedCheck(mip, buf))
@@ -1325,7 +1335,7 @@ static int trackObj(Obj *op, int first)
 							toTTS("Error: %s", buf);
 							return -1;
 						}
-						//#warning "@@@@@@@@@@@@@@@@@@@@@@@@@ONLY FOR TEST @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"	tel.c	/saft/daemons/telescoped.csi	line 215	C/C++ Problem
+
 						if (virtual_mode)
 						{
 							vmcSetTrackingOffset(mip->axis, 0);
@@ -1917,7 +1927,11 @@ static void jogTrack(int first, char dircode, int velocity)
 	}
 	else
 	{
-		csi_w(MIPCFD(mip), "while(1) {toffset += %d/5; pause(200);}", stpv);
+//ICE
+		if (mip->xtrack) csi_w(MIPCFD(mip), "while(1) {xdel += %d/5; pause(200);}", stpv);
+		else
+//ICE
+		 csi_w(MIPCFD(mip), "while(1) {toffset += %d/5; pause(200);}", stpv);
 	}
 	telstatshmp->jogging_ison = 1;
 }
@@ -2010,6 +2024,10 @@ static void jogSlew(int first, char dircode, int velocity)
 	}
 	else
 	{
+		//ICE
+		csi_w(MIPCFD(mip), "clock=0;");
+		csi_w(MIPCFD(mip), "timeout=300000;");
+		//ICE
 		csi_w(MIPCFD(mip), "mtvel=%d;", CVELStp(mip));
 	}
 	telstatshmp->telstate = TS_SLEWING;
