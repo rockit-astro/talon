@@ -236,6 +236,9 @@ csiSetup (MotorInfo *mip)
 
         csi_w(cfd, "esign = %d; maxvel=%.0f; maxacc=%.0f; limacc=%.0f; esteps=%d; msteps=%d;\n",
               mip->sign*mip->esign, mip->maxvel*scale,mip->maxacc*scale,mip->slimacc*scale,mip->haveenc ? mip->estep : 0, mip->step);
+
+		csi_w(cfd, "mtvel=0;");
+		               
         /*
         tdlog("Wrote the following: \n");
         tdlog("    maxvel=%.0f;", mip->maxvel*scale);
@@ -254,5 +257,6 @@ csiSetup (MotorInfo *mip)
         tv.tv_sec = 0;
         tv.tv_usec = 250000;  // 250 ms wait
         select(0, NULL,NULL,NULL,&tv);
+
     }
 }
