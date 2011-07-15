@@ -29,7 +29,7 @@
 #include "teled.h"
 
 //ICE
-#define TELESCOPED_DEBUG
+//#define TELESCOPED_DEBUG
 #if defined(TELESCOPED_DEBUG)
 #define debug_printf printf
 #define debug_fflush fflush
