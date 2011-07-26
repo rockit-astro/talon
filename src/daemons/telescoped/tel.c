@@ -159,8 +159,8 @@ void tel_msg(msg)
 	//ICE
 	else if (sscanf(msg, "xdelta(%lf,%lf)", &a, &b) == 2)
 	{
-		printf("HA = %lf DEC = %lf\n", a, b);
-		fflush(stdout);
+		debug_printf("HA = %lf DEC = %lf\n", a, b);
+		debug_fflush(stdout);
 		tel_set_xdelta(a, b);
 	}
 	//ICE
