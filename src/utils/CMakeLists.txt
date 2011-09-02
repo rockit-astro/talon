@@ -1,5 +1,6 @@
 add_subdirectory (xobs)
 add_subdirectory (xcamera)
+add_subdirectory (telsched)
 add_subdirectory (xephem)
 add_subdirectory (csimc)
 add_subdirectory (digitemp)
