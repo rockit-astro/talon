@@ -6,148 +6,150 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>323</width>
-    <height>229</height>
+    <width>370</width>
+    <height>240</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>370</width>
+    <height>240</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>xdelta</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="7" column="0">
+   <item row="8" column="0">
     <widget class="QPushButton" name="buttonHAm">
      <property name="text">
       <string>HA-</string>
      </property>
     </widget>
    </item>
-   <item row="7" column="2">
+   <item row="8" column="2">
     <widget class="QPushButton" name="buttonHAp">
      <property name="text">
       <string>HA+</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
-    <widget class="QDoubleSpinBox" name="spinStepHA">
+   <item row="4" column="0">
+    <widget class="QDoubleSpinBox" name="spinIncrementHA">
+     <property name="suffix">
+      <string> arcs</string>
+     </property>
      <property name="decimals">
-      <number>3</number>
+      <number>8</number>
      </property>
      <property name="minimum">
       <double>0.000000000000000</double>
      </property>
      <property name="maximum">
-      <double>180.000000000000000</double>
+      <double>648000.000000000000000</double>
      </property>
      <property name="singleStep">
-      <double>0.001000000000000</double>
+      <double>1.000000000000000</double>
      </property>
      <property name="value">
-      <double>0.010000000000000</double>
+      <double>1.000000000000000</double>
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
+   <item row="3" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>HA Step (deg)</string>
+      <string>HA Increment</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="2">
+    <widget class="QDoubleSpinBox" name="spinIncrementDEC">
+     <property name="prefix">
+      <string/>
+     </property>
+     <property name="suffix">
+      <string> arcs</string>
+     </property>
+     <property name="decimals">
+      <number>8</number>
+     </property>
+     <property name="minimum">
+      <double>0.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>648000.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="value">
+      <double>1.000000000000000</double>
      </property>
     </widget>
    </item>
    <item row="3" column="2">
-    <widget class="QDoubleSpinBox" name="spinStepDEC">
-     <property name="decimals">
-      <number>3</number>
-     </property>
-     <property name="minimum">
-      <double>0.000000000000000</double>
-     </property>
-     <property name="maximum">
-      <double>180.000000000000000</double>
-     </property>
-     <property name="singleStep">
-      <double>0.001000000000000</double>
-     </property>
-     <property name="value">
-      <double>0.010000000000000</double>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="2">
     <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>DEC Step (deg)</string>
+      <string>DEC Increment</string>
      </property>
     </widget>
    </item>
-   <item row="6" column="1">
+   <item row="7" column="1">
     <widget class="QPushButton" name="buttonDECp">
      <property name="text">
       <string>DEC+</string>
      </property>
     </widget>
    </item>
-   <item row="8" column="1">
+   <item row="9" column="1">
     <widget class="QPushButton" name="buttonDECm">
      <property name="text">
       <string>DEC-</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="0">
+   <item row="1" column="0">
     <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>HA xdelta (deg)</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2">
-    <widget class="QLabel" name="label_4">
-     <property name="text">
-      <string>DEC xdelta (deg)</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QDoubleSpinBox" name="spinValHA">
-     <property name="decimals">
-      <number>3</number>
-     </property>
-     <property name="minimum">
-      <double>-180.000000000000000</double>
-     </property>
-     <property name="maximum">
-      <double>180.000000000000000</double>
-     </property>
-     <property name="singleStep">
-      <double>0.010000000000000</double>
+      <string>HA xdelta</string>
      </property>
     </widget>
    </item>
    <item row="1" column="2">
-    <widget class="QDoubleSpinBox" name="spinValDEC">
-     <property name="decimals">
-      <number>3</number>
-     </property>
-     <property name="minimum">
-      <double>-180.000000000000000</double>
-     </property>
-     <property name="maximum">
-      <double>180.000000000000000</double>
-     </property>
-     <property name="singleStep">
-      <double>0.010000000000000</double>
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>DEC xdelta</string>
      </property>
     </widget>
    </item>
-   <item row="7" column="1">
+   <item row="2" column="2">
+    <widget class="QDoubleSpinBox" name="spinValueDEC">
+     <property name="suffix">
+      <string> arcs</string>
+     </property>
+     <property name="decimals">
+      <number>8</number>
+     </property>
+     <property name="minimum">
+      <double>-648000.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>648000.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>1.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="1">
     <widget class="QPushButton" name="buttonSet">
      <property name="text">
       <string>SET</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="1">
+   <item row="5" column="1">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -160,9 +162,66 @@
      </property>
     </spacer>
    </item>
+   <item row="0" column="0">
+    <widget class="QRadioButton" name="unitsDeg">
+     <property name="text">
+      <string>Degrees</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QRadioButton" name="unitsRad">
+     <property name="text">
+      <string>Radians</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2">
+    <widget class="QRadioButton" name="unitsArc">
+     <property name="text">
+      <string>Arc seconds</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QDoubleSpinBox" name="spinValueHA">
+     <property name="suffix">
+      <string> arcs</string>
+     </property>
+     <property name="decimals">
+      <number>8</number>
+     </property>
+     <property name="minimum">
+      <double>-648000.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>648000.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>1.000000000000000</double>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>unitsDeg</tabstop>
+  <tabstop>unitsRad</tabstop>
+  <tabstop>unitsArc</tabstop>
+  <tabstop>spinValueHA</tabstop>
+  <tabstop>spinValueDEC</tabstop>
+  <tabstop>spinIncrementHA</tabstop>
+  <tabstop>spinIncrementDEC</tabstop>
+  <tabstop>buttonDECp</tabstop>
+  <tabstop>buttonHAm</tabstop>
+  <tabstop>buttonSet</tabstop>
+  <tabstop>buttonHAp</tabstop>
+  <tabstop>buttonDECm</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

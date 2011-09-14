@@ -8,6 +8,16 @@
 #include <stdio.h>
 #include <string.h>
 
+#define _USE_MATH_DEFINES
+
+enum unitsEnum
+{
+	NONE = 0,
+	DEGREES,
+	RADIANS,
+	ARCSECONDS
+};
+
 class xdelta : public QWidget
 {
     Q_OBJECT
@@ -19,6 +29,13 @@ public:
 private:
     Ui::xdeltaClass ui;
 
+    int unitsCurrent;
+
+	double valueHA;
+	double incValueHA;
+
+	double valueDEC;
+	double incValueDEC;
 
     int fdin;
     int fdout;
@@ -34,6 +51,7 @@ private:
     char* get_TELHOME();
     int fifo_setup();
 
+    void refreshValues();
 
 private slots:
 	void buttonSetClicked();
@@ -41,6 +59,12 @@ private slots:
     void buttonHApClicked();
     void buttonDECmClicked();
     void buttonDECpClicked();
+
+    void valueChanged(double value);
+
+    void unitsDegClicked(bool click);
+    void unitsRadClicked(bool click);
+    void unitsArcClicked(bool click);
 };
 
 #endif // XDELTA_H
