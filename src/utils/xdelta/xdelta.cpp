@@ -65,10 +65,8 @@ xdelta::xdelta(QWidget *parent) :
 			SLOT(buttonDECpClicked()));
 
 
-	connect(ui.spinValueHA, SIGNAL(valueChanged(double)), this, SLOT(valueChanged(double)));
-	connect(ui.spinIncrementHA, SIGNAL(valueChanged(double)), this, SLOT(valueChanged(double)));
-	connect(ui.spinValueDEC, SIGNAL(valueChanged(double)), this, SLOT(valueChanged(double)));
-	connect(ui.spinIncrementDEC, SIGNAL(valueChanged(double)), this, SLOT(valueChanged(double)));
+	connect(ui.spinIncrementHA, SIGNAL(valueChanged(double)), this, SLOT(incrementValueHAChanged(double)));
+	connect(ui.spinIncrementDEC, SIGNAL(valueChanged(double)), this, SLOT(incrementValueDECChanged(double)));
 
 	connect(ui.unitsDeg, SIGNAL(clicked(bool)), this, SLOT(unitsDegClicked(bool)));
 	connect(ui.unitsRad, SIGNAL(clicked(bool)), this, SLOT(unitsRadClicked(bool)));
@@ -117,22 +115,24 @@ void xdelta::refreshValues()
 	return;
 }
 
-void xdelta::valueChanged(double value)
+void xdelta::incrementValueHAChanged(double value)
 {
 	ui.spinValueHA->setSingleStep(ui.spinIncrementHA->value());
-	ui.spinValueDEC->setSingleStep(ui.spinIncrementDEC->value());
-
-//	refreshValues();
-
-	printf("values(%.8f,%.8f)\n", valueHA, valueDEC);
 
 	return;
 }
 
+void xdelta::incrementValueDECChanged(double value)
+{
+	ui.spinValueDEC->setSingleStep(ui.spinIncrementDEC->value());
+
+	return;
+}
 
 void xdelta::unitsDegClicked(bool click)
 {
 	refreshValues();
+	unitsCurrent = DEGREES;
 
 	ui.spinValueHA->setMaximum(180);
 	ui.spinValueHA->setMinimum(-180);
@@ -146,9 +146,18 @@ void xdelta::unitsDegClicked(bool click)
 	ui.spinIncrementHA->setValue(incValueHA);
 	ui.spinIncrementHA->setSingleStep(0);
 
-	unitsCurrent = DEGREES;
+	ui.spinValueDEC->setMaximum(180);
+	ui.spinValueDEC->setMinimum(-180);
+	ui.spinValueDEC->setSuffix(" deg");
+	ui.spinValueDEC->setValue(valueDEC);
+	ui.spinValueDEC->setSingleStep(incValueDEC);
 
-	printf("Click DEG\n");
+	ui.spinIncrementDEC->setMaximum(180);
+	ui.spinIncrementDEC->setMinimum(0);
+	ui.spinIncrementDEC->setSuffix(" deg");
+	ui.spinIncrementDEC->setValue(incValueDEC);
+	ui.spinIncrementDEC->setSingleStep(0);
+
 	return;
 }
 
@@ -169,8 +178,18 @@ void xdelta::unitsRadClicked(bool click)
 	ui.spinIncrementHA->setValue(incValueHA * M_PI / 180.0);
 	ui.spinIncrementHA->setSingleStep(0);
 
+	ui.spinValueDEC->setMaximum(M_PI);
+	ui.spinValueDEC->setMinimum(-M_PI);
+	ui.spinValueDEC->setSuffix(" rad");
+	ui.spinValueDEC->setValue(valueDEC * M_PI / 180.0);
+	ui.spinValueDEC->setSingleStep(incValueDEC * M_PI / 180.0);
 
-	printf("Click RAD\n");
+	ui.spinIncrementDEC->setMaximum(180);
+	ui.spinIncrementDEC->setMinimum(0);
+	ui.spinIncrementDEC->setSuffix(" deg");
+	ui.spinIncrementDEC->setValue(incValueDEC * M_PI / 180.0);
+	ui.spinIncrementDEC->setSingleStep(0);
+
 	return;
 }
 
@@ -191,9 +210,18 @@ void xdelta::unitsArcClicked(bool click)
 	ui.spinIncrementHA->setValue(incValueHA * 3600.0);
 	ui.spinIncrementHA->setSingleStep(0);
 
+	ui.spinValueDEC->setMaximum(648000);
+	ui.spinValueDEC->setMinimum(-648000);
+	ui.spinValueDEC->setSuffix(" arcs");
+	ui.spinValueDEC->setValue(valueDEC * 3600.0);
+	ui.spinValueDEC->setSingleStep(incValueDEC * 3600.0);
 
+	ui.spinIncrementDEC->setMaximum(648000);
+	ui.spinIncrementDEC->setMinimum(0);
+	ui.spinIncrementDEC->setSuffix(" arcs");
+	ui.spinIncrementDEC->setValue(incValueDEC * 3600.0);
+	ui.spinIncrementDEC->setSingleStep(0);
 
-	printf("Clock ARC\n");
 	return;
 }
 

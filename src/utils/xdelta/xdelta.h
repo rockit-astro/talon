@@ -60,7 +60,8 @@ private slots:
     void buttonDECmClicked();
     void buttonDECpClicked();
 
-    void valueChanged(double value);
+    void incrementValueHAChanged(double value);
+    void incrementValueDECChanged(double value);
 
     void unitsDegClicked(bool click);
     void unitsRadClicked(bool click);
