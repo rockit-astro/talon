@@ -411,7 +411,7 @@ cam_fifo (char *msg)
 	char buf[1024];
 
 	if (strncasecmp (msg, "Expose", 6) == 0) {
-	    abandon();		/* just paranoid */
+	    if (telstatshmp->camstate != CAM_IDLE) abandon();		/* just paranoid */
 	    doExpose (msg);	/* handles all its own reply's */
 	} else if (strncasecmp (msg, "Stop", 4) == 0) {
 	    abandon();
