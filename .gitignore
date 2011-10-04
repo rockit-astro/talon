@@ -1,0 +1,13 @@
+
+#ignore fliusb build files
+
+src/sdk/fli/fliusb/.fliusb.ko.cmd
+src/sdk/fli/fliusb/.fliusb.mod.o.cmd
+src/sdk/fli/fliusb/.fliusb.o.cmd
+src/sdk/fli/fliusb/.tmp_versions/
+src/sdk/fli/fliusb/fliusb.ko
+src/sdk/fli/fliusb/fliusb.mod.c
+src/sdk/fli/fliusb/fliusb.mod.o
+src/sdk/fli/fliusb/fliusb.o
+src/sdk/fli/fliusb/modules.order
+
