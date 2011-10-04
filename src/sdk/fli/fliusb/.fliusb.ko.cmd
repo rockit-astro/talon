@@ -1,1 +1,0 @@
-cmd_/home/luis/tmp/core/src/sdk/fli/fliusb/fliusb.ko := ld -r -m elf_x86_64 -T /usr/src/linux-2.6.37-gentoo-r4/scripts/module-common.lds --build-id  -o /home/luis/tmp/core/src/sdk/fli/fliusb/fliusb.ko /home/luis/tmp/core/src/sdk/fli/fliusb/fliusb.o /home/luis/tmp/core/src/sdk/fli/fliusb/fliusb.mod.o
