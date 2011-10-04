@@ -587,11 +587,26 @@ doExpose (char *msg)
     // in pre-expose timing delays (i.e. FLI flush)
 	telstatshmp->camstate = CAM_EXPO;
 
-	if (setExpCCD (&ep, buf) < 0 || startExpCCD (buf) < 0) {
-    	telstatshmp->camstate = CAM_IDLE;
-	    reply (-15, "Setup error: %s", buf);
-	    return;
+	int ret = setExpCCD (&ep, buf);
+	if (ret < 0)
+	{
+		abandon();
+		telstatshmp->camstate = CAM_IDLE;
+		reply (-15, "Setup error: %s", buf);
+		printf ("Setup error: %s\n", buf);
+		return;
 	}
+
+	ret = startExpCCD (buf);
+	if (ret < 0)
+	{
+		abandon();
+		telstatshmp->camstate = CAM_IDLE;
+		reply (-15, "Setup error: %s", buf);
+		printf ("Setup error: %s\n", buf);
+		return;
+	}
+
 
 	/* yes! */
 	telstatshmp->camstate = CAM_EXPO;
