@@ -60,7 +60,9 @@
 #endif
 
 #include <linux/slab.h>
+#if (LINUX_VERSION_CODE <= KERNEL_VERSION(2,6,36))
 #include <linux/smp_lock.h>
+#endif
 //ICE
 
 
@@ -852,10 +854,12 @@ static void fliusb_disconnect(struct usb_interface *interface)
 {
   fliusb_t *dev;
 
+#if (LINUX_VERSION_CODE <= KERNEL_VERSION(2,6,36))
   /* this is to block entry to fliusb_open() while the device is being
      disconnected
   */
   lock_kernel();
+#endif
 
   dev = usb_get_intfdata(interface);
   usb_set_intfdata(interface, NULL);
@@ -863,7 +867,9 @@ static void fliusb_disconnect(struct usb_interface *interface)
   /* give back the minor number we were using */
   usb_deregister_dev(interface, &fliusb_class);
 
+#if (LINUX_VERSION_CODE <= KERNEL_VERSION(2,6,36))
   unlock_kernel();
+#endif
 
   /* decrement usage count */
   kref_put(&dev->kref, fliusb_delete);

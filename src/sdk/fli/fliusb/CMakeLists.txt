@@ -21,14 +21,14 @@ Add_Custom_Command( OUTPUT  ${DRIVER_BIN_FILE}
                     COMMAND ${KBUILD_CMD}
 #                    COMMAND mkdir -p ${DRIVER_INSTALL_DIR}
 #                    COMMAND cp -f ${DRIVER_FILE} ${DRIVER_BIN_FILE}
-                    WORKING_DIRECTORY ${MODULE_SOURCE_DIR}
+#                    WORKING_DIRECTORY ${MODULE_SOURCE_DIR}
                     DEPENDS ${MODULE_SOURCE_FILES} VERBATIM )
 
-#Add_Custom_Target ( ${DRIVER_TARGET_NAME}
-#                    ALL
-#                    DEPENDS ${DRIVER_BIN_FILE} )
+Add_Custom_Target ( ${DRIVER_TARGET_NAME}
+                    ALL
+                    DEPENDS ${DRIVER_BIN_FILE} )
 
-install(FILES ${DRIVER_FILE} DESTINATION ${DRIVER_INSTALL_DIR} PERMISSIONS 
+install(FILES ${DRIVER_FILE} DESTINATION telescope/lib/modules PERMISSIONS 
         OWNER_READ OWNER_WRITE
         GROUP_READ
         WORLD_READ)
