@@ -28,7 +28,7 @@ Add_Custom_Target ( ${DRIVER_TARGET_NAME}
                     ALL
                     DEPENDS ${DRIVER_BIN_FILE} )
 
-install(FILES ${DRIVER_FILE} DESTINATION telescope/lib/modules PERMISSIONS 
+install(FILES ${DRIVER_FILE} DESTINATION lib/modules PERMISSIONS 
         OWNER_READ OWNER_WRITE
         GROUP_READ
         WORLD_READ)
