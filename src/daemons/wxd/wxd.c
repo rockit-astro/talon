@@ -77,7 +77,7 @@ static FILE *openLogFile(void);
 static void bldWdirstr (WxStats *wp);
 
 static WxStats lastwxs;
-static int lastwxs_inited;
+static int lastwxs_inited = 0;
 static WxStats logwxs;
 static double logt;
 static double logp;
@@ -473,10 +473,12 @@ tailFile (WxStats *wp, double *tp, double *pp)
 	} while (buf[0] != '\n' && --n > 1);
 	read (tailfd, buf, sizeof(buf));
 
-	fake_alerts = (char *) malloc(5*sizeof(char));
+	char pepe[6];
+	fake_alerts = (char *) pepe;
 	/* crack */
 	sscanf (buf, "%lf %d %d %lf %d %lf %lf %5c", &jd, &wp->wspeed, &wp->wdir,
 						tp, &wp->humidity, pp, &rain, fake_alerts);
+	fake_alerts[5]=0;
 	wp->rain = rain*10 + .5;
 	wp->updtime = (jd-MJD0-25567.50)*SPD + .5;
 #if 0
@@ -493,6 +495,7 @@ dispense (WxStats *wp, double t, double p)
 
 	/* first time save current as last to avoid spurious alerts */
 	if (!lastwxs_inited) {
+		logwxs = *wp;
 	    lastwxs = *wp;
 	    lastwxs_inited = 1;
 	}

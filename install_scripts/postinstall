@@ -21,8 +21,12 @@ rm -f ${TELHOME}/comm/xephem_out_fifo
 
 ln -s ${TELHOME}/archive/catalogs ${TELHOME}/xephem/catalogs
 ln -s ${TELHOME}/comm ${TELHOME}/xephem/fifos
+
+chmod 777 ${TELHOME}/comm
 mkfifo -m 0666 ${TELHOME}/comm/xephem_loc_fifo
 mkfifo -m 0666 ${TELHOME}/comm/xephem_db_fifo
 mkfifo -m 0666 ${TELHOME}/comm/xephem_in_fifo
 mkfifo -m 0666 ${TELHOME}/comm/xephem_out_fifo
+
+chmod 777 ${TELHOME}/archive/logs
 ############################################################################################################
