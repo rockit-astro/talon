@@ -4,6 +4,7 @@ project (archive)
 set(ARCHIVE_DIR ${CORE_INSTALL_DIR}/archive)
 
 install(DIRECTORY comm DESTINATION ${CORE_INSTALL_DIR})
+install(DIRECTORY telrun DESTINATION ${ARCHIVE_DIR})
 install(DIRECTORY config_sqft DESTINATION ${ARCHIVE_DIR})
 install(DIRECTORY config_tjo DESTINATION ${ARCHIVE_DIR})
 install(DIRECTORY catalogs DESTINATION ${ARCHIVE_DIR})
