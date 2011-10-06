@@ -1,34 +1,12 @@
 #!/bin/csh -f
 # kill all telescope-related daemons and tools.
 
-set common = (xobs shm rund telescoped camerad csimcd)
-if (-e $TELHOME/bin/wxdwebgrab) then
-    set common = ($common wxd wxdwebgrab)
-endif
-set more =   (camera telsched xephem csimc)
-
-if ($#argv == 1 && $1 != "-all") then
-    echo "$0:t"": [-all]"
-    echo "  always kill: $common"
-    echo "    -all adds: $more"
-    exit 1
-endif
-
-if ($1 == "-all") set all
-
-# do apps then daemons so apps don't discover trouble on their own and fuss
+set common = (rund xobs shm telescoped camerad csimcd wxd camera telshed xephem csimc telrun)
 
 foreach p ($common)
     echo -n "$p "
     killp -q $p
 end
-
-if ($?all) then
-    foreach p ($more)
-	echo -n "$p "
-	killp -q $p
-    end
-endif
 
 echo ""
 echo -n "Cleaning comm"

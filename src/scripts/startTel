@@ -1,4 +1,8 @@
 #!/bin/csh -f
 # start all telescope-related daemons and tools.
 
-echo "I do nothing at this point"
+telescoped &
+camerad &
+wxd -st /usr/local/telescope/archive/logs/wxd.dat -l -
+gpsd -fsac &
+
