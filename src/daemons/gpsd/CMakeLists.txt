@@ -11,4 +11,3 @@ add_executable(gpsd ${GPSD_SRC})
 target_link_libraries (gpsd astro fits m misc)
 
 install (TARGETS gpsd DESTINATION bin)
-

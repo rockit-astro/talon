@@ -1,4 +1,4 @@
 #!/bin/bash
 
-
-echo "Dummy postinstall as root"
+chown root:root /usr/local/telescope/bin/gpsd
+chmod 6755 /usr/local/telescope/bin/gpsd
