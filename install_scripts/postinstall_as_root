@@ -1,4 +1,6 @@
 #!/bin/bash
 
+chown -hR optjo:optjo /usr/local/telescope
+
 chown root:root /usr/local/telescope/bin/gpsd
 chmod 6755 /usr/local/telescope/bin/gpsd
