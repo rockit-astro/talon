@@ -344,8 +344,6 @@ csi_dome_reset (int first, ...)
         	else if (status == 3) SS = SH_OPENING;
         	else SS = SH_OPENING;
 
-        	printf ("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx SS = %d\n", SS);
-
 #endif
         }
     }
