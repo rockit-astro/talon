@@ -92,6 +92,17 @@ void cover_reset(int first, ...) {
 
 void cover_init() {
 	cfd = csiOpen(COVERAXIS);
+	if (cfd == -1) return;
+
+   	int status;
+	status = csi_rix(cfd, "coverStatus();");
+	if (status == 0) CS = CV_CLOSED;
+	else if (status == 1) CS = CV_OPEN;
+	else if (status == 2) CS = CV_CLOSING;
+	else if (status == 3) CS = CV_OPENING;
+	else CS = CV_OPENING;
+
+	return;
 }
 
 void cover_close(int first, ...) {

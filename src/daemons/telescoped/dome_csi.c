@@ -335,6 +335,17 @@ csi_dome_reset (int first, ...)
             fifoWrite(Dome_Id, 0, "Reset complete");
             setaz_error = 0;
 //            d_stop();
+
+           	int status;
+        	status = csi_rix(cfd, "domeStatus();");
+        	if (status == 0) SS = SH_CLOSED;
+        	else if (status == 1) SS = SH_OPEN;
+        	else if (status == 2) SS = SH_CLOSING;
+        	else if (status == 3) SS = SH_OPENING;
+        	else SS = SH_OPENING;
+
+        	printf ("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx SS = %d\n", SS);
+
 #endif
         }
     }

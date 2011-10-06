@@ -184,3 +184,32 @@ define coverClose() {
 	return 1;
 }
 
+
+
+
+define coverStatus()
+{
+		if (olevel & (0x10 | 0x20))
+		{
+			printf("3: Covers are opening\n");
+			return 3;			
+		}
+		if (olevel & (0x40 | 0x80))
+		{
+			printf("2: Covers are closing\n");
+			return 2;		
+		}	
+		if(cOpened())
+		{
+			printf("1: Covers are open\n");
+			return 1;
+		}
+		if(cClosed())
+		{
+			printf("0: Covers are closed\n");
+			return 0;
+		}
+		
+	printf("4: Covers undefined open/close\n");
+	return 4;
+}

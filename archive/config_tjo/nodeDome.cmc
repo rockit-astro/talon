@@ -1,24 +1,3 @@
-//ICE mix
-
-//ICE
-//r = 180000;		// time for door to open/close (no status bits)
-//t = 220000;		// timeout for open/close (with status bits)
-u = 180000;		// timeout for dome movement (half revolution)
-//w = 30000;
-
-//d = 0;	// used to define last direction during homing
-//s = 1;	// sign of CW encoder movement.
-//v = 14940;  // Encoder steps full rotation.
-//z = 0; // offset in dome home position
-//e = 0;	// absolute home value (calculated);
-f = 4400; // parking position
-//h = 0; // Home bit
-y = 0; // brake steps
-//ICE
-
-
-
-
 ///////////////////////////
 //
 // Dome control cmc script
@@ -127,8 +106,19 @@ define isDomeHomed() 	{ return d; }
 
 // (set by code: s = sign, w = dome timeout)
 // (r = time for door to open, v = time for door to close,
-//  t = timeout for door opening, u = timeout for door closing)
+//  t = timeout for door opening (polling status bit), u = timeout for door closing (polling status bit))
 // Times are in milliseconds. Set these here to override setting by code for unusual circumstances.
+s = 1;			// sign of CW encoder movement.
+r = 150000;		// time for door to open (no status bits) (ms)
+v = 150000;  	// time for door to close (no status bits) (ms)
+t = 150000;		// timeout for door opening (polling status bit) (ms)
+u = 150000;		// timeout for door closing (polling status bit) (ms)
+w = 150000;		// timeout for find home (ms)
+
+d = 0;			// used to store if it is homed or not.
+f = 4400; 		// parking position
+h = 0; 			// Home bit
+y = 0; 			// brake steps
 
 
 ////////////////////////////////////////////////////////
@@ -176,7 +166,7 @@ define roofseek( $action )
 	iedge = $2;		// reset latch
 		
 	if(isError_door_status()) {
-		if($1 & isError_door_status()) {
+		if(iedge & isError_door_status()) {
 			printf("-1:Error with door! (%d)\n",isError_door_status());
 			return;
 		}
@@ -190,7 +180,7 @@ define roofseek( $action )
 			$3 = clock + t;  // timeout on open
 			
 			while(clock < $3) {
-				if($1 == isOpen_door_status()) {
+				if(iedge & isOpen_door_status()) {
 					olevel = $0;
 					printf("0:Door is open\n");
 					return;
@@ -220,7 +210,7 @@ define roofseek( $action )
 			$3 = clock + u; // timeout on close
 		
 			while(clock < $3) {
-				if($1 == isClosed_door_status()) {
+				if(iedge & isClosed_door_status()) {
 					olevel = $0;
 					printf("0:Door is closed\n");
 					return;
@@ -571,3 +561,31 @@ define unpark()
         return;
 }
 
+
+
+define domeStatus()
+{
+	if (olevel & open_the_door())
+	{
+		printf("3: Shutter is opening\n");
+		return 3;			
+	}
+	if (olevel & close_the_door())
+	{
+		printf("2: Shutter is closing\n");
+		return 2;		
+	}	
+	if(iedge & isOpen_door_status())
+	{
+		printf("1: Shutter is open\n");
+		return 1;
+	}
+	if(iedge & isClosed_door_status())
+	{
+		printf("0: Shutter is closed\n");
+		return 0;
+	}
+	
+	printf("4: Shutter undefined open/close\n");
+	return 4;
+}

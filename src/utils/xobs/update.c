@@ -104,8 +104,7 @@ updateStatus(int force)
 		last_tbusy = mjd;
 	}
 
-	busy = ds==DS_ROTATING || ds==DS_HOMING ||
-					    ss==SH_OPENING || ss==SH_CLOSING;
+	busy = ds==DS_ROTATING || ds==DS_HOMING || ss==SH_OPENING || ss==SH_CLOSING;
 	if (doslow || busy || mjd < last_dbusy + COAST_DT) {
 	    showDome();
 	    if (busy)
@@ -594,7 +593,7 @@ showDome()
 {
 	static int last_godome = -1, last_goshutter = -1;
 	DomeState ds = telstatshmp->domestate;
-	LtState domelt, sol, scl;
+	LtState domelt, sol, scl, col, ccl;
 	int go;
 
 	/* first check whether to allow operator access.
@@ -663,6 +662,20 @@ showDome()
 	}
 	setLt (g_w[DOLT_W], sol);
 	setLt (g_w[DCLT_W], scl);
+
+
+	switch (telstatshmp->coverstate) {
+	case CV_ABSENT:  col = LTIDLE;   ccl = LTIDLE;   break;
+	case CV_IDLE:    col = LTIDLE;   ccl = LTIDLE;   break;
+	case CV_OPENING: col = LTACTIVE; ccl = LTIDLE;   break;
+	case CV_CLOSING: col = LTIDLE;   ccl = LTACTIVE; break;
+	case CV_OPEN:    col = LTOK;     ccl = LTIDLE;   break;
+	case CV_CLOSED:  col = LTIDLE;   ccl = LTOK;     break;
+	default:	 col = LTIDLE;   ccl = LTIDLE;   break;
+	}
+	setLt (g_w[COLT_W], col);
+	setLt (g_w[CVLT_W], ccl);
+
 
 	XmToggleButtonSetState (g_w[DAUTO_W], telstatshmp->autodome !=0, False);
 
