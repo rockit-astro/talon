@@ -8,10 +8,6 @@ plimbit = 0x2;
 // Damping factor
 kv     = 2000;
 
-// FILTER FORMULA  xperr = xfilt0 / xfilt1 * xperr + (xfilt1 - xfilt0) / xfilt1 * perr;
-//xsetvar(8, 0, 0); // XFILT0 value for position error filtering (XFILT0=0.0  -> no filtering)
-//xsetvar(9, 1, 0); // XFILT1 value for position error filtering
-
 // these are just until telescoped starts
 maxvel = 1;
 maxacc = 1;

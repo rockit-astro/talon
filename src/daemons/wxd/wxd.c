@@ -77,7 +77,7 @@ static FILE *openLogFile(void);
 static void bldWdirstr (WxStats *wp);
 
 static WxStats lastwxs;
-static int lastwxs_inited;
+static int lastwxs_inited = 0;
 static WxStats logwxs;
 static double logt;
 static double logp;
@@ -125,6 +125,8 @@ main (int ac, char *av[])
 	WxStats wxs;
 	char *str;
 	char *cp;
+	char temp_buf[6];
+	fake_alerts = (char *) temp_buf;
 
 	/* crack the args */
 	for (av++; --ac > 0 && *(str = *av) == '-'; av++) {
@@ -269,6 +271,7 @@ main (int ac, char *av[])
 	    (void) alarm (osecs);
 	initCfg();
 	memset ((void *)&wxs, 0, sizeof(wxs));
+	
 	t = TEMPERATURE;
 	p = PRESSURE;
 
@@ -307,31 +310,29 @@ main (int ac, char *av[])
 		    uf = PBUpdate;
 	    } else
 		uf = NULL;
-		
 	    while (1) {
-		s = -1;
-		if(Rflag) {
-			if(telserverUpdate(&wxs, &t, &p) < 0) break;
-			bldWdirstr(&wxs);
-			s = 0;
-		}
-		else {						
-			if (uf) {
-			    s = (*uf) (wxtty, &wxs, &t, &p);
-			    guard (&t, &p);
-		    	bldWdirstr (&wxs);
-			}
-			if (tailfn) {
-			    tailFile (&wxs, &t, &p);
-		    	bldWdirstr (&wxs);
-			    s = 0;
-			}
-			if (HAVEAUX)
-			    digitemp(auxtty, &wxs);
-		}			
-		if (s == 0)
-		    dispense (&wxs, t, p);
-		sleep (LOOPDELAY);
+			s = -1;
+			if(Rflag) {
+				if(telserverUpdate(&wxs, &t, &p) < 0) break;
+				bldWdirstr(&wxs);
+				s = 0;
+			} else {						
+				if (uf) {
+					s = (*uf) (wxtty, &wxs, &t, &p);
+					guard (&t, &p);
+					bldWdirstr (&wxs);
+				}
+				if (tailfn) {
+					tailFile (&wxs, &t, &p);
+					bldWdirstr (&wxs);
+					s = 0;
+				}
+				if (HAVEAUX)
+					digitemp(auxtty, &wxs);
+			}			
+			if (s == 0)
+				dispense (&wxs, t, p);
+			sleep (LOOPDELAY);
 	    }
 	    daemonLog ("EOF from %s", prog);
 	}
@@ -437,7 +438,7 @@ guard (double *tp, double *pp)
 static void
 tailFile (WxStats *wp, double *tp, double *pp)
 {
-	static int tailfd;
+	static int tailfd=0;
 	char buf[1024];
 	double jd, rain;
 	long n;
@@ -447,7 +448,7 @@ tailFile (WxStats *wp, double *tp, double *pp)
 	    tailfd = open (tailfn, O_RDONLY);
 	    if (tailfd < 0) {
 		daemonLog ("%s: %s\n", tailfn, strerror(errno));
-		tailfn = 0;
+	    tailfd=0;
 		return;
 	    }
 	}
@@ -456,27 +457,26 @@ tailFile (WxStats *wp, double *tp, double *pp)
 	n = lseek (tailfd, 0L, SEEK_END);
 	if (n == (off_t)-1) {
 	    daemonLog ("%s lseek: %s\n", tailfn, strerror(errno));
-	    tailfn = 0;
+	    tailfd=0;
 	    return;
 	}
 	do {
-	    if (lseek (tailfd, -2L, SEEK_CUR) < 0) {
+	    if ((n = lseek (tailfd, -2L, SEEK_CUR)) < 0) {
 		daemonLog ("%s lseek: %s\n", tailfn, strerror(errno));
-		tailfn = 0;
+	    tailfd=0;
 		return;
 	    }
 	    if (read (tailfd, buf, 1) < 0) {
 		daemonLog ("%s read: %s\n", tailfn, strerror(errno));
-		tailfn = 0;
+	    tailfd=0;
 		return;
 	    }
 	} while (buf[0] != '\n' && --n > 1);
 	read (tailfd, buf, sizeof(buf));
-
-	fake_alerts = (char *) malloc(5*sizeof(char));
 	/* crack */
 	sscanf (buf, "%lf %d %d %lf %d %lf %lf %5c", &jd, &wp->wspeed, &wp->wdir,
 						tp, &wp->humidity, pp, &rain, fake_alerts);
+	fake_alerts[5]=0;
 	wp->rain = rain*10 + .5;
 	wp->updtime = (jd-MJD0-25567.50)*SPD + .5;
 #if 0
@@ -493,6 +493,7 @@ dispense (WxStats *wp, double t, double p)
 
 	/* first time save current as last to avoid spurious alerts */
 	if (!lastwxs_inited) {
+		logwxs = *wp;
 	    lastwxs = *wp;
 	    lastwxs_inited = 1;
 	}
