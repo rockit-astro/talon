@@ -1,6 +1,7 @@
+cmake_minimum_required (VERSION 2.6)
+project (install_scripts)
 
-
-install(FILES preinstall preinstall_as_root postinstall postinstall_as_root
+install(FILES preinstall postinstall
 DESTINATION install_scripts
 PERMISSIONS 
 OWNER_READ OWNER_WRITE OWNER_EXECUTE
@@ -8,14 +9,15 @@ GROUP_READ GROUP_EXECUTE
 WORLD_READ WORLD_EXECUTE)
 
 
- add_custom_command(TARGET postinstall
-	POST_BUILD
-    ${CMAKE_INSTALL_PREFIX}/install_scripts/postinstall
-)
-                     
+add_custom_target (preinstall_0
+	COMMAND su -c "${install_scripts_SOURCE_DIR}/preinstall"
+	COMMENT "Preinstall"
+)                 
+
 
 add_custom_target (postinstall
-	COMMAND ${CMAKE_INSTALL_PREFIX}/install_scripts/postinstall
+	COMMAND su -c "${install_scripts_SOURCE_DIR}/postinstall"
+	COMMENT "Postinstall"
 )
 
-#add_dependencies(install postinstall)                   
+add_dependencies(postinstall preinstall_0)

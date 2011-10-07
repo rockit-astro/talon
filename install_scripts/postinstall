@@ -1,34 +1,7 @@
 #!/bin/bash
 
-############################################################################################################
-############################################ xephem postinstall ############################################
-rm -f ${TELHOME}/xephem/catalogs
-rm -f ${TELHOME}/xephem/fifos
-rm -f ${TELHOME}/comm/xephem_loc_fifo
-rm -f ${TELHOME}/comm/xephem_db_fifo
-rm -f ${TELHOME}/comm/xephem_in_fifo
-rm -f ${TELHOME}/comm/xephem_out_fifo
+read -p "Talon username: " -e USER
+chown -hR $USER:$USER /usr/local/telescope
 
-ln -s ${TELHOME}/archive/catalogs ${TELHOME}/xephem/catalogs
-ln -s ${TELHOME}/comm ${TELHOME}/xephem/fifos
-
-chmod 777 ${TELHOME}/comm
-mkfifo -m 0666 ${TELHOME}/comm/xephem_loc_fifo
-mkfifo -m 0666 ${TELHOME}/comm/xephem_db_fifo
-mkfifo -m 0666 ${TELHOME}/comm/xephem_in_fifo
-mkfifo -m 0666 ${TELHOME}/comm/xephem_out_fifo
-
-chmod 777 ${TELHOME}/archive/logs
-############################################################################################################
-
-
-
-
-
-
-############################################################################################################
-########################################### postinstall as root ############################################
-
-su -c "bash ${TELHOME}/install_scripts/postinstall_as_root"
-############################################################################################################
-
+chown root:root /usr/local/telescope/bin/gpsd
+chmod 6755 /usr/local/telescope/bin/gpsd
