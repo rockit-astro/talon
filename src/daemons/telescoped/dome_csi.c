@@ -343,7 +343,6 @@ csi_dome_reset (int first, ...)
         	else if (status == 2) SS = SH_CLOSING;
         	else if (status == 3) SS = SH_OPENING;
         	else SS = SH_OPENING;
-
 #endif
         }
     }

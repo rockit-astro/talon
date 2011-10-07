@@ -575,12 +575,12 @@ define domeStatus()
 		printf("2: Shutter is closing\n");
 		return 2;		
 	}	
-	if(iedge & isOpen_door_status())
+	if(ilevel & isOpen_door_status())
 	{
 		printf("1: Shutter is open\n");
 		return 1;
 	}
-	if(iedge & isClosed_door_status())
+	if(ilevel & isClosed_door_status())
 	{
 		printf("0: Shutter is closed\n");
 		return 0;
