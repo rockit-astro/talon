@@ -65,7 +65,8 @@ static int OSHAREDNODE;
 // moved from inside autofocus code to here
 static char last_filter;	/* filter we last checked */
 static double last_temp;	/* temp we last read */
-
+static int last_rawgoal;
+static int focusInPlace;
 
 /* called when we receive a message from the Focus fifo.
  * if !msg just update things.
@@ -138,6 +139,8 @@ focus_reset(int first)
     int had = mip->have;
 
     initCfg();
+
+    focusInPlace = 0;
 
     /* TODO: for some reason focus behaves badly if you just close/reopen.
      * N.B. "had" relies on telstatshmp being zeroed when telescoped starts.
@@ -213,7 +216,7 @@ focus_home(int first, ...)
         }
         else {
             fifoWrite (Focus_Id,1,"Homing complete. Now going to %.1fum",ugoal);
-            sleep(2);
+//sleep caca!!!!            sleep(2);
         }
         toTTS ("The focus motor has found home and is now going to the initial position.");
         readFocus();
@@ -300,6 +303,7 @@ focus_auto(int first, ...)
     /* set mode and might as well get started right away */
     stopFocus(0);
     telstatshmp->autofocus = 1;
+    focusInPlace = 0;
     autoFocus();
 
     /* if still on, report success */
@@ -376,7 +380,7 @@ focus_offset(int first, ...)
 // ICE added for not to send csimc commands on virtual mode
 
     /* done when we reach goal */
-    if ((mip->haveenc && abs(mip->raw-rawgoal) < 2 && isworking==0 )
+    if ((mip->haveenc && abs(mip->raw-rawgoal) < 1 && isworking==0 )
             || (!mip->haveenc && mip->raw == rawgoal) ) {
         active_func = NULL;
         stopFocus(0);
@@ -720,9 +724,21 @@ autoFocus()
     /* get focus temp */
     newtemp = focusTemp();
 
+	if (focusInPlace == 0)
+	{
+		int epos = csi_rix(cfd,"=epos;");
+		if (abs(last_rawgoal - epos) <= 1)
+		{
+			focusInPlace = 1;
+	        fifoWrite (Focus_Id, -8, "Autofocus offset complete");
+		}
+	}
+
     /* nothing to do if same filter and about same temp again */
     if (newfilter == last_filter && fabs(newtemp-last_temp) <= MINAFDT)
+    {
         return;
+    }
 
     /* find the entry for this filter */
     fip = findFilter (newfilter);
@@ -776,6 +792,8 @@ autoFocus()
     /* remember new goals */
     last_temp = newtemp;
     last_filter = newfilter;
+    last_rawgoal = rawgoal;
+    focusInPlace = 0;
 }
 
 /* given a temperature and a fip, find the interpolated position, in microns,
