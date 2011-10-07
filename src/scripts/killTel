@@ -8,6 +8,8 @@ foreach p ($common)
     killp -q $p
 end
 
+ps auxw | grep wxd.php | grep -v grep | gawk '{print "kill -9 "$2}' | sh
+
 echo ""
 echo -n "Cleaning comm"
 rm -f $TELHOME/comm/*.pid >& /dev/null
