@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo "ATTENTION: This action will delete ${TELHOME}"
+read -p "Continue <yes/no>" -e yesno
+
+if [ $yesno == "yes" ]; then
+	rm -irf ${TELHOME}
+else
+	echo "Uninstall cancelled"
+fi
