@@ -730,7 +730,7 @@ autoFocus()
 		if (abs(last_rawgoal - epos) <= 1)
 		{
 			focusInPlace = 1;
-	        fifoWrite (Focus_Id, -8, "Autofocus offset complete");
+	        fifoWrite (Focus_Id, 0, "Autofocus offset complete");
 		}
 	}
 
