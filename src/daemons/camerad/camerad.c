@@ -308,40 +308,41 @@ mainLoop()
 
 	    /* set timeout value, if any, and add cam_fd if active */
 	    switch (telstatshmp->camstate) {
-	    case CAM_IDLE:
-		/* just idling -- wait forever for fifo */
-		cam_fd = -1;
-		tvp = NULL;
-		break;
+			case CAM_IDLE:
+				/* just idling -- wait forever for fifo */
+				cam_fd = -1;
+				tvp = NULL;
+				break;
 
-	    case CAM_EXPO:
-		/* wait for exposure */
-		cam_fd = selectHandleCCD(buf);
-		if (cam_fd < 0) {
-		    reply (-2, "EXPO can not get camera fd: %s", buf);
-		    continue;
-		}
-		tv.tv_sec = fimage.dur/1000 + CAMDIG_MAX;
-		tv.tv_usec = 0;
-		tvp = &tv;
-		break;
+			case CAM_EXPO:
+				/* wait for exposure */
+				cam_fd = selectHandleCCD(buf);
+				if (cam_fd < 0) {
+					reply (-2, "EXPO can not get camera fd: %s", buf);
+					continue;
+				}
+				tv.tv_sec = fimage.dur/1000 + CAMDIG_MAX;
+				tv.tv_usec = 0;
+				tvp = &tv;
+				break;
 
-	    case CAM_READ:
-		/* wait for download */
-		cam_fd = selectHandleCCD(buf);
-		if (cam_fd < 0) {
-		    reply (-3, "READ can not get camera fd: %s", buf);
-		    continue;
-		}
-		tv.tv_sec = CAMDIG_MAX;
-		tv.tv_usec = 0;
-		tvp = &tv;
+			case CAM_READ:
+				/* wait for download */
+				cam_fd = selectHandleCCD(buf);
+				if (cam_fd < 0) {
+					reply (-3, "READ can not get camera fd: %s", buf);
+					continue;
+				}
+				tv.tv_sec = CAMDIG_MAX;
+				tv.tv_usec = 0;
+				tvp = &tv;
+				break;
 	    }
 
 	    if (cam_fd >= 0) {
-		FD_SET (cam_fd, &rfdset);
-		if (cam_fd + 1 > maxfdp1)
-		    maxfdp1 = cam_fd + 1;
+			FD_SET (cam_fd, &rfdset);
+			if (cam_fd + 1 > maxfdp1)
+				maxfdp1 = cam_fd + 1;
 	    }
 
 	    if (verbose)
@@ -349,46 +350,46 @@ mainLoop()
 					    cam_fd >= 0 ? "for cam_fd" : "");
 
 	    /* call select, waiting for commands or timeout */
-	    s = select (maxfdp1, &rfdset, NULL, NULL, tvp);
-	    if (s < 0) {
-		if (errno == EINTR)
-		    continue;
-		perror ("select");
-		die(1);	/* never returns */
-	    }
-	    if (s == 0) {
-		/* timed out -- means trouble if we are active */
-		switch (telstatshmp->camstate) {
-		case CAM_IDLE:
-		    break;
-		case CAM_EXPO:
-		    reply (-4, "Exposure timed out");
-		    break;
-		case CAM_READ:
-		    reply (-5, "Download timed out");
-		    break;
+		s = select (maxfdp1, &rfdset, NULL, NULL, tvp);
+		if (s < 0) {
+			if (errno == EINTR)
+				continue;
+			perror ("select");
+			die(1);	/* never returns */
 		}
-		continue;
+		if (s == 0) {
+			/* timed out -- means trouble if we are active */
+			switch (telstatshmp->camstate) {
+				case CAM_IDLE:
+					break;
+				case CAM_EXPO:
+					reply (-4, "Exposure timed out");
+					break;
+				case CAM_READ:
+					reply (-5, "Download timed out");
+					break;
+			}
+			continue;
 	    }
 
 	    /* respond to the driver if its fd is ready */
 	    if (cam_fd >= 0 && FD_ISSET (cam_fd, &rfdset)) {
-		cam_read();
-		continue;
+			cam_read();
+			continue;
 	    }
 
 	    /* read and process a message arriving on the fifo */
 	    if (FD_ISSET (fifop->fd[0], &rfdset)) {
-		char msg[MAXLINE];
-		int n = serv_read (fifop->fd, msg, sizeof(msg)-1);
+			char msg[MAXLINE];
+			int n = serv_read (fifop->fd, msg, sizeof(msg)-1);
 
-		if (n < 0) {
-		    daemonLog ("%s: %s", fifop->name, msg);
-		    die(1);
-		}
-		if (verbose)
-		    daemonLog ("%s -> %s", fifop->name, msg);
-		(*fifop->fp) (msg);
+			if (n < 0) {
+				daemonLog ("%s: %s", fifop->name, msg);
+				die(1);
+			}
+			if (verbose)
+				daemonLog ("%s -> %s", fifop->name, msg);
+			(*fifop->fp) (msg);
 	    }
 	}
 }
@@ -409,6 +410,7 @@ static void
 cam_fifo (char *msg)
 {
 	char buf[1024];
+	CCDTempInfo tinfo;
 
 	if (strncasecmp (msg, "Expose", 6) == 0) {
 	    if (telstatshmp->camstate != CAM_IDLE) abandon();		/* just paranoid */
@@ -425,6 +427,23 @@ cam_fifo (char *msg)
 		    //die(0);
 		}
 	    else reply (0, "Reset complete");
+	} else if (strncasecmp (msg,"Temperature",11) == 0) {
+		getCoolerTemp(&tinfo);
+	    (void) sprintf (buf, "Current temperature: %3d C ", tinfo.t);
+	    switch (tinfo.s) {
+			case CCDTS_AT:		strcat (buf, "AtTarg"); break;
+			case CCDTS_UNDER:	strcat (buf, "<Targ"); break;
+			case CCDTS_OVER:	strcat (buf, ">Targ"); break;
+			case CCDTS_OFF:		strcat (buf, "Off"); break;
+			case CCDTS_RDN:		strcat (buf, "Ramping"); break;
+			case CCDTS_RUP:		strcat (buf, "ToAmb"); break;
+			case CCDTS_STUCK:	strcat (buf, "Floor"); break;
+			case CCDTS_MAX:		strcat (buf, "Ceiling"); break;
+			case CCDTS_AMB:		strcat (buf, "AtAmb"); break;
+			default:    		strcat (buf, "Error"); break;
+	    }
+		daemonLog("%s",buf);
+		reply(0,"%s",buf);
 	} else {
 	    /* anything else is an abort/reconfig */
 	    reply (-7, "Unknown command: %s", msg);
