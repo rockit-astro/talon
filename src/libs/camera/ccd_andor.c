@@ -272,6 +272,7 @@ int andor_setExpCCD(CCDExpoParams *expP, char *errmsg)
 	andor_camera.expose_width=expP->sw;
 	andor_camera.expose_height=expP->sh;
 	andor_camera.duration=(int)ceilf(time);
+	if(andor_camera.duration<=0) andor_camera.duration=1;
 
 	return 0;
 }
