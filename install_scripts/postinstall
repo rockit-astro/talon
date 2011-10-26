@@ -1,7 +1,12 @@
 #!/bin/bash
 
+if [ ! -d "${TELHOME}/archive/config" ]; then
+	read -p "Telescope config: " -e TELCONFIG
+	ln -s ./config_${TELCONFIG} ${TELHOME}/archive/config
+fi
+
 read -p "Talon username: " -e USER
 chown -hR $USER:$USER /usr/local/telescope
 
-chown root:root /usr/local/telescope/bin/gpsd
-chmod 6755 /usr/local/telescope/bin/gpsd
+chown root:root ${TELHOME}/bin/gpsd
+chmod 6755 ${TELHOME}/bin/gpsd

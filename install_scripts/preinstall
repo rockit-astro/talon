@@ -1,2 +1,12 @@
 #!/bin/bash
 
+if [ ! -d "${TELHOME}" ]; then
+    mkdir -m 777 ${TELHOME}
+else
+	chmod 777 ${TELHOME}
+fi
+
+if [ -f "${TELHOME}/bin/gpsd" ]; then
+	echo "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+	rm -f ${TELHOME}/bin/gpsd
+fi
