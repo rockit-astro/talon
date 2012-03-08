@@ -3,7 +3,11 @@
 
 rund telescoped
 rund camerad
+<<<<<<< HEAD
 rund wxd.php -f /usr/local/telescope/archive/logs/wxd.dat -d 1 -h rebei -p 6666 -e 0
+=======
+rund wxd.php -f /usr/local/telescope/archive/logs/wxd.dat -d 1 -h rebei -e 0
+>>>>>>> 24a9dc9103739782b27802e1fc61415e753559bc
 rund wxd -st /usr/local/telescope/archive/logs/wxd.dat -l -
 rund gpsd -fsac
 

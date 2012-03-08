@@ -62,10 +62,12 @@ addShmFITS (FImage *fip, TelStatShm *telstatshmp)
 	setStringFITS (fip, "BLOCKID", sp->observer, "Observation block ID");//Observersation block id
 	setStringFITS (fip, "IMAGEID", sp->comment, "Image ID");//Image number within its block
 	setStringFITS (fip, "DOMESTAT", shutter, "Dome status");
-	if(sp->ccdcalib.newc)
-		setStringFITS (fip, "OBSTYPE", ccdCalib2Str(sp->ccdcalib), "Observation type");
+	if(sp->ccdcalib.newc == CT_NONE && sp->ccdcalib.data == CD_NONE)
+	    setStringFITS (fip, "OBSTYPE", "Manual", "Observation type");
+	else if(sp->ccdcalib.newc == CT_NONE && sp->ccdcalib.data == CD_RAW)
+	    setStringFITS (fip, "OBSTYPE", "SCIENCE", "Observation type");
 	else
-		setStringFITS (fip, "OBSTYPE", "Manual", "Observation type");
+	    setStringFITS (fip, "OBSTYPE", ccdCalib2Str(sp->ccdcalib), "Observation type");
 	//Future variables to include in the headers:
 	//setStringFITS (fip, "DEFOCUS", RoboDIMM->seeing, "Yes if defocused");
 	//setStringFITS (fip, "PHOTOMET", CLOUD->value, "Cloud sensor");

@@ -9,15 +9,17 @@ GROUP_READ GROUP_EXECUTE
 WORLD_READ WORLD_EXECUTE)
 
 
-add_custom_target (preinstall_0
+add_custom_target (preinstall
 	COMMAND su -c "${install_scripts_SOURCE_DIR}/preinstall"
 	COMMENT "Preinstall"
 )                 
-
 
 add_custom_target (postinstall
 	COMMAND su -c "${install_scripts_SOURCE_DIR}/postinstall"
 	COMMENT "Postinstall"
 )
 
-add_dependencies(postinstall preinstall_0)
+add_custom_target (uninstall
+	COMMAND su -c "${install_scripts_SOURCE_DIR}/uninstall"
+	COMMENT "Uninstall"
+)

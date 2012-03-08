@@ -1,0 +1,4 @@
+
+# CAMERA MODULE
+indmod /usr/local/telescope/lib/modules/fliusb.ko
+

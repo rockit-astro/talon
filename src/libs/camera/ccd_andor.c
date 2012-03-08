@@ -33,6 +33,10 @@ typedef struct andor_camera_typedef
 	int width;
 	int height;
 	int target_temp;
+	int expose_width;
+	int expose_height;
+	int pipe[2];
+	int duration;
 } andor_camera_t;
 
 andor_camera_t andor_camera;
@@ -43,6 +47,12 @@ typedef enum shutter_mode_t
 {
 	SHUTTER_AUTO = 0, SHUTTER_OPEN = 1, SHUTTER_CLOSED = 2
 } shutter_mode;
+
+void __andor_alarm_handler(int signum) {
+	andor_debug("__andor_alarm_handler\n");
+	write(andor_camera.pipe[1],"Exposure complete\n",18);
+	andor_debug("writing to pipe: Exposure complete\n");
+}
 
 /***************** Begin public Talon CCD interface functions *************/
 
@@ -137,14 +147,17 @@ int andor_findCCD(char *path, char *errmsg)
 		return -1;
 	}
 
-
 	andor_camera.handler = tmphandler;
 	andor_camera.index = camera_index;
 	andor_camera.opened = 1;
 	andor_camera.width = tmpwidth;
 	andor_camera.height = tmpheight;
 	andor_camera.target_temp = COOLER_OFF;
+	andor_camera.expose_width = tmpwidth;
+	andor_camera.expose_height = tmpheight;
+	andor_camera.duration=1;
 	andor_debug("Sucess (%d) opening ANDOR camera %d\n", ret, camera_index);
+	pipe(andor_camera.pipe);
 
 	return 1;
 }
@@ -172,14 +185,14 @@ int andor_setExpCCD(CCDExpoParams *expP, char *errmsg)
 	int noGains;
 
 
-//      Insure High Capacity Mode is OFF      
+//      Insure High Capacity Mode is OFF
         ret = SetHighCapacity(0);
         if (ret != DRV_SUCCESS)
         {
                sprintf(errmsg, "Error (%d) setting SetHighCapacity\n", ret);
                return -1;
         }
-        
+
         ret =  SetVSSpeed(0);
         if (ret != DRV_SUCCESS)
         {
@@ -256,6 +269,11 @@ int andor_setExpCCD(CCDExpoParams *expP, char *errmsg)
 		return -1;
 	}
 
+	andor_camera.expose_width=expP->sw;
+	andor_camera.expose_height=expP->sh;
+	andor_camera.duration=(int)ceilf(time);
+	if(andor_camera.duration<=0) andor_camera.duration=1;
+
 	return 0;
 }
 
@@ -274,6 +292,9 @@ int andor_startExpCCD(char *errmsg)
 		sprintf(errmsg, "Error (%d) starting exposure\n", ret);
 		return -1;
 	}
+
+	signal(SIGALRM,__andor_alarm_handler);
+	alarm(andor_camera.duration);
 
 	return 0;
 }
@@ -321,7 +342,7 @@ void andor_abortExpCCD()
 int andor_selectHandleCCD(char *errmsg)
 {
 	andor_debug("andor_selectHandleCCD %d\n", andor_camera.handler);
-	return 1;
+	return andor_camera.pipe[0];
 }
 
 /* set up the cooler according to tp.
@@ -501,6 +522,10 @@ int andor_readPix(char *mem, int nbytes, int block, char *errmsg)
 	andor_debug("andor_readPix (%d bytes)\n", nbytes);
 	int ret;
 
+	char buf[100];
+	read(andor_camera.pipe[0],buf,100);
+	andor_debug("reading from pipe: %s\n", buf);
+
 	if (block)
 	{
 		ret = WaitForAcquisition();
@@ -519,7 +544,7 @@ int andor_readPix(char *mem, int nbytes, int block, char *errmsg)
 	}
 
 	ret = GetAcquiredData16((unsigned short*) mem,
-			andor_camera.width * andor_camera.height);
+			andor_camera.expose_width * andor_camera.expose_height);
 	if (ret == DRV_ACQUIRING)
 	{
 		sprintf(errmsg, "Info (%d) camera is exposing\n", ret);
