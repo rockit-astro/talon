@@ -50,7 +50,8 @@ typedef enum shutter_mode_t
 
 void __andor_alarm_handler(int signum) {
 	andor_debug("__andor_alarm_handler\n");
-	write(andor_camera.pipe[1],"Exposure complete\n",18);
+	char text[100]="Exposure complete\n";
+	write(andor_camera.pipe[1],text,strlen(text));
 	andor_debug("writing to pipe: Exposure complete\n");
 }
 
@@ -185,25 +186,32 @@ int andor_setExpCCD(CCDExpoParams *expP, char *errmsg)
 	int noGains;
 
 
-//      Insure High Capacity Mode is OFF
-        ret = SetHighCapacity(0);
-        if (ret != DRV_SUCCESS)
-        {
-               sprintf(errmsg, "Error (%d) setting SetHighCapacity\n", ret);
-               return -1;
-        }
+//  Insure High Capacity Mode is OFF
+	ret = SetHighCapacity(0);
+	if (ret != DRV_SUCCESS)
+	{
+		   sprintf(errmsg, "Error (%d) setting SetHighCapacity\n", ret);
+		   return -1;
+	}
 
-        ret =  SetVSSpeed(0);
-        if (ret != DRV_SUCCESS)
-        {
-               sprintf(errmsg, "Erro (%d) setting SetVSSpeed\n", ret);
-               return -1;
-        }
+	ret =  SetVSSpeed(0);
+	if (ret != DRV_SUCCESS)
+	{
+		   sprintf(errmsg, "Erro (%d) setting SetVSSpeed\n", ret);
+		   return -1;
+	}
 
 //	printf("Vspeeds = %d  Hspeeds = %d  numChannels = %d noGains = %d\n", Vspeeds, Hspeeds, numChannels, noGains);
 
+	int speeds;
+	ret = GetNumberHSSpeeds(0,0,&speeds);
+	if (ret != DRV_SUCCESS)
+	{
+		sprintf(errmsg, "Error (%d) getting GetNumberHSSpeeds\n", ret);
+		return -1;
+	}
 
-	ret = SetHSSpeed(0, 2);
+	ret = SetHSSpeed(0, speeds-1);
 	if (ret != DRV_SUCCESS)
 	{
 		sprintf(errmsg, "Error (%d) setting SetHSSpeed\n", ret);
@@ -371,6 +379,22 @@ int andor_setTempCCD(CCDTempInfo *tp, char *errmsg)
 	{
 		tp->s = CCDTS_ERR;
 		sprintf(errmsg, "Error (%d) setting cooler ON\n", ret);
+		return -1;
+	}
+
+	int mintemp,maxtemp;
+	ret = GetTemperatureRange(&mintemp,&maxtemp);
+	if (ret != DRV_SUCCESS)
+	{
+		tp->s = CCDTS_ERR;
+		sprintf(errmsg, "Error (%d) getting temperature range\n", ret);
+		return -1;
+	}
+
+	if (tp->t < mintemp || tp->t > maxtemp)
+	{
+		tp->s = CCDTS_ERR;
+		sprintf(errmsg, "Error setting temperature to %d (valid range between %d and %d)\n", tp->t,maxtemp,mintemp);
 		return -1;
 	}
 
