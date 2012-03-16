@@ -50,6 +50,7 @@ static void focus_stop(int first, ...);
 static void focus_auto(int first, ...);
 static void focus_offset(int first, ...);
 static void focus_jog(int first, ...);
+static void focus_status(void); //IEEC
 
 /* helped along by these... */
 static void initCfg(void);
@@ -108,6 +109,8 @@ char *msg;
         focus_limits(1);
     else if (strncasecmp (msg, "auto", 4) == 0)
         focus_auto(1);
+    else if (strncasecmp (msg, "status", 6) == 0) //IEEC
+        focus_status();                          //IEEC
     else if (sscanf (msg, "j%1[0+-]", jog) == 1)
         focus_jog (1, jog[0]);
     else
@@ -309,6 +312,30 @@ focus_auto(int first, ...)
     /* if still on, report success */
     if (telstatshmp->autofocus)
         fifoWrite (Focus_Id, 0, "Auto-focus enabled");
+}
+
+static void
+focus_status(void)
+{
+    /* IEEC function to provide the focus status through fifo calls */
+    MotorInfo *mip = OMOT;
+    int cfd = MIPCFD(mip);
+    int status = -1;
+
+    readFocus();
+    if(virtual_mode)
+        fifoWrite(Focus_Id, 0, "Focus position is %g um", mip->cpos);
+    else
+    {
+        status = csi_rix(cfd,"=isHomed();");
+		if(status==1)
+            fifoWrite(Focus_Id, 0, "Focus position is %g um", mip->cpos);
+        else if(status==0)
+            fifoWrite (Focus_Id, 0, "Focus position is unknown");
+        else
+            fifoWrite(Focus_Id, -1, "Error reading focus status");
+    }
+    return;
 }
 
 /* handle a relative focus move, in microns */

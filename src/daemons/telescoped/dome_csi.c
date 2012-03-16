@@ -101,6 +101,7 @@ static void csi_dome_autoOff(int first, ...);
 static void csi_dome_home(int first, ...);
 static void csi_dome_setaz(int first, ...);
 static void csi_dome_stop(int first, ...);
+static void csi_dome_status (int first, ...); //IEEC
 static void csi_dome_jog (int first, ...);
 static void csi_dome_readpos(int first, ...);
 /* helped along by these... */
@@ -199,6 +200,8 @@ char *msg;
     	csi_dome_autoOff(1);
     else if (strncasecmp (msg, "home", 4) == 0)
     	csi_dome_home(1);
+    else if (strncasecmp (msg, "status", 6) == 0) //IEEC
+    	csi_dome_status(1);                       //IEEC
     else if (sscanf (msg, "Az:%lf", &az) == 1)
     	csi_dome_setaz (1, az);
     else if (sscanf (msg, "j%1[0+-]", jog_dir) == 1)
@@ -748,6 +751,64 @@ csi_dome_home (int first, ...)
     DS = DS_STOPPED;
     active_func = NULL;
 }
+
+
+/* get dome status (introduced by IEEC) */
+static void
+csi_dome_status (int first, ...)
+{
+  	int status = -1;
+    int pos;
+    double daz;
+    char *  rixRead = "=epos;";
+
+    if (first) 
+    {
+        if (DHAVE || SHAVE)
+        {
+            if (!is_virtual_mode()) 
+            {
+#if !TTY_DOME
+                // -- Version 1.5 or greater of nodeDome.cmc --//
+            	status = csi_rix(cfd, "domeStatus();");
+            	if (status < 0 || status > 3) 
+                    fifoWrite(Dome_Id, -1, "Error retrieving shutter status");
+                if (DHAVE)
+                {
+                    status = csi_rix(cfd, "isDomeHomed();");
+                    if(status==0)
+                        fifoWrite(Dome_Id, 0, "Dome orientation is unknown");
+                    else if (status==1)
+					{
+                        if (MOTORONLY)
+                            rixRead = "=mpos;";
+						pos = csi_rix(cfd,rixRead) * DOMESIGN;
+						daz = (2* PI * pos / DOMESTEP) + DOMEZERO;
+						range(&daz, 2*PI);
+                        fifoWrite(Dome_Id, 1, "Dome orientation is %g",daz);
+                    }
+            	    else
+                        fifoWrite(Dome_Id, -1, "Error retrieving dome orientation");
+                }
+#endif
+            }
+    		else
+            {
+                status = vmc_isReady(DOMEAXIS);
+                if(status==0)
+                    fifoWrite(Dome_Id, 0, "Dome is unresponsive");
+                else if (status==1)
+                    fifoWrite(Dome_Id, 1, "Dome is ready");
+         	    else
+                    fifoWrite(Dome_Id, -1, "Error retrieving dome status");
+            }
+        }
+        else
+            fifoWrite (Dome_Id, -1, "No dome installed");
+    }
+    return;
+}
+
 
 /* move to the given azimuth. also turns off Auto mode. */
 static void

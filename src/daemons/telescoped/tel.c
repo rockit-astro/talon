@@ -69,6 +69,7 @@ static void tel_stop(int first, ...);
 static void tel_jog(int first, char jog_dir[], int velocity);
 static void offsetTracking(int first, double harcsecs, double darcsecs);
 static void tel_cover(int first, ...);
+static void tel_status(int first, ...); //IEEC
 
 /* helped along by these... */
 static int dbformat(char *msg, Obj *op, double *drap, double *ddecp);
@@ -138,6 +139,8 @@ void tel_msg(msg)
 		tel_cover(1, "O");
 	else if (strncasecmp(msg, "CloseCover", 10) == 0)
 		tel_cover(1, "C");
+	else if (strncasecmp(msg, "status", 6) == 0) //IEEC
+		tel_status(1);                           //IEEC
 	else if (sscanf(msg, "RA:%lf Dec:%lf Epoch:%lf", &a, &b, &c) == 3)
 		tel_radecep(1, a, b, c);
 	else if (sscanf(msg, "RA:%lf Dec:%lf", &a, &b) == 2)
@@ -1006,6 +1009,51 @@ static void tel_cover(int first, ...)
 	active_func = NULL;
 	fifoWrite(Tel_Id, 0, "Mirror cover command complete");
 	toTTS("The mirror cover command is complete.");
+}
+
+static void tel_status(int first, ...)
+{
+    /* IEEC function to provide telescope status through fifo calls */
+    int status = 0;
+    int tmp = 0;
+	MotorInfo *mip;
+
+    readRaw();
+    mkCook();
+    if(virtual_mode)
+    {
+        fifoWrite(Tel_Id, 0, "Telescope equatorial position (RA,Dec): (%g,%g)", 
+                  telstatshmp->CJ2kRA,telstatshmp->CJ2kDec);
+        fifoWrite(Tel_Id, 0, "Telescope altazimutal position (Az,Alt): (%g,%g)", 
+                  telstatshmp->Calt,telstatshmp->Caz);
+    }
+    else
+    {
+        FEM(mip)
+        {
+            tmp = -1; 
+            tmp = csi_rix(MIPCFD(mip),"=isHomed();");
+            if(tmp+1)
+                status += 2*tmp;
+            else
+                status += tmp;
+        }
+
+        if(status==2*NMOT)
+    	{
+            fifoWrite(Tel_Id, 0, "Telescope equatorial position (RA,Dec): (%g,%g)", 
+                      telstatshmp->CJ2kRA,telstatshmp->CJ2kDec);
+            fifoWrite(Tel_Id, 0, "Telescope altazimutal position (Az,Alt): (%g,%g)", 
+                      telstatshmp->Calt,telstatshmp->Caz);
+        }
+        else if(status==0)
+            fifoWrite (Tel_Id, 0, "Telescope position is completely undefined");
+		else if(status%2==0)
+            fifoWrite (Tel_Id, 0, "The position of one or several telescope axes are undefined");
+        else
+            fifoWrite(Tel_Id, -1, "Error reading telescope status");
+    }
+    return;
 }
 
 /* aux support functions */

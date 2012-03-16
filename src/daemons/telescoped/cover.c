@@ -52,6 +52,7 @@ static void cover_poll(void);
 static void cover_reset(int first, ...);
 static void cover_open(int first, ...);
 static void cover_close(int first, ...);
+static void cover_status(void); //IEEC
 
 static void initCfg();
 
@@ -74,8 +75,10 @@ cover_msg (msg)
 	else if(strncasecmp(msg,"coverClose",10) == 0 ) {
 		cover_close(1);
 	}
-	else if(strncasecmp(msg,"coverOpen",9) == 0 ) {
+	else if(strncasecmp(msg,"coverOpen",9) == 0 )
 		cover_open(1);
+	else if(strncasecmp(msg,"status",6) == 0 ) { //IEEC
+		cover_status();                          //IEEC
 	}
 	else
 	{
@@ -252,4 +255,19 @@ void initCfg() {
 	cover_init();
 }
 
+void cover_status(void) 
+{
+    /* IEEC function to provide cover status through fifo calls */
+   	int status = -1;
+    
+    if(COVERHAVE)
+    {
+        status = csi_rix(cfd, "coverStatus();");
+  	    if (status < 0 || status > 3) 
+            fifoWrite(Dome_Id, -1, "Error retrieving status");
+    }
+    else
+      fifoWrite(Dome_Id, 0, "No covers defined");
 
+	return;
+}
