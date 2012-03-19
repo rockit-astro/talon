@@ -262,7 +262,9 @@ void cover_status(void)
     
     if(COVERHAVE)
     {
-        status = csi_rix(cfd, "coverStatus();");
+        /* Since coverStatus CSIMC funcions already provides output, nothing
+           has to be implemented */
+        status = csi_w(cfd, "coverStatus();");
   	    if (status < 0 || status > 3) 
             fifoWrite(Dome_Id, -1, "Error retrieving status");
     }
