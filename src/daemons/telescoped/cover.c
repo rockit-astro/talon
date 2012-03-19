@@ -262,11 +262,25 @@ void cover_status(void)
     
     if(COVERHAVE)
     {
-        /* Since coverStatus CSIMC funcion already provides output, nothing
-           has to be implemented */
-        status = csi_rix(cfd, "coverStatus();");
-  	    if (status < 0 || status > 3) 
-            fifoWrite(Cover_Id, -1, "Error retrieving status");
+        status = csi_rix(cfd, "=coverStatus();");
+        switch(status)
+        {
+            case 0:
+                fifoWrite(Cover_Id, 0, "Covers are closed");
+                break;
+            case 1:
+                fifoWrite(Cover_Id, 1, "Covers are open");
+                break;
+            case 2:
+                fifoWrite(Cover_Id, 2, "Covers are closing");
+                break;
+            case 3:
+                fifoWrite(Cover_Id, 3, "Covers are opening");
+                break;
+            default:
+                fifoWrite(Cover_Id, -1, "Error retrieving covers status");
+                break;
+        }
     }
     else
       fifoWrite(Cover_Id, 0, "No covers defined");
