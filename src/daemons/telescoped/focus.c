@@ -321,15 +321,17 @@ focus_status(void)
     MotorInfo *mip = OMOT;
     int cfd = MIPCFD(mip);
     int status = -1;
+    double upos = 0;
 
     readFocus();
+    upos = (mip->cpos*mip->step) / (2*PI*mip->focscale);
     if(virtual_mode)
-        fifoWrite(Focus_Id, 0, "Focus position is %g um", mip->cpos);
+        fifoWrite(Focus_Id, 0, "Focus position is %g um", upos);
     else
     {
         status = csi_rix(cfd,"=isHomed();");
 		if(status==1)
-            fifoWrite(Focus_Id, 0, "Focus position is %g um", mip->cpos);
+            fifoWrite(Focus_Id, 0, "Focus position is %g um", upos);
         else if(status==0)
             fifoWrite (Focus_Id, 0, "Focus position is unknown");
         else
