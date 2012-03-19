@@ -1014,49 +1014,39 @@ static void tel_cover(int first, ...)
 static void tel_status(int first, ...)
 {
     /* IEEC function to provide telescope status through fifo calls */
-    int status = 0;
-    int tmp = 0;
-    int nhomes = 0;
-	MotorInfo *mip;
+    int hstatus = dstatus = -1;
 
     readRaw();
     mkCook();
     if(virtual_mode)
     {
-        fifoWrite(Tel_Id, 0, "Telescope equatorial position (RA,Dec): (%g,%g)", 
+        fifoWrite(Tel_Id, 0, "Telescope equatorial position ( RA , Dec ): ( %g , %g )", 
                   telstatshmp->CJ2kRA,telstatshmp->CJ2kDec);
-        fifoWrite(Tel_Id, 0, "Telescope altazimutal position (Az,Alt): (%g,%g)", 
+        fifoWrite(Tel_Id, 0, "Telescope altazimutal position ( Az , Alt ):  (%g , %g )", 
                   telstatshmp->Calt,telstatshmp->Caz);
     }
     else
     {
-        FEM(mip)
-        {
-            tmp = -1; 
-			if (mip->have)
-            {
-                tmp = csi_rix(MIPCFD(mip),"=isHomed();");
-                if(tmp+1)
-                    status += 2*tmp;
-                else
-                    status += tmp;
-            }
-            nhomes++;
-        }
+	    if (HMOT->have)
+            hstatus = csi_rix(MIPCFD(HMOT),"=isHomed();");
+	    if (DMOT->have)
+            dstatus = csi_rix(MIPCFD(DMOT),"=isHomed();");
 
-        if(status==2*nhomes)
+        if(hstatus==1 && dstatus==1)
     	{
-            fifoWrite(Tel_Id, 0, "Telescope equatorial position (RA,Dec): (%g,%g)", 
+            fifoWrite(Tel_Id, 0, "Telescope equatorial position ( RA , Dec ): ( %g , %g )", 
                       telstatshmp->CJ2kRA,telstatshmp->CJ2kDec);
-            fifoWrite(Tel_Id, 0, "Telescope altazimutal position (Az,Alt): (%g,%g)", 
+            fifoWrite(Tel_Id, 0, "Telescope altazimutal position ( Az , Alt ): ( %g , %g )", 
                       telstatshmp->Calt,telstatshmp->Caz);
         }
-        else if(status==0)
-            fifoWrite (Tel_Id, 2, "Telescope position is completely undefined");
-		else if(status%2==0)
-            fifoWrite (Tel_Id, 1, "The position of one or several telescope axes are undefined");
+        else if(hstatus==0 && dstatus==0)
+            fifoWrite (Tel_Id, 2, "Telescope position is completely unknown");
+		else if(hstatus==1 && dstatus==0)
+            fifoWrite (Tel_Id, 1, "Declination axis position is unknown");
+		else if(hstatus==0 && dstatus==1)
+            fifoWrite (Tel_Id, 1, "Hour angle axis position is unknown");
         else
-            fifoWrite(Tel_Id, -1, "Error reading telescope status");
+            fifoWrite(Tel_Id, -1, "Error reading telescope position");
     }
     return;
 }
