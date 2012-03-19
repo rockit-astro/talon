@@ -262,14 +262,14 @@ void cover_status(void)
     
     if(COVERHAVE)
     {
-        /* Since coverStatus CSIMC funcions already provides output, nothing
+        /* Since coverStatus CSIMC funcion already provides output, nothing
            has to be implemented */
-        status = csi_w(cfd, "coverStatus();");
+        status = csi_rix(cfd, "coverStatus();");
   	    if (status < 0 || status > 3) 
-            fifoWrite(Dome_Id, -1, "Error retrieving status");
+            fifoWrite(Cover_Id, -1, "Error retrieving status");
     }
     else
-      fifoWrite(Dome_Id, 0, "No covers defined");
+      fifoWrite(Cover_Id, 0, "No covers defined");
 
 	return;
 }
