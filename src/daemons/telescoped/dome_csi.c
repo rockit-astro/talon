@@ -770,12 +770,28 @@ csi_dome_status (int first, ...)
             {
 #if !TTY_DOME
                 // -- Version 1.5 or greater of nodeDome.cmc --//
-            	status = csi_rix(cfd, "domeStatus();");
-            	if (status < 0 || status > 3) 
-                    fifoWrite(Dome_Id, -1, "Error retrieving shutter status");
+            	status = csi_rix(cfd, "=domeStatus();");
+                switch(status)
+                {
+                    case 0:
+                        fifoWrite(Dome_Id, 0, "Shutter is closed");
+                        break;
+                    case 1:
+                        fifoWrite(Dome_Id, 1, "Shutter is open");
+                        break;
+                    case 2:
+                        fifoWrite(Dome_Id, 2, "Shutter is closing");
+                        break;
+                    case 3:
+                        fifoWrite(Dome_Id, 3, "Shutter is opening");
+                        break;
+                    default:
+                        fifoWrite(Dome_Id, -1, "Error retrieving shutter status");
+                        break;
+                }
                 if (DHAVE)
                 {
-                    status = csi_rix(cfd, "isDomeHomed();");
+                    status = csi_rix(cfd, "=isDomeHomed();");
                     if(status==0)
                         fifoWrite(Dome_Id, 0, "Dome orientation is unknown");
                     else if (status==1)
