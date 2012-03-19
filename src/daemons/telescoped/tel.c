@@ -1016,6 +1016,7 @@ static void tel_status(int first, ...)
     /* IEEC function to provide telescope status through fifo calls */
     int status = 0;
     int tmp = 0;
+    int nhomes = 0;
 	MotorInfo *mip;
 
     readRaw();
@@ -1032,14 +1033,18 @@ static void tel_status(int first, ...)
         FEM(mip)
         {
             tmp = -1; 
-            tmp = csi_rix(MIPCFD(mip),"=isHomed();");
-            if(tmp+1)
-                status += 2*tmp;
-            else
-                status += tmp;
+			if (mip->have)
+            {
+                tmp = csi_rix(MIPCFD(mip),"=isHomed();");
+                if(tmp+1)
+                    status += 2*tmp;
+                else
+                    status += tmp;
+            }
+            nhomes++;
         }
 
-        if(status==2*NMOT)
+        if(status==2*nhomes)
     	{
             fifoWrite(Tel_Id, 0, "Telescope equatorial position (RA,Dec): (%g,%g)", 
                       telstatshmp->CJ2kRA,telstatshmp->CJ2kDec);
@@ -1047,9 +1052,9 @@ static void tel_status(int first, ...)
                       telstatshmp->Calt,telstatshmp->Caz);
         }
         else if(status==0)
-            fifoWrite (Tel_Id, 0, "Telescope position is completely undefined");
+            fifoWrite (Tel_Id, 2, "Telescope position is completely undefined");
 		else if(status%2==0)
-            fifoWrite (Tel_Id, 0, "The position of one or several telescope axes are undefined");
+            fifoWrite (Tel_Id, 1, "The position of one or several telescope axes are undefined");
         else
             fifoWrite(Tel_Id, -1, "Error reading telescope status");
     }
