@@ -69,6 +69,7 @@ static void tel_stop(int first, ...);
 static void tel_jog(int first, char jog_dir[], int velocity);
 static void offsetTracking(int first, double harcsecs, double darcsecs);
 static void tel_cover(int first, ...);
+static void tel_status(int first, ...); //IEEC
 
 /* helped along by these... */
 static int dbformat(char *msg, Obj *op, double *drap, double *ddecp);
@@ -138,6 +139,8 @@ void tel_msg(msg)
 		tel_cover(1, "O");
 	else if (strncasecmp(msg, "CloseCover", 10) == 0)
 		tel_cover(1, "C");
+	else if (strncasecmp(msg, "status", 6) == 0) //IEEC
+		tel_status(1);                           //IEEC
 	else if (sscanf(msg, "RA:%lf Dec:%lf Epoch:%lf", &a, &b, &c) == 3)
 		tel_radecep(1, a, b, c);
 	else if (sscanf(msg, "RA:%lf Dec:%lf", &a, &b) == 2)
@@ -1006,6 +1009,47 @@ static void tel_cover(int first, ...)
 	active_func = NULL;
 	fifoWrite(Tel_Id, 0, "Mirror cover command complete");
 	toTTS("The mirror cover command is complete.");
+}
+
+static void tel_status(int first, ...)
+{
+    /* IEEC function to provide telescope status through fifo calls */
+    int hstatus, dstatus;
+    hstatus = dstatus = -1;
+
+    readRaw();
+    mkCook();
+    if(virtual_mode)
+    {
+        fifoWrite(Tel_Id, 0, "Telescope equatorial position ( RA , Dec ): ( %g , %g )", 
+                  telstatshmp->CJ2kRA,telstatshmp->CJ2kDec);
+        fifoWrite(Tel_Id, 0, "Telescope altazimutal position ( Az , Alt ):  (%g , %g )", 
+                  telstatshmp->Caz,telstatshmp->Calt);
+    }
+    else
+    {
+	    if (HMOT->have)
+            hstatus = csi_rix(MIPCFD(HMOT),"=isHomed();");
+	    if (DMOT->have)
+            dstatus = csi_rix(MIPCFD(DMOT),"=isHomed();");
+
+        if(hstatus==1 && dstatus==1)
+    	{
+            fifoWrite(Tel_Id, 0, "Telescope equatorial position ( RA , Dec ): ( %g , %g )", 
+                      telstatshmp->CJ2kRA,telstatshmp->CJ2kDec);
+            fifoWrite(Tel_Id, 0, "Telescope altazimutal position ( Az , Alt ): ( %g , %g )", 
+                      telstatshmp->Caz,telstatshmp->Calt);
+        }
+        else if(hstatus==0 && dstatus==0)
+            fifoWrite (Tel_Id, 2, "Telescope position is completely unknown");
+		else if(hstatus==1 && dstatus==0)
+            fifoWrite (Tel_Id, 1, "Declination axis position is unknown");
+		else if(hstatus==0 && dstatus==1)
+            fifoWrite (Tel_Id, 1, "Hour angle axis position is unknown");
+        else
+            fifoWrite(Tel_Id, -1, "Error reading telescope position");
+    }
+    return;
 }
 
 /* aux support functions */

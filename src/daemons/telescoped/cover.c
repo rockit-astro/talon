@@ -52,6 +52,7 @@ static void cover_poll(void);
 static void cover_reset(int first, ...);
 static void cover_open(int first, ...);
 static void cover_close(int first, ...);
+static void cover_status(void); //IEEC
 
 static void initCfg();
 
@@ -74,8 +75,10 @@ cover_msg (msg)
 	else if(strncasecmp(msg,"coverClose",10) == 0 ) {
 		cover_close(1);
 	}
-	else if(strncasecmp(msg,"coverOpen",9) == 0 ) {
+	else if(strncasecmp(msg,"coverOpen",9) == 0 )
 		cover_open(1);
+	else if(strncasecmp(msg,"status",6) == 0 ) { //IEEC
+		cover_status();                          //IEEC
 	}
 	else
 	{
@@ -252,4 +255,42 @@ void initCfg() {
 	cover_init();
 }
 
+void cover_status(void) 
+{
+    /* IEEC function to provide cover status through fifo calls */
+   	int status;
+    char buf[1024];
+    
+    if(COVERHAVE)
+    {
+        if(csi_wr(cfd, buf, sizeof(buf), "coverStatus();")>0)
+            status = atoi(&buf[0]);
+        else
+            status = -1;
+        
+        /* CSIMC output (buf) could be directly passed to FIFOs, but better
+           define error level as -1 (instead of 4) */
+        switch(status)
+        {
+            case 0:
+                fifoWrite(Cover_Id, 0, "Covers are closed");
+                break;
+            case 1:
+                fifoWrite(Cover_Id, 1, "Covers are open");
+                break;
+            case 2:
+                fifoWrite(Cover_Id, 2, "Covers are closing");
+                break;
+            case 3:
+                fifoWrite(Cover_Id, 3, "Covers are opening");
+                break;
+            default:
+                fifoWrite(Cover_Id, -1, "Error retrieving covers status");
+                break;
+        }
+    }
+    else
+      fifoWrite(Cover_Id, 0, "No covers defined");
 
+	return;
+}
