@@ -259,12 +259,12 @@ void cover_status(void)
 {
     /* IEEC function to provide cover status through fifo calls */
    	int status;
-    char *buf[2];
+    char buf[2];
     
     if(COVERHAVE)
     {
         if(csi_wr(cfd, buf, sizeof(buf), "coverStatus();")>0)
-          status = atoi(buf[0]);
+          status = atoi(buf);
         else
           status = -1;
         
