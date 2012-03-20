@@ -268,6 +268,8 @@ void cover_status(void)
         else
           status = -1;
         
+        /* CSIMC output (buf) could be directly passed to FIFOs, but better
+           define error level as -1 (instead of 4) */
         switch(status)
         {
             case 0:

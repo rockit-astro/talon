@@ -757,10 +757,10 @@ csi_dome_home (int first, ...)
 static void
 csi_dome_status (int first, ...)
 {
-  	int status = -1;
-    int pos;
+  	int status, pos;
     double daz;
     char *  rixRead = "=epos;";
+    char buf[1024];
 
     if (first) 
     {
@@ -770,7 +770,13 @@ csi_dome_status (int first, ...)
             {
 #if !TTY_DOME
                 // -- Version 1.5 or greater of nodeDome.cmc --//
-            	status = csi_rix(cfd, "=domeStatus();");
+            	if(csi_wr(cfd, buf, sizeof(buf), "domeStatus();")>0)
+                    status = atoi(&buf[0]);
+                else
+                    status = -1;
+               
+                 /* CSIMC output (buf) could be directly passed to FIFOs, 
+                    but better define error level as -1 (instead of 4) */
                 switch(status)
                 {
                     case 0:
