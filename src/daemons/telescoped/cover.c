@@ -264,9 +264,9 @@ void cover_status(void)
     if(COVERHAVE)
     {
         if(csi_wr(cfd, buf, sizeof(buf), "coverStatus();")>0)
-          status = atoi(&buf[0]);
+            status = atoi(&buf[0]);
         else
-          status = -1;
+            status = -1;
         
         /* CSIMC output (buf) could be directly passed to FIFOs, but better
            define error level as -1 (instead of 4) */
