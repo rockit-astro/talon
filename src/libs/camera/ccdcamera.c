@@ -39,7 +39,7 @@ int initCCD (char *path, int auxcam, char *msg);
  *
  * Note that with the advent of USB cameras, this function is now somewhat
  * confused. With such devices you generally do not need to give a path
- * to a valid device; the USB subsystem or camera driver can figure it 
+ * to a valid device; the USB subsystem or camera driver can figure it
  * out automatically.
  *
  * path: String pointing to the device file used to communicate with
@@ -281,7 +281,7 @@ getIDCCD (char buf[], char *errmsg)
  */
 int
 getSizeCCD (CCDExpoParams *cep, char *errmsg)
-{	
+{
     if (callbacks != NULL) {
         return callbacks->getSizeCCD(cep, errmsg);
     }

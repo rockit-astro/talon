@@ -99,8 +99,31 @@ int andor_findCCD(char *path, char *errmsg)
 		}
 	}
 
-	int camera_index = -1;
-	sscanf(path, "/dev/andor%d", &camera_index);
+	int camera_index=-1;
+	int number;
+	at_32 tmphandler;
+	int i;
+	int number2=-1;
+	sscanf(path,"/dev/andor%d",&number2);
+	for(i=0;i<ncameras;i++) {
+		ret=GetCameraHandle(i,&tmphandler);
+		if(ret==DRV_SUCCESS) {
+			ret=SetCurrentCamera(tmphandler);
+			if(ret==DRV_SUCCESS) {
+				ret = Initialize("/usr/local/etc/andor");
+				if(ret==DRV_SUCCESS) {
+					ret=GetCameraSerialNumber(&number);
+					if(ret==DRV_SUCCESS) {
+						andor_debug("ANDOR serial number = %d",number);
+						if(number2==number) {
+							camera_index=i;
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
 	andor_debug("camera_index = %d", camera_index);
 
 	if (camera_index < 0 || camera_index >= ncameras)
@@ -111,7 +134,6 @@ int andor_findCCD(char *path, char *errmsg)
 		return -1;
 	}
 
-	at_32 tmphandler;
 	ret = GetCameraHandle(camera_index, &tmphandler);
 	if (ret != DRV_SUCCESS)
 	{
