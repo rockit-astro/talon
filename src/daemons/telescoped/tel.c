@@ -1014,7 +1014,8 @@ static void tel_cover(int first, ...)
 static void tel_status(int first, ...)
 {
     /* IEEC function to provide telescope status through fifo calls */
-    int hstatus = dstatus = -1;
+    int hstatus, dstatus;
+    hstatus = dstatus = -1;
 
     readRaw();
     mkCook();
