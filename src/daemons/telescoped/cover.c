@@ -259,7 +259,7 @@ void cover_status(void)
 {
     /* IEEC function to provide cover status through fifo calls */
    	int status;
-    char buf[2];
+    char *buf[2];
     
     if(COVERHAVE)
     {
