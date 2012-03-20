@@ -1024,7 +1024,7 @@ static void tel_status(int first, ...)
         fifoWrite(Tel_Id, 0, "Telescope equatorial position ( RA , Dec ): ( %g , %g )", 
                   telstatshmp->CJ2kRA,telstatshmp->CJ2kDec);
         fifoWrite(Tel_Id, 0, "Telescope altazimutal position ( Az , Alt ):  (%g , %g )", 
-                  telstatshmp->Calt,telstatshmp->Caz);
+                  telstatshmp->Caz,telstatshmp->Calt);
     }
     else
     {
@@ -1038,7 +1038,7 @@ static void tel_status(int first, ...)
             fifoWrite(Tel_Id, 0, "Telescope equatorial position ( RA , Dec ): ( %g , %g )", 
                       telstatshmp->CJ2kRA,telstatshmp->CJ2kDec);
             fifoWrite(Tel_Id, 0, "Telescope altazimutal position ( Az , Alt ): ( %g , %g )", 
-                      telstatshmp->Calt,telstatshmp->Caz);
+                      telstatshmp->Caz,telstatshmp->Calt);
         }
         else if(hstatus==0 && dstatus==0)
             fifoWrite (Tel_Id, 2, "Telescope position is completely unknown");
