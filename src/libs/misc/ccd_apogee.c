@@ -16,6 +16,12 @@ static int target_temp = COOLER_OFF; /* Saved target temperature for cooler. */
 static int pixpipe = 0;
 static int diepipe = 0;
 
+/* TO CONTROL THE CORRECT HAPPY END OF THE CHILDREN PROCESSES */
+void apogee_signal_sigchld(int signum) {
+  signal(signum,SIG_IGN);
+  wait(NULL);
+  signal(signum,apogee_signal_sigchld);
+}
 
 /************ Support functions for the public Talon camera API ***********/
 
@@ -31,7 +37,8 @@ char *err;
         return (-1);
     }
 
-    signal (SIGCHLD, SIG_IGN);	/* no zombies */
+    //signal (SIGCHLD, SIG_IGN); /* no zombies */
+    signal(SIGCHLD,apogee_signal_sigchld);
     pid = fork();
     if (pid < 0) {
         sprintf (err, "Camera monitor fork: %s", strerror(errno));

@@ -40,7 +40,6 @@ typedef struct {
   char *name;
 } cam_t; /* Used in fli_findcams */
 
-
 /************ Support functions for the public Talon camera API ***********/
 
 // Set up for shutter flashing with FLI
@@ -85,7 +84,12 @@ static void handleFLIShutterFlash(int msleft)
 	FLIControlShutter(fli_dev, toggleState ? FLI_SHUTTER_OPEN : FLI_SHUTTER_CLOSE);		
 }
 
-
+/* TO CONTROL THE CORRECT HAPPY END OF THE CHILDREN PROCESSES */
+void fli_signal_sigchld(int signum) {
+  signal(signum,SIG_IGN);
+  wait(NULL);
+  signal(signum,fli_signal_sigchld);
+}
 
 /* create a child helper process that monitors an exposure. set fli_pixpipe
  *   to a file descriptor from which the parent (us) will read EOF when the
@@ -104,8 +108,8 @@ char *err;
         sprintf (err, "FLI pipe: %s", strerror(errno));
         return (-1);
     }
-
-    signal (SIGCHLD, SIG_IGN);	/* no zombies */
+    //signal (SIGCHLD, SIG_IGN); /* no zombies */
+    signal(SIGCHLD,fli_signal_sigchld);
     pid = fork();
     if (pid < 0) {
         sprintf (err, "FLI fork: %s", strerror(errno));
@@ -368,15 +372,21 @@ fli_findCCD (char *path, char *errmsg)
         fli_use = 0;
     }
 
-    if (fli_findcams(FLIDOMAIN_USB, &cam) > 0) {
-        /* This assumes we want to open the first available camera (cam[0]) */
-        if (FLIOpen(&fli_dev, cam[0].name, FLIDEVICE_CAMERA | cam[0].domain) != 0) {
-            sprintf(errmsg, "Error opening FLI camera\n");
-            return -1;
-        }
-        fli_use = 1;
-        return 1; /* Connected successfully */
-    }
+	int ncameras=0;
+	int i;
+	ncameras=fli_findcams(FLIDOMAIN_USB, &cam);
+	for(i=0;i<ncameras;i++) {
+		printf("[ccd_fli.c] i=%d, name=%s, dname=%s\n",i,cam[i].name,cam[i].dname);
+		if(strcmp(path,cam[i].name)==0) {
+			/* This assumes we want to open the first available camera (cam[0]) */
+			if (FLIOpen(&fli_dev, cam[i].name, FLIDEVICE_CAMERA | cam[i].domain) != 0) {
+				sprintf(errmsg, "Error opening FLI camera\n");
+				return -1;
+			}
+			fli_use = 1;
+			return 1; /* Connected successfully */
+		}
+	}
 
     return 0; /* No cameras found */
 }

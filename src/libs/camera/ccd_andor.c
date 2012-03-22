@@ -124,12 +124,12 @@ int andor_findCCD(char *path, char *errmsg)
 			}
 		}
 	}
+	andor_debug("ncameras = %d", ncameras);
 	andor_debug("camera_index = %d", camera_index);
 
 	if (camera_index < 0 || camera_index >= ncameras)
 	{
-		sprintf(errmsg, "Error (%d) ANDOR camera %d not available\n", ret,
-				camera_index);
+		sprintf(errmsg, "Error (%d) ANDOR camera %d not available\n", ret, camera_index);
 		andor_debug("Error (%d) ANDOR camera  %d not available\n", ret, camera_index);
 		return -1;
 	}
