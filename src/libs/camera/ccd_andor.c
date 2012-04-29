@@ -472,12 +472,15 @@ int andor_getTempCCD(CCDTempInfo *tp, char *errmsg)
 
 	if (coolerOn)
 	{
-		if (tp->t < andor_camera.target_temp)
-			tp->s = CCDTS_UNDER;
-		else if (tp->t > andor_camera.target_temp)
-			tp->s = CCDTS_RDN;
-		else
-			tp->s = CCDTS_AT;
+		if (ret == DRV_TEMPERATURE_STABILIZED)
+           tp->s = CCDTS_AT;
+        else
+        {
+            if (tp->t < andor_camera.target_temp)
+			    tp->s = CCDTS_UNDER;
+		    else if (tp->t >= andor_camera.target_temp)
+			    tp->s = CCDTS_RDN;
+        }
 	}
 	else
 	{
