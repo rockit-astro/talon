@@ -15,12 +15,12 @@
 
 #include "ccdcamera.h"
 #include "atmcdLXd.h"	// andor include file
-#define DEBUG
+//#define DEBUG
 
 #ifdef DEBUG
 #define andor_debug(...) {fprintf(stderr, "[%s]:", __FUNCTION__); fprintf(stderr, __VA_ARGS__); fprintf(stderr, "\n");}
 #else
-#define DEBUG
+#define andor_debug(...) {}
 #endif
 
 #define COOLER_OFF -999
@@ -225,15 +225,16 @@ int andor_setExpCCD(CCDExpoParams *expP, char *errmsg)
 
 //	printf("Vspeeds = %d  Hspeeds = %d  numChannels = %d noGains = %d\n", Vspeeds, Hspeeds, numChannels, noGains);
 
-	int speeds;
-	ret = GetNumberHSSpeeds(0,0,&speeds);
-	if (ret != DRV_SUCCESS)
-	{
-		sprintf(errmsg, "Error (%d) getting GetNumberHSSpeeds\n", ret);
-		return -1;
-	}
+	//~ int speeds;
+	//~ ret = GetNumberHSSpeeds(0,0,&speeds);
+	//~ if (ret != DRV_SUCCESS)
+	//~ {
+		//~ sprintf(errmsg, "Error (%d) getting GetNumberHSSpeeds\n", ret);
+		//~ return -1;
+	//~ }
 
-	ret = SetHSSpeed(0, speeds-1);
+	ret = SetHSSpeed(0,2);
+	//~ ret = SetHSSpeed(0, speeds-1);
 	if (ret != DRV_SUCCESS)
 	{
 		sprintf(errmsg, "Error (%d) setting SetHSSpeed\n", ret);
@@ -246,8 +247,6 @@ int andor_setExpCCD(CCDExpoParams *expP, char *errmsg)
 		sprintf(errmsg, "Error (%d) setting SetPreAmpGain\n", ret);
 		return -1;
 	}
-
-
 
 	ret = SetAcquisitionMode(1);
 	if (ret != DRV_SUCCESS)
