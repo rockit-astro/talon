@@ -13,12 +13,12 @@ void andor_getCallbacksCCD(CCDCallbacks *callbacks);
    you must add your getCallbacksCCD function to this list.
  */
 void (*camera_drivers[])(CCDCallbacks*) = {
-	andor_getCallbacksCCD,
 	fli_getCallbacksCCD,
+	andor_getCallbacksCCD,
 //    sbig_getCallbacksCCD,
 //    apogee_getCallbacksCCD,
-    aux_getCallbacksCCD,
-    server_getCallbacksCCD,
-    ocaas_getCallbacksCCD,
+//    aux_getCallbacksCCD,
+//    server_getCallbacksCCD,
+//    ocaas_getCallbacksCCD,
 };
 

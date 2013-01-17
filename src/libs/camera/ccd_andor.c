@@ -15,12 +15,12 @@
 
 #include "ccdcamera.h"
 #include "atmcdLXd.h"	// andor include file
-#define DEBUG
+//#define DEBUG
 
 #ifdef DEBUG
 #define andor_debug(...) {fprintf(stderr, "[%s]:", __FUNCTION__); fprintf(stderr, __VA_ARGS__); fprintf(stderr, "\n");}
 #else
-#define DEBUG
+#define andor_debug(...) {}
 #endif
 
 #define COOLER_OFF -999
@@ -50,7 +50,8 @@ typedef enum shutter_mode_t
 
 void __andor_alarm_handler(int signum) {
 	andor_debug("__andor_alarm_handler\n");
-	write(andor_camera.pipe[1],"Exposure complete\n",18);
+	char text[100]="Exposure complete\n";
+	write(andor_camera.pipe[1],text,strlen(text));
 	andor_debug("writing to pipe: Exposure complete\n");
 }
 
@@ -98,19 +99,41 @@ int andor_findCCD(char *path, char *errmsg)
 		}
 	}
 
-	int camera_index = -1;
-	sscanf(path, "/dev/andor%d", &camera_index);
+	int camera_index=-1;
+	int number;
+	at_32 tmphandler;
+	int i;
+	int number2=-1;
+	sscanf(path,"/dev/andor%d",&number2);
+	for(i=0;i<ncameras;i++) {
+		ret=GetCameraHandle(i,&tmphandler);
+		if(ret==DRV_SUCCESS) {
+			ret=SetCurrentCamera(tmphandler);
+			if(ret==DRV_SUCCESS) {
+				ret = Initialize("/usr/local/etc/andor");
+				if(ret==DRV_SUCCESS) {
+					ret=GetCameraSerialNumber(&number);
+					if(ret==DRV_SUCCESS) {
+						andor_debug("ANDOR serial number = %d",number);
+						if(number2==number) {
+							camera_index=i;
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+	andor_debug("ncameras = %d", ncameras);
 	andor_debug("camera_index = %d", camera_index);
 
 	if (camera_index < 0 || camera_index >= ncameras)
 	{
-		sprintf(errmsg, "Error (%d) ANDOR camera %d not available\n", ret,
-				camera_index);
+		sprintf(errmsg, "Error (%d) ANDOR camera %d not available\n", ret, camera_index);
 		andor_debug("Error (%d) ANDOR camera  %d not available\n", ret, camera_index);
 		return -1;
 	}
 
-	at_32 tmphandler;
 	ret = GetCameraHandle(camera_index, &tmphandler);
 	if (ret != DRV_SUCCESS)
 	{
@@ -185,25 +208,33 @@ int andor_setExpCCD(CCDExpoParams *expP, char *errmsg)
 	int noGains;
 
 
-//      Insure High Capacity Mode is OFF
-        ret = SetHighCapacity(0);
-        if (ret != DRV_SUCCESS)
-        {
-               sprintf(errmsg, "Error (%d) setting SetHighCapacity\n", ret);
-               return -1;
-        }
+//  Insure High Capacity Mode is OFF
+	ret = SetHighCapacity(0);
+	if (ret != DRV_SUCCESS)
+	{
+		   sprintf(errmsg, "Error (%d) setting SetHighCapacity\n", ret);
+		   return -1;
+	}
 
-        ret =  SetVSSpeed(0);
-        if (ret != DRV_SUCCESS)
-        {
-               sprintf(errmsg, "Erro (%d) setting SetVSSpeed\n", ret);
-               return -1;
-        }
+	ret =  SetVSSpeed(0);
+	if (ret != DRV_SUCCESS)
+	{
+		   sprintf(errmsg, "Erro (%d) setting SetVSSpeed\n", ret);
+		   return -1;
+	}
 
 //	printf("Vspeeds = %d  Hspeeds = %d  numChannels = %d noGains = %d\n", Vspeeds, Hspeeds, numChannels, noGains);
 
+	//~ int speeds;
+	//~ ret = GetNumberHSSpeeds(0,0,&speeds);
+	//~ if (ret != DRV_SUCCESS)
+	//~ {
+		//~ sprintf(errmsg, "Error (%d) getting GetNumberHSSpeeds\n", ret);
+		//~ return -1;
+	//~ }
 
-	ret = SetHSSpeed(0, 2);
+	ret = SetHSSpeed(0,2);
+	//~ ret = SetHSSpeed(0, speeds-1);
 	if (ret != DRV_SUCCESS)
 	{
 		sprintf(errmsg, "Error (%d) setting SetHSSpeed\n", ret);
@@ -216,8 +247,6 @@ int andor_setExpCCD(CCDExpoParams *expP, char *errmsg)
 		sprintf(errmsg, "Error (%d) setting SetPreAmpGain\n", ret);
 		return -1;
 	}
-
-
 
 	ret = SetAcquisitionMode(1);
 	if (ret != DRV_SUCCESS)
@@ -374,6 +403,22 @@ int andor_setTempCCD(CCDTempInfo *tp, char *errmsg)
 		return -1;
 	}
 
+	int mintemp,maxtemp;
+	ret = GetTemperatureRange(&mintemp,&maxtemp);
+	if (ret != DRV_SUCCESS)
+	{
+		tp->s = CCDTS_ERR;
+		sprintf(errmsg, "Error (%d) getting temperature range\n", ret);
+		return -1;
+	}
+
+	if (tp->t < mintemp || tp->t > maxtemp)
+	{
+		tp->s = CCDTS_ERR;
+		sprintf(errmsg, "Error setting temperature to %d (valid range between %d and %d)\n", tp->t,maxtemp,mintemp);
+		return -1;
+	}
+
 	ret = SetTemperature(tp->t);
 	if (ret == DRV_TEMPERATURE_NOT_SUPPORTED)
 	{
@@ -426,12 +471,15 @@ int andor_getTempCCD(CCDTempInfo *tp, char *errmsg)
 
 	if (coolerOn)
 	{
-		if (tp->t < andor_camera.target_temp)
-			tp->s = CCDTS_UNDER;
-		else if (tp->t > andor_camera.target_temp)
-			tp->s = CCDTS_RDN;
-		else
-			tp->s = CCDTS_AT;
+		if (ret == DRV_TEMPERATURE_STABILIZED)
+           tp->s = CCDTS_AT;
+        else
+        {
+            if (tp->t < andor_camera.target_temp)
+			    tp->s = CCDTS_UNDER;
+		    else if (tp->t >= andor_camera.target_temp)
+			    tp->s = CCDTS_RDN;
+        }
 	}
 	else
 	{

@@ -57,20 +57,20 @@ static void setupFLIShutterFlash( CCDShutterOptions	type, int expms )
 		    togglePeriod = expms/4;
 		    toggleState = 1;
 			break;
-			
+
 		case CCDSO_Multi:
 			/* shutter open 4/6: OOCOCO */
 		    nextToggle = expms - expms/3;
 		    togglePeriod = expms/6;
 		    toggleState = 1;
 			break;
-		
+
 		default:
 			/* something's wrong! */
 			flashShutter = 0;
-			break;		
-	}		
-	
+			break;
+	}
+
 }
 
 // Control shutter during monitoring
@@ -81,7 +81,7 @@ static void handleFLIShutterFlash(int msleft)
 	nextToggle -= togglePeriod;
 	toggleState = !toggleState;
 	if(!msleft) toggleState = 0; // insure closed when done
-	FLIControlShutter(fli_dev, toggleState ? FLI_SHUTTER_OPEN : FLI_SHUTTER_CLOSE);		
+	FLIControlShutter(fli_dev, toggleState ? FLI_SHUTTER_OPEN : FLI_SHUTTER_CLOSE);
 }
 
 /* TO CONTROL THE CORRECT HAPPY END OF THE CHILDREN PROCESSES */
@@ -169,7 +169,7 @@ char *err;
     }
 }
 
-/* Locate and indentify available FLI cameras 
+/* Locate and indentify available FLI cameras
    (modified from takepic.c in flilib distribution)
    Returns number of cameras detected
 */
@@ -243,16 +243,16 @@ static int fli_findcams(flidomain_t domain, cam_t **cam)
   RBI Annihilation code for FLI
   STO 3-17-2009
   This implements according to sample code provided by Jim Moronski of FLI
-  
+
   The process is an entirely self-contained set of exposures using the RBI
   flood settings.  Not supported if the API does not define RBI settings.
 
 */
 static int fli_rbiFlush(int flushMS, int numDrains, char* errmsg)
-{ 
+{
 
 #ifdef FLI_FRAME_TYPE_RBI_FLUSH
-   
+
     long ul_x, ul_y, lr_x, lr_y;
     fliframe_t frametype;
     long expms = flushMS;
@@ -295,7 +295,7 @@ static int fli_rbiFlush(int flushMS, int numDrains, char* errmsg)
     }
 
     printf("RBI exposing for %dms\n", flushMS);
-    
+
     if (FLIExposeFrame (fli_dev) != 0) {
         sprintf (errmsg, "Error exposing frame");
         return (-1);
@@ -317,7 +317,7 @@ static int fli_rbiFlush(int flushMS, int numDrains, char* errmsg)
     }
 
     printf("RBI flushing with %d bias frames\n",cnt);
- 
+
     while(cnt--)
     {
         long remaining_exposure = 0;
@@ -328,7 +328,7 @@ static int fli_rbiFlush(int flushMS, int numDrains, char* errmsg)
             tv.tv_usec = 200000;
             select (0, NULL, NULL, NULL, &tv);
             FLIGetExposureStatus(fli_dev, &remaining_exposure);
-            
+
         } while(remaining_exposure != 0);
     }
 
@@ -343,7 +343,7 @@ static int fli_rbiFlush(int flushMS, int numDrains, char* errmsg)
 
 /***************** Begin public Talon CCD interface functions *************/
 
-/* Detect and initialize a camera. Optionally use information passed in 
+/* Detect and initialize a camera. Optionally use information passed in
  * via the *path string. For example, this may be a path to a kernel
  * device node, a path to an auxcam script, an IP address for a networked
  * camera, etc.
@@ -372,15 +372,21 @@ fli_findCCD (char *path, char *errmsg)
         fli_use = 0;
     }
 
-    if (fli_findcams(FLIDOMAIN_USB, &cam) > 0) {
-        /* This assumes we want to open the first available camera (cam[0]) */
-        if (FLIOpen(&fli_dev, cam[0].name, FLIDEVICE_CAMERA | cam[0].domain) != 0) {
-            sprintf(errmsg, "Error opening FLI camera\n");
-            return -1;
-        }
-        fli_use = 1;
-        return 1; /* Connected successfully */
-    }
+	int ncameras=0;
+	int i;
+	ncameras=fli_findcams(FLIDOMAIN_USB, &cam);
+	for(i=0;i<ncameras;i++) {
+		printf("[ccd_fli.c] i=%d, name=%s, dname=%s\n",i,cam[i].name,cam[i].dname);
+		if(strcmp(path,cam[i].name)==0) {
+			/* This assumes we want to open the first available camera (cam[0]) */
+			if (FLIOpen(&fli_dev, cam[i].name, FLIDEVICE_CAMERA | cam[i].domain) != 0) {
+				sprintf(errmsg, "Error opening FLI camera\n");
+				return -1;
+			}
+			fli_use = 1;
+			return 1; /* Connected successfully */
+		}
+	}
 
     return 0; /* No cameras found */
 }
@@ -476,7 +482,7 @@ fli_startExpCCD (char *errmsg)
         return (-1);
     }
     if (fli_monitor(errmsg) < 0)
-        return (-1);    
+        return (-1);
     return 0;
 }
 
@@ -484,7 +490,7 @@ fli_startExpCCD (char *errmsg)
  * return 0 if ok else -1 with errmsg.
  * N.B. leave camera open of ok.
  */
-int 
+int
 fli_setupDriftScan (CCDDriftScan *dsip, char *errmsg)
 {
     sprintf (errmsg, "FLI does not support drift scan");
@@ -498,7 +504,7 @@ fli_setupDriftScan (CCDDriftScan *dsip, char *errmsg)
  * Residual Buffer Images in subsequent frames.
  * Return 0 if ok, else set errmsg[] and return -1.
  */
-int 
+int
 fli_performRBIFlushCCD (int flushMS, int numDrains, char* errmsg)
 {
     // implemented in private code, above
@@ -539,7 +545,7 @@ fli_selectHandleCCD (char *errmsg)
  * return 0 if ok, else set errmsg[] and return -1.
  * leave camera closed when finished if it was when we were called.
  */
-int 
+int
 fli_setTempCCD (CCDTempInfo *tp, char *errmsg)
 {
     if (tp->s == CCDTS_SET) {
@@ -559,7 +565,7 @@ fli_setTempCCD (CCDTempInfo *tp, char *errmsg)
  * return 0 if ok, else set errmsg[] and return -1.
  * leave camera closed when finished if it was when we were called.
  */
-int 
+int
 fli_getTempCCD (CCDTempInfo *tp, char *errmsg)
 {
     double t;
@@ -584,7 +590,7 @@ fli_getTempCCD (CCDTempInfo *tp, char *errmsg)
 /* immediate shutter control: open or close.
  * return 0 if ok, else set errmsg[] and return -1.
  */
-int 
+int
 fli_setShutterNow (int open, char *errmsg)
 {
     int rt = FLIControlShutter(fli_dev, open ? FLI_SHUTTER_OPEN : FLI_SHUTTER_CLOSE);
@@ -599,7 +605,7 @@ fli_setShutterNow (int open, char *errmsg)
  * return 0 if ok, else set errmsg[] and return -1.
  * leave camera closed when finished if it was when we were called.
  */
-int 
+int
 fli_getIDCCD (char buf[], char *errmsg)
 {
     long rev;
@@ -621,7 +627,7 @@ fli_getIDCCD (char buf[], char *errmsg)
  * return 0 if ok, else set errmsg[] and return -1.
  * leave camera closed when finished if it was when we were called.
  */
-int 
+int
 fli_getSizeCCD (CCDExpoParams *cep, char *errmsg)
 {
     long ul_x, ul_y, lr_x, lr_y;
@@ -646,7 +652,7 @@ int
 fli_readPix (char *mem, int nbytes, int block, char *errmsg)
 {
     struct timeval tv, *tvp;
-    size_t bytesgrabbed = 0;	
+    size_t bytesgrabbed = 0;
     fd_set rs;
     long ary_l, ary_t, ary_r, ary_b;
     long vis_l, vis_t, vis_r, vis_b;
@@ -695,9 +701,9 @@ fli_readPix (char *mem, int nbytes, int block, char *errmsg)
         rt = FLIFlushRow(fli_dev, flush_rows, 1);
     }
     // grab rows from visible area
-    // KMI: When setting up the exposure, we determined the proper row 
+    // KMI: When setting up the exposure, we determined the proper row
     //      width and number of rows from subimage and binning info
-    if(!rt) {			
+    if(!rt) {
         row_size = fli_row_width * 2; // 16 bit data
 
         for(row = 0; row < fli_num_rows; row++) {

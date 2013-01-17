@@ -341,6 +341,13 @@ void freeBinBuffer()
 	binSize = 0;
 }
 
+/* TO CONTROL THE CORRECT HAPPY END OF THE CHILDREN PROCESSES */
+void server_signal_sigchld(int signum) {
+  signal(signum,SIG_IGN);
+  wait(NULL);
+  signal(signum,server_signal_sigchld);
+}
+
 //
 // Monitor function -- essentially same as fli_monitor
 //
@@ -360,7 +367,8 @@ static int ccdserver_monitor(char *err)
 	    return (-1);
 	}
 
-	signal (SIGCHLD, SIG_IGN);	/* no zombies */
+	//signal (SIGCHLD, SIG_IGN); /* no zombies */
+	signal(SIGCHLD,server_signal_sigchld);
 	pid = fork();
 	if (pid < 0) {
 	    sprintf (err, "CCD Server fork: %s", strerror(errno));

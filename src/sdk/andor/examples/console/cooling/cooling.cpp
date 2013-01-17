@@ -21,6 +21,8 @@ the CCD and the use of the cooling system*/
 
 #include "atmcdLXd.h"
 
+#include <stdlib.h>
+
 int CameraSelect (int iNumArgs, char* szArgList[]);
 
 int main(int argc, char* argv[])
@@ -29,7 +31,7 @@ int main(int argc, char* argv[])
           cout << "*** CAMERA SELECTION ERROR" << endl;
           return -1;
         }
-        
+
 	unsigned long error;
 	bool quit;
 	char choice;
@@ -38,7 +40,7 @@ int main(int argc, char* argv[])
 	int iTemp;
 
 	//Initialize CCD
-	error = Initialize("/usr/local/etc/andor");
+	error = Initialize((char*)"/usr/local/etc/andor");
 	if(error!=DRV_SUCCESS){
 		cout << "Initialisation error...exiting" << endl;
 		return(1);
@@ -100,9 +102,9 @@ int main(int argc, char* argv[])
 			}
 
 			break;
-		
+
 		case 'b': //Set new exposure time
-			
+
 			cout << endl << "Enter new Exposure Time(s)::";
 			cin >> fChoice;
 
@@ -114,13 +116,13 @@ int main(int argc, char* argv[])
 
 			cout << endl << "Enter new Target Temperature(C)::";
 			cin >> iTemp;
-	
+
 			SetTemperature(iTemp);
 
 			break;
 
 		case 'd': //Turn on cooler
- 		
+
 			CoolerON();
 
 			break;
@@ -135,13 +137,13 @@ int main(int argc, char* argv[])
 			{
 			unsigned int status;
 			status = GetTemperature(&iTemp);
-			
+
 			cout << "Temperature is " << iTemp << "C" << endl;
 			if(status==DRV_TEMPERATURE_OFF) cout << "Cooler is OFF" << endl;
 			else if(status==DRV_TEMPERATURE_STABILIZED) cout << "Cooler Stabilised at target Temperature" << endl;
-			else cout << "Cooler is ON" << endl; 
+			else cout << "Cooler is ON" << endl;
 			}
-			
+
 			break;
 
 		case 'z': //Exit
@@ -149,18 +151,18 @@ int main(int argc, char* argv[])
 			quit = true;
 
 			break;
-		
+
 		default:
 
 			cout << "!Invalid Option!" << endl;
 
-		} 
+		}
 		getchar();
 
-	}while(!quit);	
+	}while(!quit);
 
 	//Shut down CCD
-	ShutDown();	
+	ShutDown();
 
 	return 0;
 }
@@ -168,11 +170,11 @@ int main(int argc, char* argv[])
 int CameraSelect (int iNumArgs, char* szArgList[])
 {
   if (iNumArgs == 2) {
- 
+
     at_32 lNumCameras;
     GetAvailableCameras(&lNumCameras);
     int iSelectedCamera = atoi(szArgList[1]);
- 
+
     if (iSelectedCamera < lNumCameras && iSelectedCamera >= 0) {
       at_32 lCameraHandle;
       GetCameraHandle(iSelectedCamera, &lCameraHandle);
@@ -184,4 +186,4 @@ int CameraSelect (int iNumArgs, char* szArgList[])
   }
   return 0;
 }
- 
+

@@ -74,6 +74,13 @@ double sbig_AD_to_degreesC(unsigned short ad)
     return degC;
 }
 
+/* TO CONTROL THE CORRECT HAPPY END OF THE CHILDREN PROCESSES */
+void sbig_signal_sigchld(int signum) {
+  signal(signum,SIG_IGN);
+  wait(NULL);
+  signal(signum,sbig_signal_sigchld);
+}
+
 /* based on fli_monitor() */
 /* KMI TODO: Can we merge common functionality from fli_monitor,
              sbig_monitor, and ccdserver_monitor? */
@@ -95,7 +102,8 @@ char *err;
         return (-1);
     }
 
-    signal (SIGCHLD, SIG_IGN);    /* no zombies */
+    //signal (SIGCHLD, SIG_IGN); /* no zombies */
+    signal(SIGCHLD,sbig_signal_sigchld);
     pid = fork();
     if (pid < 0) {
         sprintf (err, "SBIG fork: %s", strerror(errno));
