@@ -1,0 +1,4 @@
+#!/bin/sh
+
+$* 1>/usr/local/telescope/archive/logs/$1.log 2>&1 &
+

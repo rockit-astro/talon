@@ -1,0 +1,87 @@
+#!/usr/bin/php -q
+<?php
+// FLUSH ACTION
+if($argc>=3) {
+	if(!file_exists($argv[2])) touch($argv[2]);
+	$fp=@fopen($argv[2],"r+");
+	if($fp===false) die("Could not open the file to read\n");
+	fseek($fp,0,SEEK_END);
+}
+// EXECUTE COMMAND
+if($argc>=2) {
+	$disableds_string=ini_get("disable_functions");
+	$disableds_array=$disableds_string?explode(",",$disableds_string):array();
+	foreach($disableds_array as $key=>$val) $disableds_array[$key]=strtolower(trim($val));
+	$cmd=$argv[1];
+	if(trim($cmd)=="") $cmd="echo ''";
+	$cmd="($cmd) 1>/dev/null 2>/dev/null & echo $!";
+	if(!in_array("passthru",$disableds_array)) {
+		ob_start();
+		passthru($cmd);
+		$pid=ob_get_clean();
+	} elseif(!in_array("system",$disableds_array)) {
+		ob_start();
+		system($cmd);
+		$pid=ob_get_clean();
+	} elseif(!in_array("exec",$disableds_array)) {
+		$pid=array();
+		exec($cmd,$pid);
+		$pid=implode("\n",$pid)."\n";
+	} elseif(!in_array("shell_exec",$disableds_array)) {
+		ob_start();
+		$pid=shell_exec($cmd);
+		ob_get_clean();
+	} else {
+		print_r(array("phperror"=>"Unknown command shell","details"=>"ini_get(disable_functions)=${disableds_string}"));
+		die();
+	}
+	$pid=trim($pid);
+	echo "Process created with pid '$pid'\n";
+}
+// READ ACTION
+if($argc>=3) {
+	stream_set_blocking($fp,false);
+	$index=3;
+	if($index<$argc && is_numeric($argv[$index])) {
+		$timeout=$argv[$index]*1000;
+		$timeout2=$argv[$index];
+		$index++;
+	}
+	$found=0;
+	while(!$found) {
+		$buffer="";
+		while($char=fread($fp,1024)) $buffer.=$char;
+		$buffer=trim($buffer);
+		if($buffer!="") echo "$buffer\n";
+		if($index<$argc) {
+			for($i=$index;$i<$argc;$i++) {
+				if(stripos($buffer,$argv[$i])!==false) {
+					$found=1;
+					break;
+				}
+			}
+		} else {
+			if($buffer!="") $found=1;
+		}
+		if(!$found) {
+			usleep(1000);
+			if(isset($timeout)) {
+				$timeout--;
+				if($timeout<=0) {
+					echo "Timeout '$timeout2' reached\n";
+					break;
+				}
+			}
+		}
+	}
+	fclose($fp);
+}
+// HELP
+if($argc<2) {
+	echo "Usage: ".basename($argv[0])."\n";
+	echo "\tcommand_to_execute\n";
+	echo "\t[file_to_read] [timeout_in_seconds] [command_to_read] [command_to_read] ...\n";
+	echo "\n";
+	die();
+}
+?>

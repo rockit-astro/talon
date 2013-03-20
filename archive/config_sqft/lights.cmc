@@ -1,5 +1,0 @@
-// turn on lights to the given intensity
-define lights ($intensity)
-{
-	olevel = (olevel&0x3f) | ($intensity<<6);
-}
