@@ -771,9 +771,12 @@ csi_dome_status (int first, ...)
 #if !TTY_DOME
                 // -- Version 1.5 or greater of nodeDome.cmc --//
             	if(csi_wr(cfd, buf, sizeof(buf), "domeStatus();")>0)
-                    status = atoi(&buf[0]);
+                    status = atoi(buf);
                 else
+                {
                     status = -1;
+                    strcpy(buf,"Error retrieving shutter status");
+                }
                
                  /* CSIMC output (buf) could be directly passed to FIFOs, 
                     but better define error level as -1 (instead of 4) */
@@ -792,7 +795,7 @@ csi_dome_status (int first, ...)
                         fifoWrite(Dome_Id, 3, "Shutter is opening");
                         break;
                     default:
-                        fifoWrite(Dome_Id, -1, "Error retrieving shutter status");
+                        fifoWrite(Dome_Id, -1, buf);
                         break;
                 }
                 if (DHAVE)
