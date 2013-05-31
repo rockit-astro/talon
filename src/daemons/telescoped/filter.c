@@ -46,7 +46,7 @@ static void filter_home(int first, ...);
 static void filter_limits(int first, ...);
 static void filter_stop(int first, ...);
 static void filter_set(int first, ...);
-static void filter_status(int first, ...); //IEEC
+static void filter_status(void); //IEEC
 static void filter_jog(int first, ...);
 
 /* helped along by these... */
@@ -134,7 +134,7 @@ char *msg;
     else if (strncasecmp (msg, "limits", 6) == 0)
         filter_limits(1);
     else if (strncasecmp (msg, "status", 6) == 0) //IEEC
-        filter_status(1);                         //IEEC
+        filter_status();                         //IEEC
     else if (sscanf (msg, "j%1[0+-]", jog) == 1)
         filter_jog (1, jog[0]);
     else
@@ -364,29 +364,29 @@ filter_limits(int first, ...)
     }
 }
 
-static void filter_status(int first, ...)
+static void filter_status(void)
 {
     /* IEEC function to return filter status through fifos */
 
-    int status = -1;
     MotorInfo *mip = IMOT;
-    int cfd = MIPCFD(mip);
    
     /* No status provided for virtual_mode */
-    if (!virtual_mode || first)
+    if (!virtual_mode)
     { 
-        status = csi_rix (cfd, "=isHomed();");
-         
-        if(status==1)
+        if(mip->cvel)
         {
-            readFilter();
-            showFilter();
-            fifoWrite(Filter_Id, 0, "Filter is %c",telstatshmp->filter);
+           if(mip->ishomed)
+                fifoWrite(Filter_Id, 0, "Filter is moving to requested position");
+            else
+                fifoWrite(Filter_Id, 1, "Filter is moving to unknown position");
         }
-        else if (status==0)
-            fifoWrite(Filter_Id, 1, "Filter position is unknown");
         else
-            fifoWrite(Filter_Id, -1, "Error getting filter position");
+        {
+            if(mip->ishomed)
+                fifoWrite(Filter_Id, 2, "Filter is placed at %c",telstatshmp->filter);
+            else
+                fifoWrite(Filter_Id, 3, "Filter is placed at unknown position");
+        }
     }
     return;
 }

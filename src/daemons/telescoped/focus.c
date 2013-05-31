@@ -319,23 +319,28 @@ focus_status(void)
 {
     /* IEEC function to provide the focus status through fifo calls */
     MotorInfo *mip = OMOT;
-    int cfd = MIPCFD(mip);
-    int status = -1;
-    double upos = 0;
+    double upos = 0, ugoal = 0;
 
-    readFocus();
     upos = (mip->cpos*mip->step) / (2*PI*mip->focscale);
+    ugoal = (mip->dpos*mip->step) / (2*PI*mip->focscale);
     if(virtual_mode)
         fifoWrite(Focus_Id, 0, "Focus position is %g um", upos);
     else
     {
-        status = csi_rix(cfd,"=isHomed();");
-		if(status==1)
-            fifoWrite(Focus_Id, 0, "Focus position is %g um", upos);
-        else if(status==0)
-            fifoWrite (Focus_Id, 0, "Focus position is unknown");
+        if(mip->cvel)
+        {
+            if(mip->ishomed)
+                fifoWrite(Focus_Id, 0, "Focus moving from %g to %g um", upos, ugoal);
+            else
+                fifoWrite (Focus_Id, 0, "Focus moving to unknown position");
+        }
         else
-            fifoWrite(Focus_Id, -1, "Error reading focus status");
+        {
+            if(mip->ishomed)
+                fifoWrite(Focus_Id, 0, "Focus stopped at %g um", upos);
+            else
+                fifoWrite (Focus_Id, 0, "Focus stopped at unknown position");
+        }
     }
     return;
 }

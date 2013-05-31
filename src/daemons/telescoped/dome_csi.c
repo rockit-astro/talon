@@ -101,7 +101,7 @@ static void csi_dome_autoOff(int first, ...);
 static void csi_dome_home(int first, ...);
 static void csi_dome_setaz(int first, ...);
 static void csi_dome_stop(int first, ...);
-static void csi_dome_status (int first, ...); //IEEC
+static void csi_dome_status (void); //IEEC
 static void csi_dome_jog (int first, ...);
 static void csi_dome_readpos(int first, ...);
 /* helped along by these... */
@@ -133,6 +133,8 @@ static int setaz_error = 0;	// set if there is an error during dome_setaz, used 
 #define	DMOVING		(DS == DS_ROTATING || DS == DS_HOMING)
 #define	DHAVE		(DS != DS_ABSENT)
 #define	SHAVE		(SS != SH_ABSENT)
+/* Tell whether dome has been homed (IEEC) */
+static int isDomeHomed = 0;
 
 /* control and status connections */
 static int cfd =0, sfd = 0;
@@ -201,7 +203,7 @@ char *msg;
     else if (strncasecmp (msg, "home", 4) == 0)
     	csi_dome_home(1);
     else if (strncasecmp (msg, "status", 6) == 0) //IEEC
-    	csi_dome_status(1);                       //IEEC
+    	csi_dome_status();                       //IEEC
     else if (sscanf (msg, "Az:%lf", &az) == 1)
     	csi_dome_setaz (1, az);
     else if (sscanf (msg, "j%1[0+-]", jog_dir) == 1)
@@ -748,6 +750,7 @@ csi_dome_home (int first, ...)
     /* ok! */
     fifoWrite (Dome_Id, 0, "Home complete");
     toTTS ("The Dome is now home.");
+    isDomeHomed = 1;
     DS = DS_STOPPED;
     active_func = NULL;
 }
@@ -755,81 +758,92 @@ csi_dome_home (int first, ...)
 
 /* get dome status (introduced by IEEC) */
 static void
-csi_dome_status (int first, ...)
+csi_dome_status (void)
 {
-  	int status, pos;
-    double daz;
-    char *  rixRead = "=epos;";
-    char buf[1024];
+    /* The dome status is the combination of: 
+       * AD: Autodome state (currently not used)
+       * SS: shutter state
+       * DS: orientation state (named domestate)
+       * AZ: current orientation (domeaz) 
+       * TAZ: target orientation (dometaz) 
+       In addition, isDomeHomed has been defined to know whether AZ and TAZ
+       are homed values or just de default ones (MotorInfo doesn't exist for
+       dome) */
 
-    if (first) 
+    if (!is_virtual_mode()) 
     {
-        if (DHAVE || SHAVE)
-        {
-            if (!is_virtual_mode()) 
-            {
+        /* Only CSI implementation done */
 #if !TTY_DOME
-                // -- Version 1.5 or greater of nodeDome.cmc --//
-            	if(csi_wr(cfd, buf, sizeof(buf), "domeStatus();")>0)
-                    status = atoi(buf);
-                else
+        /* Ommited because AD is a buggy variable
+        switch(AD)
+        {
+            case 0:
+                fifoWrite(Dome_Id, 0, "Autodome is inactive");
+                break;
+            case 1:
+                fifoWrite(Dome_Id, 1, "Autodome is active");
+                break;
+            default:
+                fifoWrite(Dome_Id, -1, "Error retrieving autodome status");
+        } */
+        switch(SS)
+        {
+            case SH_CLOSED:
+                fifoWrite(Dome_Id, 0, "Shutter is closed");
+                break;
+            case SH_OPEN:
+                fifoWrite(Dome_Id, 1, "Shutter is open");
+                break;
+            case SH_CLOSING:
+                fifoWrite(Dome_Id, 2, "Shutter is closing");
+                break;
+            case SH_OPENING:
+                fifoWrite(Dome_Id, 3, "Shutter is opening");
+                break;
+            case SH_ABSENT:
+                if(!DHAVE)
                 {
-                    status = -1;
-                    strcpy(buf,"Error retrieving shutter status");
+                    fifoWrite(Dome_Id, 0, "No dome defined");
+                    return;
                 }
-               
-                 /* CSIMC output (buf) could be directly passed to FIFOs, 
-                    but better define error level as -1 (instead of 4) */
-                switch(status)
-                {
-                    case 0:
-                        fifoWrite(Dome_Id, 0, "Shutter is closed");
-                        break;
-                    case 1:
-                        fifoWrite(Dome_Id, 1, "Shutter is open");
-                        break;
-                    case 2:
-                        fifoWrite(Dome_Id, 2, "Shutter is closing");
-                        break;
-                    case 3:
-                        fifoWrite(Dome_Id, 3, "Shutter is opening");
-                        break;
-                    default:
-                        fifoWrite(Dome_Id, -1, buf);
-                        break;
-                }
-                if (DHAVE)
-                {
-                    status = csi_rix(cfd, "=isDomeHomed();");
-                    if(status==0)
-                        fifoWrite(Dome_Id, 0, "Dome orientation is unknown");
-                    else if (status==1)
-					{
-                        if (MOTORONLY)
-                            rixRead = "=mpos;";
-						pos = csi_rix(cfd,rixRead) * DOMESIGN;
-						daz = (2* PI * pos / DOMESTEP) + DOMEZERO;
-						range(&daz, 2*PI);
-                        fifoWrite(Dome_Id, 1, "Dome orientation is %g",daz);
-                    }
-            	    else
-                        fifoWrite(Dome_Id, -1, "Error retrieving dome orientation");
-                }
-#endif
-            }
-    		else
-            {
-                status = vmc_isReady(DOMEAXIS);
-                if(status==0)
-                    fifoWrite(Dome_Id, 0, "Dome is unresponsive");
-                else if (status==1)
-                    fifoWrite(Dome_Id, 1, "Dome is ready");
-         	    else
-                    fifoWrite(Dome_Id, -1, "Error retrieving dome status");
-            }
+            default:
+                fifoWrite(Dome_Id, -1, "Error retrieving shutter status");
         }
+        switch(DS)
+        {
+            case DS_ABSENT:
+                break;
+           case DS_HOMING:
+                fifoWrite(Dome_Id, 0, "Dome is being homed");
+                break;
+            case DS_STOPPED:
+                if(isDomeHomed)
+                    fifoWrite(Dome_Id, 1, "Dome stopped at orientation %lf",AZ);
+                else
+                    fifoWrite(Dome_Id, 2, "Dome stopped at unknown orientation");
+                break;
+            case DS_ROTATING:
+                if(isDomeHomed)
+                    fifoWrite(Dome_Id, 3, "Dome rotating from %lf to %lf",AZ,TAZ);
+                else
+                    fifoWrite(Dome_Id, 4, "Dome rotating to unknown position");
+                break;
+            default:
+                fifoWrite(Dome_Id, -1, "Error retrieving dome orientation");
+        }
+#endif
+    }
+    else
+    {
+       /* Almost useless implementation for virtual mode */
+    
+        status = vmc_isReady(DOMEAXIS);
+        if(status==0)
+            fifoWrite(Dome_Id, 0, "Dome is unresponsive");
+        else if (status==1)
+            fifoWrite(Dome_Id, 1, "Dome is ready");
         else
-            fifoWrite (Dome_Id, -1, "No dome installed");
+            fifoWrite(Dome_Id, -1, "Error retrieving dome status");
     }
     return;
 }
