@@ -770,6 +770,8 @@ csi_dome_status (void)
        are homed values or just de default ones (MotorInfo doesn't exist for
        dome) */
 
+    int status;
+
     if (!is_virtual_mode()) 
     {
         /* Only CSI implementation done */

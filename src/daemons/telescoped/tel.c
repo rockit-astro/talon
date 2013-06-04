@@ -1035,6 +1035,7 @@ static void tel_status(void)
         {
             case TS_HOMING:
                 fifoWrite(Tel_Id, 0, "Telescope hour angle and declination axes are being homed");
+                break;
             case TS_STOPPED:
                 if(hstatus && dstatus)
             	{
@@ -1084,6 +1085,7 @@ static void tel_status(void)
                 break;
             default:
                 fifoWrite(Tel_Id, -1, "Error retrieving telescope position");
+        }
     }
     return;
 }
