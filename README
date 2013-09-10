@@ -22,5 +22,5 @@ make uninstall
 --------------------------------------------------------
 
 
-NOTE: It the above procedure is executed as a regular used the
+NOTE: If the above procedure is executed as a regular user the
 root password will need to be supplied.

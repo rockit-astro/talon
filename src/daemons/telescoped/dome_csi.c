@@ -770,8 +770,6 @@ csi_dome_status (void)
        are homed values or just de default ones (MotorInfo doesn't exist for
        dome) */
 
-    int status;
-
     if (!is_virtual_mode()) 
     {
         /* Only CSI implementation done */
@@ -1237,8 +1235,8 @@ csi_d_readpos2()
 }
 
 
-// Put center point of dome slightly ahead of telescope target; let it then precess into it
-#define LEADAZOFF 0.12
+// Put center point of dome slightly Bad offset when pointing to norht: ahead of telescope target; let it then precess into it
+//Bad offset when pointing to north: #define LEADAZOFF 0.12
 /* return the az the dome should be for the desired telescope information */
 static double
 csi_d_telaz()
@@ -1310,7 +1308,7 @@ csi_d_telaz()
 
 	raz = (telstatshmp->Daz);
 	// offset by a little bit leading
-	raz += LEADAZOFF;
+	//Bad offset when pointing north: raz += LEADAZOFF;
     }
     return raz;
 }
