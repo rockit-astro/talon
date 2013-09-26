@@ -1019,9 +1019,9 @@ static void tel_status(void)
 
     if(virtual_mode)
     {
-        fifoWrite(Tel_Id, 0, "Telescope equatorial position ( RA , Dec ): ( %g , %g )", 
+        fifoWrite(Tel_Id, 0, "Telescope equatorial position ( RA , Dec ): ( %g , %g ) ", 
                   telstatshmp->CJ2kRA,telstatshmp->CJ2kDec);
-        fifoWrite(Tel_Id, 0, "Telescope altazimutal position ( Az , Alt ):  (%g , %g )", 
+        fifoWrite(Tel_Id, 0, "Telescope altazimutal position ( Az , Alt ):  (%g , %g ) ", 
                   telstatshmp->Caz,telstatshmp->Calt);
     }
     else
@@ -1034,57 +1034,59 @@ static void tel_status(void)
         switch(telstatshmp->telstate)
         {
             case TS_HOMING:
-                fifoWrite(Tel_Id, 0, "Telescope hour angle and declination axes are being homed");
+                fifoWrite(Tel_Id, 0, "Telescope hour angle and declination axes are being homed ");
                 break;
             case TS_STOPPED:
                 if(hstatus && dstatus)
             	{
-                    fifoWrite(Tel_Id, 1, "Telescope stopped at Right Ascension %g", 
+                    fifoWrite(Tel_Id, 1, "Telescope stopped at Right Ascension %g ", 
                               telstatshmp->CJ2kRA);
-                    fifoWrite(Tel_Id, 1, "Telescope stopped at Declination %g", 
+                    fifoWrite(Tel_Id, 1, "Telescope stopped at Declination %g ", 
                               telstatshmp->CJ2kDec);
-					fifoWrite(Tel_Id, 1, "Telescope stopped at Azimuth %g",
+					fifoWrite(Tel_Id, 1, "Telescope stopped at Azimuth %g ",
                               telstatshmp->Caz);
-                    fifoWrite(Tel_Id, 1, "Telescope stopped at Elevation %g", 
+                    fifoWrite(Tel_Id, 1, "Telescope stopped at Elevation %g ", 
                               telstatshmp->Calt);
                 }
                 else
-                    fifoWrite (Tel_Id, 2, "Telescope stopped at unknown position");
+                    fifoWrite (Tel_Id, 2, "Telescope stopped at unknown position ");
                 break;
             case TS_HUNTING:
             case TS_SLEWING:
                 if(hstatus && dstatus)
             	{
-                    fifoWrite(Tel_Id, 3, "Telescope moving from Right Ascension %g to %g", 
+                    fifoWrite(Tel_Id, 3, "Telescope moving from Right Ascension %g to %g ", 
                               telstatshmp->CJ2kRA,telstatshmp->DJ2kRA);
-                    fifoWrite(Tel_Id, 3, "Telescope moving from Declination %g to %g", 
+                    fifoWrite(Tel_Id, 3, "Telescope moving from Declination %g to %g ", 
                               telstatshmp->CJ2kDec,telstatshmp->DJ2kDec);
-					fifoWrite(Tel_Id, 3, "Telescope moving from Azimuth %g to %g",
+					fifoWrite(Tel_Id, 3, "Telescope moving from Azimuth %g to %g ",
                               telstatshmp->Caz,telstatshmp->Daz);
-                    fifoWrite(Tel_Id, 3, "Telescope moving from Elevation %g to %g", 
+                    fifoWrite(Tel_Id, 3, "Telescope moving from Elevation %g to %g ", 
                               telstatshmp->Calt,telstatshmp->Dalt);
                 }
                 else
-                    fifoWrite (Tel_Id, 4, "Telescope moving to unknown position");
+                    fifoWrite (Tel_Id, 4, "Telescope moving to unknown position ");
                 break;
             case TS_TRACKING:
                 if(hstatus && dstatus)
             	{
-                    if(atTarget())
-                    fifoWrite(Tel_Id, 1, "Telescope tracking at Right Ascension %g", 
-                              telstatshmp->CJ2kRA);
-                    fifoWrite(Tel_Id, 1, "Telescope tracking at Declination %g", 
-                              telstatshmp->CJ2kDec);
-					fifoWrite(Tel_Id, 1, "Telescope tracking at Azimuth %g",
-                              telstatshmp->Caz);
-                    fifoWrite(Tel_Id, 1, "Telescope tracking at Elevation %g", 
-                              telstatshmp->Calt);
+                    if(atTarget() == 0)
+                    {
+                        fifoWrite(Tel_Id, 1, "Telescope tracking at Right Ascension %g ", 
+                            telstatshmp->CJ2kRA);
+                        fifoWrite(Tel_Id, 1, "Telescope tracking at Declination %g ", 
+                            telstatshmp->CJ2kDec);
+					    fifoWrite(Tel_Id, 1, "Telescope tracking at Azimuth %g ",
+                            telstatshmp->Caz);
+                        fifoWrite(Tel_Id, 1, "Telescope tracking at Elevation %g ", 
+                            telstatshmp->Calt);
+                    }
                 }
                 else
-                    fifoWrite (Tel_Id, -1, "Error: telescope tracking an unknown position");
+                    fifoWrite (Tel_Id, -1, "Error: telescope tracking an unknown position ");
                 break;
             default:
-                fifoWrite(Tel_Id, -1, "Error retrieving telescope position");
+                fifoWrite(Tel_Id, -1, "Error retrieving telescope position ");
         }
     }
     return;

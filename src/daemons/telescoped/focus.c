@@ -324,22 +324,22 @@ focus_status(void)
     upos = (mip->cpos*mip->step) / (2*PI*mip->focscale);
     ugoal = (mip->dpos*mip->step) / (2*PI*mip->focscale);
     if(virtual_mode)
-        fifoWrite(Focus_Id, 0, "Focus position is %g um", upos);
+        fifoWrite(Focus_Id, 0, "Focus position is %g um ", upos);
     else
     {
         if(mip->cvel)
         {
             if(mip->ishomed)
-                fifoWrite(Focus_Id, 0, "Focus moving from %g to %g um", upos, ugoal);
+                fifoWrite(Focus_Id, 0, "Focus moving from %g to %g um ", upos, ugoal);
             else
-                fifoWrite (Focus_Id, 0, "Focus moving to unknown position");
+                fifoWrite (Focus_Id, 0, "Focus moving to unknown position ");
         }
         else
         {
             if(mip->ishomed)
-                fifoWrite(Focus_Id, 0, "Focus stopped at %g um", upos);
+                fifoWrite(Focus_Id, 0, "Focus stopped at %g um ", upos);
             else
-                fifoWrite (Focus_Id, 0, "Focus stopped at unknown position");
+                fifoWrite (Focus_Id, 0, "Focus stopped at unknown position ");
         }
     }
     return;

@@ -9,6 +9,7 @@ meiasky=/usr/local/telescope/comm/Camera.in "Expose 0+0x2048x2048 1x1 $1 1 0 $2\
 meiasubsky=/usr/local/telescope/comm/Camera.in "Expose $1+$2x$3x$4 1x1 $5 1 0 $6\nSOURCE\nCOMMENT\nTITLE\nOBSERVER" /usr/local/telescope/comm/Camera.out $1+5 error unknown created "timed out"
 meiabias=/usr/local/telescope/comm/Camera.in "Expose 0+0x2048x2048 1x1 0 0 0 $1\nSOURCE\nCOMMENT\nTITLE\nOBSERVER" /usr/local/telescope/comm/Camera.out 5 error unknown created "timed out"
 meiadark=/usr/local/telescope/comm/Camera.in "Expose 0+0x2048x2048 1x1 $1 0 0 $2\nSOURCE\nCOMMENT\nTITLE\nOBSERVER" /usr/local/telescope/comm/Camera.out $1+5 error unknown created "timed out"
+meiastatus=/usr/local/telescope/comm/Camera.in Temperature /usr/local/telescope/comm/Camera.out 5 error temperature
 
 # Camera commands (mainly for testing)
 camerasky=/usr/local/telescope/comm/Camera.in "Expose 0+0x512x768 1x1 $1 1 0 $2\nSOURCE\nCOMMENT\nTITLE\nOBSERVER" /usr/local/telescope/comm/Camera.out $1+5 error unknown created "timed out"
@@ -42,6 +43,7 @@ telstepnorth=/usr/local/telescope/comm/Tel.in "jN\nsleep 1\nj0" /usr/local/teles
 telstepsouth=/usr/local/telescope/comm/Tel.in "jS\nsleep 1\nj0" /usr/local/telescope/comm/Tel.out 10 "paddle command stop"
 telstepwest=/usr/local/telescope/comm/Tel.in "jW\nsleep 1\nj0" /usr/local/telescope/comm/Tel.out 10 "paddle command stop"
 telstepeast=/usr/local/telescope/comm/Tel.in "jE\nsleep 1\nj0" /usr/local/telescope/comm/Tel.out 10 "paddle command stop"
+telsidereal2=/usr/local/telescope/comm/Tel.in "jW 100 \nsleep 20\nj0" /usr/local/telescope/comm/Tel.out 3 "paddle command stop"
 
 # Telescope tracking
 teltrackepoch=/usr/local/telescope/comm/Tel.in "RA:$1 Dec:$2 Epoch:$3" /usr/local/telescope/comm/Tel.out 30 "now tracking" "error"

@@ -770,6 +770,8 @@ csi_dome_status (void)
        are homed values or just de default ones (MotorInfo doesn't exist for
        dome) */
 
+    int status;
+
     if (!is_virtual_mode()) 
     {
         /* Only CSI implementation done */
@@ -789,47 +791,47 @@ csi_dome_status (void)
         switch(SS)
         {
             case SH_CLOSED:
-                fifoWrite(Dome_Id, 0, "Shutter is closed");
+                fifoWrite(Dome_Id, 0, "Shutter is closed ");
                 break;
             case SH_OPEN:
-                fifoWrite(Dome_Id, 1, "Shutter is open");
+                fifoWrite(Dome_Id, 1, "Shutter is open ");
                 break;
             case SH_CLOSING:
-                fifoWrite(Dome_Id, 2, "Shutter is closing");
+                fifoWrite(Dome_Id, 2, "Shutter is closing ");
                 break;
             case SH_OPENING:
-                fifoWrite(Dome_Id, 3, "Shutter is opening");
+                fifoWrite(Dome_Id, 3, "Shutter is opening ");
                 break;
             case SH_ABSENT:
                 if(!DHAVE)
                 {
-                    fifoWrite(Dome_Id, 0, "No dome defined");
+                    fifoWrite(Dome_Id, 0, "No dome defined ");
                     return;
                 }
             default:
-                fifoWrite(Dome_Id, -1, "Error retrieving shutter status");
+                fifoWrite(Dome_Id, -1, "Error retrieving shutter status ");
         }
         switch(DS)
         {
             case DS_ABSENT:
                 break;
            case DS_HOMING:
-                fifoWrite(Dome_Id, 0, "Dome is being homed");
+                fifoWrite(Dome_Id, 0, "Dome is being homed ");
                 break;
             case DS_STOPPED:
                 if(isDomeHomed)
-                    fifoWrite(Dome_Id, 1, "Dome stopped at orientation %lf",AZ);
+                    fifoWrite(Dome_Id, 1, "Dome stopped at orientation %lf ",AZ);
                 else
-                    fifoWrite(Dome_Id, 2, "Dome stopped at unknown orientation");
+                    fifoWrite(Dome_Id, 2, "Dome stopped at unknown orientation ");
                 break;
             case DS_ROTATING:
                 if(isDomeHomed)
-                    fifoWrite(Dome_Id, 3, "Dome rotating from %lf to %lf",AZ,TAZ);
+                    fifoWrite(Dome_Id, 3, "Dome rotating from %lf to %lf ",AZ,TAZ);
                 else
-                    fifoWrite(Dome_Id, 4, "Dome rotating to unknown position");
+                    fifoWrite(Dome_Id, 4, "Dome rotating to unknown position ");
                 break;
             default:
-                fifoWrite(Dome_Id, -1, "Error retrieving dome orientation");
+                fifoWrite(Dome_Id, -1, "Error retrieving dome orientation ");
         }
 #endif
     }
@@ -839,11 +841,11 @@ csi_dome_status (void)
     
         status = vmc_isReady(DOMEAXIS);
         if(status==0)
-            fifoWrite(Dome_Id, 0, "Dome is unresponsive");
+            fifoWrite(Dome_Id, 0, "Dome is unresponsive ");
         else if (status==1)
-            fifoWrite(Dome_Id, 1, "Dome is ready");
+            fifoWrite(Dome_Id, 1, "Dome is ready ");
         else
-            fifoWrite(Dome_Id, -1, "Error retrieving dome status");
+            fifoWrite(Dome_Id, -1, "Error retrieving dome status ");
     }
     return;
 }

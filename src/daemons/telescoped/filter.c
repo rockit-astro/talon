@@ -376,16 +376,16 @@ static void filter_status(void)
         if(mip->cvel)
         {
            if(mip->ishomed)
-                fifoWrite(Filter_Id, 0, "Filter is moving to requested position");
+                fifoWrite(Filter_Id, 0, "Filter is moving to requested position ");
             else
-                fifoWrite(Filter_Id, 1, "Filter is moving to unknown position");
+                fifoWrite(Filter_Id, 1, "Filter is moving to unknown position ");
         }
         else
         {
             if(mip->ishomed)
-                fifoWrite(Filter_Id, 2, "Filter is placed at %c",telstatshmp->filter);
+                fifoWrite(Filter_Id, 2, "Filter is placed at %c ",telstatshmp->filter);
             else
-                fifoWrite(Filter_Id, 3, "Filter is placed at unknown position");
+                fifoWrite(Filter_Id, 3, "Filter is placed at unknown position ");
         }
     }
     return;
@@ -393,7 +393,7 @@ static void filter_status(void)
 
 static void
 filter_stop(int first, ...)
-{
+ {
     MotorInfo *mip = IMOT;
     int cfd = MIPCFD(mip);
 
