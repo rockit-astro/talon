@@ -3,6 +3,7 @@ camsky=/usr/local/telescope/comm/Camera.in "Expose 0+0x2048x2048 1x1 $1 1 0 $2\n
 camsubsky=/usr/local/telescope/comm/Camera.in "Expose $1+$2x$3x$4 1x1 $5 1 0 $6\nSOURCE\nCOMMENT\nTITLE\nOBSERVER" /usr/local/telescope/comm/Camera.out $1+5 error unknown created "timed out"
 cambias=/usr/local/telescope/comm/Camera.in "Expose 0+0x2048x2048 1x1 0 0 0 $1\nSOURCE\nCOMMENT\nTITLE\nOBSERVER" /usr/local/telescope/comm/Camera.out 5 error unknown created "timed out"
 camdark=/usr/local/telescope/comm/Camera.in "Expose 0+0x2048x2048 1x1 $1 0 0 $2\nSOURCE\nCOMMENT\nTITLE\nOBSERVER" /usr/local/telescope/comm/Camera.out $1+5 error unknown created "timed out"
+camstatus=/usr/local/telescope/comm/Camera.in Temperature /usr/local/telescope/comm/Camera.out 5 error temperature
 
 # MEIA commands
 meiasky=/usr/local/telescope/comm/Camera.in "Expose 0+0x2048x2048 1x1 $1 1 0 $2\nSOURCE\nCOMMENT\nTITLE\nOBSERVER" /usr/local/telescope/comm/Camera.out $1+5 error unknown created "timed out"
@@ -29,7 +30,7 @@ telhomeh=/usr/local/telescope/comm/Tel.in homeH /usr/local/telescope/comm/Tel.ou
 telhomed=/usr/local/telescope/comm/Tel.in homeD /usr/local/telescope/comm/Tel.out 75 "scope homing complete"
 telstow=/usr/local/telescope/comm/Tel.in Stow /usr/local/telescope/comm/Tel.out 60 "slew complete"
 telstop=/usr/local/telescope/comm/Tel.in Stop /usr/local/telescope/comm/Tel.out 3 "stop complete"
-telstatus=/usr/local/telescope/comm/Tel.in status /usr/local/telescope/comm/Tel.out 3 "altazimutal" "unknown"
+telstatus=/usr/local/telescope/comm/Tel.in status /usr/local/telescope/comm/Tel.out 3 "Elevation"
 #tellimits=/usr/local/telescope/comm/Tel.in Limits /usr/local/telescope/comm/Tel.out
 
 # Telescope movements
