@@ -47,12 +47,12 @@ telstepeast=/usr/local/telescope/comm/Tel.in "jE\nsleep 1\nj0" /usr/local/telesc
 telsidereal2=/usr/local/telescope/comm/Tel.in "jW 100 \nsleep 20\nj0" /usr/local/telescope/comm/Tel.out 3 "paddle command stop"
 
 # Telescope tracking
-teltrackepoch=/usr/local/telescope/comm/Tel.in "RA:$1 Dec:$2 Epoch:$3" /usr/local/telescope/comm/Tel.out 30 "now tracking" "error"
-teltrackeod=/usr/local/telescope/comm/Tel.in "RA:$1 Dec:$2" /usr/local/telescope/comm/Tel.out 30 "now tracking" "error"
+teltrackepoch=/usr/local/telescope/comm/Tel.in "RA:$1 Dec:$2 Epoch:$3" /usr/local/telescope/comm/Tel.out 90 "now tracking" "error"
+teltrackeod=/usr/local/telescope/comm/Tel.in "RA:$1 Dec:$2" /usr/local/telescope/comm/Tel.out 90 "now tracking" "error"
 
 # Telescope slewing
-telslewaltaz=/usr/local/telescope/comm/Tel.in "Alt:$1 Az:$2" /usr/local/telescope/comm/Tel.out 30 "slew complete"
-telslewhadec=/usr/local/telescope/comm/Tel.in "HA:$1 Dec:$2" /usr/local/telescope/comm/Tel.out 30 "slew complete"
+telslewaltaz=/usr/local/telescope/comm/Tel.in "Alt:$1 Az:$2" /usr/local/telescope/comm/Tel.out 90 "slew complete"
+telslewhadec=/usr/local/telescope/comm/Tel.in "HA:$1 Dec:$2" /usr/local/telescope/comm/Tel.out 90 "slew complete"
 
 # Telescope relative movement
 telxdelta=/usr/local/telescope/comm/Tel.in "xdelta($1,$2)" /usr/local/telescope/comm/Tel.out 30 "encoder steps" "now tracking" "lost tracking"
