@@ -3,11 +3,10 @@ project (getshm)
 
 set(GETSHM_SRC getshm.c)
 
-set(CORE_LIBS_DIR ../../libs)
+#set(CMAKE_C_FLAGS -m32)
+#set(CORE_LIBS_DIR ../../libs)
 include_directories ("${CORE_LIBS_DIR}/astro")
 include_directories ("${CORE_LIBS_DIR}/misc")
-#include_directories ("${CORE_LIBS_DIR}/fits")
-#include_directories ("digitemp")
 
 add_executable(getshm ${GETSHM_SRC})
 
