@@ -327,7 +327,11 @@ focus_status(void)
         fifoWrite(Focus_Id, 0, "Focus position is %g um ", upos);
     else
     {
-        if(mip->cvel)
+        if (telstatshmp->autofocus && mip->ishomed)
+        {
+            fifoWrite (Focus_Id, 0, "Auto-focus enabled at position %g um ",upos);
+        }
+        else if(mip->cvel)
         {
             if(mip->ishomed)
                 fifoWrite(Focus_Id, 0, "Focus moving from %g to %g um ", upos, ugoal);

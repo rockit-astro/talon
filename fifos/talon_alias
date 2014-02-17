@@ -30,7 +30,7 @@ telhomeh=/usr/local/telescope/comm/Tel.in homeH /usr/local/telescope/comm/Tel.ou
 telhomed=/usr/local/telescope/comm/Tel.in homeD /usr/local/telescope/comm/Tel.out 75 "scope homing complete"
 telstow=/usr/local/telescope/comm/Tel.in Stow /usr/local/telescope/comm/Tel.out 60 "slew complete"
 telstop=/usr/local/telescope/comm/Tel.in Stop /usr/local/telescope/comm/Tel.out 3 "stop complete"
-telstatus=/usr/local/telescope/comm/Tel.in status /usr/local/telescope/comm/Tel.out 3 "Elevation"
+telstatus=/usr/local/telescope/comm/Tel.in status /usr/local/telescope/comm/Tel.out 3 "position" "Elevation" 
 #tellimits=/usr/local/telescope/comm/Tel.in Limits /usr/local/telescope/comm/Tel.out
 
 # Telescope movements
