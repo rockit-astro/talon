@@ -3,7 +3,17 @@
     information as formatted strings, suitable for FITS headers 
 */
 
-#include "getshm.h"
+#include <time.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/shm.h>
+
+#include "P_.h"
+#include "astro.h"
+#include "telstatshm.h"
+
+TelStatShm *init_shm(void);
+
 
 TelStatShm *init_shm()
 {
@@ -44,71 +54,71 @@ int main (int argc, char **argv)
 
     telstatshmp = init_shm();
 
-    printf("MJD-OBS = %16.8lf       ", telstatshmp->now.n_mjd+MJD0-2400000.5);
+    printf("MJD-OBS = %16.8lf ", telstatshmp->now.n_mjd+MJD0-2400000.5);
     printf("/ Modified Julian Date at start of exposure\n");
     now_lst(&telstatshmp->now, &lst);
 	fs_sexa (buf, lst, 2, 3600);    
-    printf("LST     = %s", buf);
+    printf("LST     = %s ", buf);
     printf("/ Local sidereal time\n");
 	fs_sexa (buf, raddeg(telstatshmp->now.n_lat), 3, 3600);    
-    printf("LATITUDE= %s", buf);
+    printf("LATITUDE= %s ", buf);
     printf("/ Telescope latitude (degrees +N)\n");
 	fs_sexa (buf, raddeg(telstatshmp->now.n_lng), 4, 3600);    
-    printf("LONGITUD= %s", buf);
+    printf("LONGITUD= %s ", buf);
     printf("/ Telescope longitude (degrees +E)\n");
 	fs_sexa (buf, raddeg(telstatshmp->Calt), 3, 3600);
-    printf("ELEVATIO= %s", buf);
-    printf("/ Elevation at start of exposure (degrees)\n");
+    printf("ELEVATIO= %s ", buf);
+    printf("/ Elevation at MJD-OBS (degrees)\n");
 	fs_sexa (buf, raddeg(telstatshmp->Caz), 3, 3600);
-    printf("AZIMUTH = %s", buf);
-    printf("/ Azimuth at start of exposure (degrees E of N)\n");
+    printf("AZIMUTH = %s ", buf);
+    printf("/ Azimuth at MJD-OBS (degrees E of N)\n");
 	fs_sexa (buf, radhr(telstatshmp->CAHA), 3, 360000);
-    printf("HA      = %s", buf);
-    printf("/ Hour Angle at start of exposure\n");
+    printf("HA      = %s ", buf);
+    printf("/ Hour Angle at MJD-OBS\n");
 	fs_sexa (buf, radhr(telstatshmp->CARA), 3, 360000);
-    printf("RAEOD   = %s", buf);
-    printf("/ Apparent RA at start of exposure\n");
+    printf("RAEOD   = %s ", buf);
+    printf("/ Apparent RA at MJD-OBS\n");
 	fs_sexa (buf, raddeg(telstatshmp->CADec), 3, 36000);
-    printf("DECEOD  = %s", buf);
-    printf("/ Apparent Dec at start of exposure\n");
+    printf("DECEOD  = %s ", buf);
+    printf("/ Apparent Dec at MJD-OBS\n");
 	fs_sexa (buf, radhr(telstatshmp->CJ2kRA), 3, 360000);
-    printf("RA      = %s", buf);
-    printf("/ J2000 RA at start of exposure\n");
+    printf("RA      = %s ", buf);
+    printf("/ J2000 RA at MJD-OBS\n");
 	fs_sexa (buf, raddeg(telstatshmp->CJ2kDec), 3, 36000);
-    printf("DEC     = %s", buf);
-    printf("/ J2000 Dec at start of exposure\n");
+    printf("DEC     = %s ", buf);
+    printf("/ J2000 Dec at MJD-OBS\n");
 	fs_sexa (buf, radhr(telstatshmp->DJ2kRA), 3, 36000);
-    printf("OBJRA   = %s", buf);
+    printf("OBJRA   = %s ", buf);
     printf("/ Target RA in J2000\n");
 	fs_sexa (buf, raddeg(telstatshmp->DJ2kDec), 3, 36000);
-    printf("OBJDEC  = %s", buf);
+    printf("OBJDEC  = %s ", buf);
     printf("/ Target Dec in J2000\n");
-    printf("EQUINOX =                 2000.0");
+    printf("EQUINOX = 2000.0 ");
     printf("/ Equinox for RA and Dec (in years)\n");
-    printf("RAWHENC = %f", telstatshmp->minfo[TEL_HM].cpos);
-    printf("/ HA encoder at start of exposure (radians)\n");
-    printf("RAWDENC = %f", telstatshmp->minfo[TEL_DM].cpos);
-    printf("/ Dec encoder at start of exposure (radians)\n");
+    printf("RAWHENC = %lf ", telstatshmp->minfo[TEL_HM].cpos);
+    printf("/ HA encoder at MJD-OBS (radians)\n");
+    printf("RAWDENC = %lf ", telstatshmp->minfo[TEL_DM].cpos);
+    printf("/ Dec encoder at MJD-OBS (radians)\n");
 	if (telstatshmp->minfo[TEL_OM].have) 
     {
 	    MotorInfo *mip = &telstatshmp->minfo[TEL_OM];
-        printf("RAWOSTP = %f", mip->cpos);
-        printf("/ Focus encoder at start of exposure (radians)\n");
+        printf("RAWOSTP = %lf ", mip->cpos);
+        printf("/ Focus encoder at MJD-OBS (radians)\n");
 	    fupos = mip->step/((2*PI)*mip->focscale)*mip->cpos;
-        printf("RAWOSTP = %f", fupos);
+        printf("RAWOSTP = %lf ", fupos);
         printf("/ Focus position from home (microns)\n");
 	}
 	if (time(NULL) - telstatshmp->wxs.updtime < maxtime) 
     {
-        printf("WXTEMP  = %f", telstatshmp->now.n_temp);
+        printf("WXTEMP  = %lf ", telstatshmp->now.n_temp);
         printf("/ Telescope temperature (degrees C)\n");
-        printf("WXHUMID = %d", telstatshmp->wxs.humidity);
+        printf("WXHUMID = %d ", telstatshmp->wxs.humidity);
         printf("/ Outdoor relative humidity \n");
-        printf("WXPRES  = %f", telstatshmp->now.n_pressure);
+        printf("WXPRES  = %lf ", telstatshmp->now.n_pressure);
         printf("/ Atmospheric pressure\n");
-        printf("WXWNDSPD= %d", telstatshmp->wxs.wspeed);
+        printf("WXWNDSPD= %d ", telstatshmp->wxs.wspeed);
         printf("/ Wind speed (km per hour)\n");
-        printf("WXWNDDIR= %d", telstatshmp->wxs.wdir);
+        printf("WXWNDDIR= %d ", telstatshmp->wxs.wdir);
         printf("/ Wind direction (degrees E of N)\n");
     }
 
