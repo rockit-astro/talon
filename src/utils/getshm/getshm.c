@@ -54,7 +54,7 @@ int main (int argc, char **argv)
 
     telstatshmp = init_shm();
 
-    printf("MJD-OBS = %16.8lf ", telstatshmp->now.n_mjd+MJD0-2400000.5);
+    printf("MJD-OBS = %14.8lf ", telstatshmp->now.n_mjd+MJD0-2400000.5);
     printf("/ Modified Julian Date at start of exposure\n");
     now_lst(&telstatshmp->now, &lst);
 	fs_sexa (buf, lst, 2, 3600);    
@@ -111,11 +111,11 @@ int main (int argc, char **argv)
 	if (time(NULL) - telstatshmp->wxs.updtime < maxtime) 
     {
         printf("WXTEMP  = %lf ", telstatshmp->now.n_temp);
-        printf("/ Telescope temperature (degrees C)\n");
+        printf("/ Temperature (degrees C)\n");
         printf("WXHUMID = %d ", telstatshmp->wxs.humidity);
-        printf("/ Outdoor relative humidity \n");
+        printf("/ Relative humidity (percentage)\n");
         printf("WXPRES  = %lf ", telstatshmp->now.n_pressure);
-        printf("/ Atmospheric pressure\n");
+        printf("/ Atmospheric pressure (mbar)\n");
         printf("WXWNDSPD= %d ", telstatshmp->wxs.wspeed);
         printf("/ Wind speed (km per hour)\n");
         printf("WXWNDDIR= %d ", telstatshmp->wxs.wdir);
