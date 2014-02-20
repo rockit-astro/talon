@@ -54,8 +54,8 @@ int main (int argc, char **argv)
 
     telstatshmp = init_shm();
 
-    printf("MJD-OBS = %14.8lf ", telstatshmp->now.n_mjd+MJD0-2400000.5);
-    printf("/ Modified Julian Date at start of exposure\n");
+    printf("MJD-OBS = %16.8lf ", telstatshmp->now.n_mjd+MJD0-2400000.5);
+    printf("/ Modified Julian Day of Talon variables\n");
     now_lst(&telstatshmp->now, &lst);
 	fs_sexa (buf, lst, 2, 3600);    
     printf("LST     = %s ", buf);
@@ -105,7 +105,7 @@ int main (int argc, char **argv)
         printf("RAWOSTP = %lf ", mip->cpos);
         printf("/ Focus encoder at MJD-OBS (radians)\n");
 	    fupos = mip->step/((2*PI)*mip->focscale)*mip->cpos;
-        printf("RAWOSTP = %lf ", fupos);
+        printf("FOCUSPOS = %lf ", fupos);
         printf("/ Focus position from home (microns)\n");
 	}
 	if (time(NULL) - telstatshmp->wxs.updtime < maxtime) 
