@@ -700,6 +700,7 @@ static void tel_altaz(int first, ...)
 				else
 				{
 					//ICE
+                    mip->xdelta = 0.0;
 					csi_w(MIPCFD(mip), "xdel=0;");
 					csi_w(MIPCFD(mip), "clock=0;");
 					csi_w(MIPCFD(mip), "timeout=300000;");
@@ -830,6 +831,7 @@ static void tel_hadec(int first, ...)
 				else
 				{
 					//ICE
+                    mip->xdelta = 0.0;
 					csi_w(MIPCFD(mip), "xdel=0;");
 					csi_w(MIPCFD(mip), "clock=0;");
 					csi_w(MIPCFD(mip), "timeout=300000;");
@@ -1212,9 +1214,9 @@ static void tel_set_xdelta(double HA, double DEC)
 		double radsHA = HA * (2 * PI) / 360.0;
 		stepsHA = HMOT->esign * HMOT->estep * radsHA / (2 * PI);
 		csi_w(MIPCFD(HMOT), "xdel=%d;", stepsHA);
+        HMOT->xdelta = radsHA;
 		debug_printf("HA xdelta %d encoder steps\n", stepsHA);
 		fifoWrite(Tel_Id, 0, "HA xdelta %d encoder steps\n", stepsHA);
-        telstatshmp->jogging_ison = 1;
 	}
 	else
 	{
@@ -1227,9 +1229,9 @@ static void tel_set_xdelta(double HA, double DEC)
 		double radsDEC = DEC * (2 * PI) / 360.0;
 		stepsDEC = HMOT->esign * DMOT->estep * radsDEC / (2 * PI);
 		csi_w(MIPCFD(DMOT), "xdel=%d;", stepsDEC);
+        DMOT->xdelta = radsDEC;
 		debug_printf("DEC xdelta %d encoder steps\n", stepsDEC);
 		fifoWrite(Tel_Id, 0, "DEC xdelta %d encoder steps\n", stepsDEC);
-        telstatshmp->jogging_ison = 1;
 	}
 	else
 	{
@@ -1302,6 +1304,7 @@ static int buildXTrack(Now *np, Obj *op)
 							"axis=%d time=%.0f -> xtrack(%d,%.0f,%.0f,%.0f,%.0f,%.0f)\n",
 							axis, tnow, mip->haveenc ? 1 : 0, 0.0,
 							round(xttrack), round(pos), 0.0, 0.0);
+                    mip->xdelta = 0.0;
 				}
 				else
 				{
@@ -1806,7 +1809,7 @@ static int onTarget(MotorInfo **mipp)
 		trackacc = TRACKACC == 0.0 ? 1.5 * (2 * PI)
 				/ (mip->haveenc ? mip->estep : mip->step) : TRACKACC;
 
-		if (delra(mip->cpos - mip->dpos) > trackacc)
+		if (delra(mip->cpos - mip->dpos - mip->xdelta) > trackacc)
 		{
 			*mipp = mip;
 			return (-1);
@@ -2022,7 +2025,11 @@ static void jogTrack(int first, char dircode, int velocity)
 	else
 	{
 //ICE
-		if (mip->xtrack) csi_w(MIPCFD(mip), "while(1) {xdel += %d/5; pause(200);}", stpv);
+		if (mip->xtrack) 
+        {
+            csi_w(MIPCFD(mip), "while(1) {xdel += %d/5; pause(200);}", stpv);
+            mip->xdtela += gvel;
+        }
 		else
 //ICE
 		 csi_w(MIPCFD(mip), "while(1) {toffset += %d/5; pause(200);}", stpv);

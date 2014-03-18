@@ -86,6 +86,7 @@ typedef struct {
     double cpos;		/* current position now, rads from home */
     double dpos;		/* desired position now, rads from home */
     int raw;			/* raw count from home (encoder else motor) */
+    double xdelta;      /* With xtrack, used for guiding, rads from home */
 
 } MotorInfo;
 
