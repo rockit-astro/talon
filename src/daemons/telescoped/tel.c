@@ -1227,7 +1227,7 @@ static void tel_set_xdelta(double HA, double DEC)
 	if (DMOT->have && DMOT->xtrack)
 	{
 		double radsDEC = DEC * (2 * PI) / 360.0;
-		stepsDEC = HMOT->esign * DMOT->estep * radsDEC / (2 * PI);
+		stepsDEC = DMOT->esign * DMOT->estep * radsDEC / (2 * PI);
 		csi_w(MIPCFD(DMOT), "xdel=%d;", stepsDEC);
         DMOT->xdelta = radsDEC;
 		debug_printf("DEC xdelta %d encoder steps\n", stepsDEC);
@@ -2028,7 +2028,7 @@ static void jogTrack(int first, char dircode, int velocity)
 		if (mip->xtrack) 
         {
             csi_w(MIPCFD(mip), "while(1) {xdel += %d/5; pause(200);}", stpv);
-            mip->xdelta += gvel;
+            mip->xdelta += gvel; // This will produce bad results in most cases
         }
 		else
 //ICE
