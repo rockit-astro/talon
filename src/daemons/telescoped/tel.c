@@ -1214,6 +1214,7 @@ static void tel_set_xdelta(double HA, double DEC)
 		csi_w(MIPCFD(HMOT), "xdel=%d;", stepsHA);
 		debug_printf("HA xdelta %d encoder steps\n", stepsHA);
 		fifoWrite(Tel_Id, 0, "HA xdelta %d encoder steps\n", stepsHA);
+        telstatshmp->jogging_ison = 1;
 	}
 	else
 	{
@@ -1228,7 +1229,7 @@ static void tel_set_xdelta(double HA, double DEC)
 		csi_w(MIPCFD(DMOT), "xdel=%d;", stepsDEC);
 		debug_printf("DEC xdelta %d encoder steps\n", stepsDEC);
 		fifoWrite(Tel_Id, 0, "DEC xdelta %d encoder steps\n", stepsDEC);
-
+        telstatshmp->jogging_ison = 1;
 	}
 	else
 	{
