@@ -2028,7 +2028,7 @@ static void jogTrack(int first, char dircode, int velocity)
 		if (mip->xtrack) 
         {
             csi_w(MIPCFD(mip), "while(1) {xdel += %d/5; pause(200);}", stpv);
-            mip->xdtela += gvel;
+            mip->xdelta += gvel;
         }
 		else
 //ICE
