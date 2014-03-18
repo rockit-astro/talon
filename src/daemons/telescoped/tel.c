@@ -1840,7 +1840,7 @@ static int atTarget()
 		trackacc = TRACKACC == 0.0 ? 1.5 * (2 * PI)
 				/ (mip->haveenc ? mip->estep : mip->step) : TRACKACC;
 
-		if (delra(mip->cpos - mip->dpos) > trackacc)
+		if (delra(mip->cpos - mip->dpos - mip->xdelta) > trackacc)
 		{
 			mjd0 = 0;
 			return (-1);
