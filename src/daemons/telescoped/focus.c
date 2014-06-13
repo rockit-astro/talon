@@ -774,7 +774,7 @@ autoFocus()
 
     /* nothing to do if same filter and about same temp again */
     if (newfilter == last_filter && fabs(newtemp-last_temp) <= MINAFDT &&
-        filterInPlace)
+        focusInPlace)
     {
         return;
     }
