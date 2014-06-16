@@ -755,9 +755,23 @@ autoFocus()
                 : telstatshmp->filter;
 
     if (!isalnum (newfilter))
-        return;	/* turning? */
+    {
+        if (newfilter)
+            return;	/* turning? */
+        else
+            newfilter = '\0'; /* IEEC: No filter defined */
+    }
     if (islower (newfilter))
         newfilter = toupper (newfilter);
+
+    /* find the entry for this filter */
+    fip = findFilter (newfilter);
+    if (!fip) {
+        fifoWrite (Focus_Id, -8, "Autofocus failed: no filter named %c",
+                   newfilter);
+        telstatshmp->autofocus = 0;
+        return;
+    }
 
     /* get focus temp */
     newtemp = focusTemp();
@@ -773,18 +787,8 @@ autoFocus()
 	}
 
     /* nothing to do if same filter and about same temp again */
-    if (newfilter == last_filter && fabs(newtemp-last_temp) <= MINAFDT &&
-        focusInPlace)
+    if (newfilter == last_filter && fabs(newtemp-last_temp) <= MINAFDT)
     {
-        return;
-    }
-
-    /* find the entry for this filter */
-    fip = findFilter (newfilter);
-    if (!fip) {
-        fifoWrite (Focus_Id, -8, "Autofocus failed: no filter named %c",
-                   newfilter);
-        telstatshmp->autofocus = 0;
         return;
     }
 
