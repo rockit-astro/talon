@@ -11,3 +11,4 @@ src/sdk/fli/fliusb/fliusb.mod.o
 src/sdk/fli/fliusb/fliusb.o
 src/sdk/fli/fliusb/modules.order
 
+.DS_Store
