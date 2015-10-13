@@ -1,6 +1,6 @@
+add_subdirectory (CSIMC)
 add_subdirectory (daemons)
 add_subdirectory (libs)
+add_subdirectory (scripts)
 add_subdirectory (sdk)
 add_subdirectory (utils)
-add_subdirectory (scripts)
-add_subdirectory (CSIMC)
