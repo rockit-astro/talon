@@ -30,15 +30,8 @@ include_directories ("${CORE_LIBS_DIR}/misc")
 include_directories ("${CORE_LIBS_DIR}/xmisc")
 include_directories ("${CORE_LIBS_DIR}/wcs")
 
-IF(${CORE_64_BITS} EQUAL 1)
-    find_library(ANDOR_LIBS andor64 ${CORE_SDK_DIR}/andor/lib)
-ELSE(${CORE_64_BITS} EQUAL 1)
-    find_library(ANDOR_LIBS andor32 ${CORE_SDK_DIR}/andor/lib)
-ENDIF(${CORE_64_BITS} EQUAL 1)
-
-
 add_executable(xobs ${XOBS_SRC})
 
-target_link_libraries (xobs astro camera ${ANDOR_LIBS} fli fits fs m misc xmisc wcs Xm Xt Xpm X11)
+target_link_libraries (xobs astro camera fits fs m misc xmisc wcs Xm Xt Xpm X11)
 
 install (TARGETS xobs DESTINATION bin)
