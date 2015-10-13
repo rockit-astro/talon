@@ -1,7 +1,0 @@
-/sbin/rmmod apogee
-/sbin/insmod ./apogee.o apg0=0x290,520,796,1,7,15,13,85,210,100,0,0,0,0,1 ap_impact=3
-tail -5 /var/log/messages
-cat /proc/apogee
-
-# For RCS Only -- Do Not Edit
-# @(#) $RCSfile: tryit,v $ $Date: 2001/04/19 21:12:12 $ $Revision: 1.1.1.1 $ $Name:  $

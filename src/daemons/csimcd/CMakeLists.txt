@@ -3,8 +3,6 @@ project (csimcd)
 
 set(CSIMCD_SRC csimcd.c)
  
-#include_directories ("${CORE_LIBS_DIR}/astro")
-#include_directories ("${CORE_LIBS_DIR}/fits")
 include_directories ("${CORE_LIBS_DIR}/misc")
 
 

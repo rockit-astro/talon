@@ -71,11 +71,6 @@ set(XEPHEM_SRC
         )
 
 include_directories ("${CORE_LIBS_DIR}/astro")
-#include_directories ("${CORE_LIBS_DIR}/fits")
-#include_directories ("${CORE_LIBS_DIR}/fs")
-#include_directories ("${CORE_LIBS_DIR}/misc")
-#include_directories ("${CORE_LIBS_DIR}/xmisc")
-#include_directories ("${CORE_LIBS_DIR}/wcs")
 
 add_executable(xephem ${XEPHEM_SRC})
 
@@ -83,4 +78,3 @@ target_link_libraries (xephem astro m Xm Xt X11)
 
 install (TARGETS xephem DESTINATION bin)
 install(DIRECTORY auxil DESTINATION ${CORE_INSTALL_DIR}/xephem)
-#install(DIRECTORY fifos DESTINATION ${CORE_INSTALL_DIR}/xephem)

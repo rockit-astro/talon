@@ -1,9 +1,0 @@
-mpos = 0;
-msteps = 1000;
-maxvel = 20000;
-maxacc = 200000;
-kv = 2000;
-clock = 0;
-mtrack (1000, 1000, 10000, 10050, 9950, 10100, 9900);
-while (clock < 6000)
-    printf ("%d %d %d\n", clock, mpos, ontrack);
