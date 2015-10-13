@@ -5,4 +5,5 @@ add_subdirectory (misc)
 add_subdirectory (xmisc)
 add_subdirectory (wcs)
 add_subdirectory (camera)
-add_subdirectory (usb)
+# Don't install libusb because it conflicts with the newer Andor drivers
+#add_subdirectory (usb)

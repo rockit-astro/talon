@@ -1,0 +1,9 @@
+diff basic.cmc /media/ICE/config/basic.cmc
+diff find.cmc /media/ICE/config/find.cmc
+diff lights.cmc /media/ICE/config/lights.cmc
+diff nodeCover.cmc /media/ICE/config/nodeCover.cmc
+diff nodeDec.cmc /media/ICE/config/nodeDec.cmc
+diff nodeDome.cmc /media/ICE/config/nodeDome.cmc
+diff nodeFilter.cmc /media/ICE/config/nodeFilter.cmc
+diff nodeFocus.cmc /media/ICE/config/nodeFocus.cmc
+diff nodeHA.cmc /media/ICE/config/nodeHA.cmc

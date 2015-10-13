@@ -124,13 +124,13 @@ telOELog(char *progname)
 char *
 timestamp(time_t t)
 {
-	static char str[15];
+	static char str[24];
 	struct tm *tmp = gmtime (&t);
 
 	if (!tmp)
 	    sprintf (str, "gmtime failed!");	/* N.B. same length */
 	else
-	    sprintf (str, "%04d%02d%02d%02d%02d%02d", tmp->tm_year+1900,
+	    sprintf (str, "%04d-%02d-%02dT%02d:%02d:%02d", tmp->tm_year+1900,
 			    tmp->tm_mon+1, tmp->tm_mday, tmp->tm_hour,
 						    tmp->tm_min, tmp->tm_sec);
 
@@ -148,7 +148,7 @@ daemonLog (char *fmt, ...)
 	int l;
 
 	/* start with time stamp */
-	l = sprintf (buf, "%s: ", timestamp(time(NULL)));
+	l = sprintf (buf, "%s INFO ", timestamp(time(NULL)));
 
 	/* format the message */
 	va_start (ap, fmt);

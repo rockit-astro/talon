@@ -3,6 +3,9 @@
 #ifndef TELSTATSHM_H
 #define TELSTATSHM_H
 
+#include <sys/types.h>
+#include <sys/time.h>
+
 #include "ccdcamera.h"
 #include "scan.h"
 
@@ -86,7 +89,6 @@ typedef struct {
     double cpos;		/* current position now, rads from home */
     double dpos;		/* desired position now, rads from home */
     int raw;			/* raw count from home (encoder else motor) */
-    double xdelta;      /* With xtrack, used for guiding, rads from home */
 
 } MotorInfo;
 
@@ -159,7 +161,6 @@ typedef enum {
  * D refers to the telescope axis of "latitude", be it Dec or Alt.
  */
 typedef struct {
-
     /* time info */
     Now now;			/* current time and location info */
     int dt;			/* update period, ms */
@@ -208,6 +209,9 @@ typedef struct {
     /* other weather stats */
     WxStats wxs;
 
+  /* telescoped pid */
+  pid_t teld_pid;
+  long heartbeat;
 } TelStatShm;
 
 /* handy shortcuts that check things for being ready for normal observing */

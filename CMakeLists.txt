@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 2.6)
 project (core)
 
-set(CORE_64_BITS 0)
+set(CORE_64_BITS 1)
 
 if(PREFIX)
     set(CMAKE_INSTALL_PREFIX ${PREFIX})

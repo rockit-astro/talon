@@ -155,7 +155,7 @@ tdlog (char *fmt, ...)
         fp = NULL;
 
     /* start with time stamp */
-    l = sprintf (buf, "%s: ", timestamp(time(NULL)));
+    l = sprintf (buf, "%s INFO ", timestamp(time(NULL)));
 
     /* format the message */
     va_start (ap, fmt);
@@ -241,8 +241,9 @@ init_cfg()
 static void
 main_loop()
 {
-    while (1)
-        chk_fifos();
+  while (1) {
+    chk_fifos();
+  }
 }
 
 /* tell everybody to reset */
@@ -313,6 +314,7 @@ init_shm()
     int new;
 
     /* open/create */
+    tdlog("shm len=%d", len);
     new = 0;
     shmid = shmget (TELSTATSHMKEY, len, 0664);
     if (shmid < 0) {
@@ -337,6 +339,9 @@ init_shm()
 
     /* handy */
     telstatshmp = (TelStatShm *) addr;
+
+    /* store the PID of this process */
+    telstatshmp->teld_pid=getpid();
 }
 
 static void

@@ -224,6 +224,9 @@ static void
 set_shmtime()
 {
     telstatshmp->now.n_mjd = mjd_now();
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    telstatshmp->heartbeat=tv.tv_sec*1000000+tv.tv_usec;
 }
 
 /* For RCS Only -- Do Not Edit */

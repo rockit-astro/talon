@@ -65,7 +65,8 @@ typedef struct {
     Byte data[PMXDAT];		/* count bytes of data */
 } Pkt;				/* basic data link level packet */
 
-#define offof(s,m)	((int)&((s*)0)->m)	/* offset-of */
+//#define offof(s,m)	((int)&((s*)0)->m)	/* offset-of */
+#define offof(s,m)	((long)&((s*)0)->m)	/* offset-of */
 
 #define	PB_SYNC		offof(Pkt,sync)
 #define	PB_TO		offof(Pkt,to)

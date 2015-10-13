@@ -29,7 +29,7 @@
 #include "teled.h"
 
 //ICE
-//#define TELESCOPED_DEBUG
+#undef TELESCOPED_DEBUG
 #if defined(TELESCOPED_DEBUG)
 #define debug_printf printf
 #define debug_fflush fflush
@@ -69,7 +69,8 @@ static void tel_stop(int first, ...);
 static void tel_jog(int first, char jog_dir[], int velocity);
 static void offsetTracking(int first, double harcsecs, double darcsecs);
 static void tel_cover(int first, ...);
-static void tel_status(void); //IEEC
+static void tel_status(int first, ...); //IEEC
+static void tel_park(int first, ...); // RGW
 
 /* helped along by these... */
 static int dbformat(char *msg, Obj *op, double *drap, double *ddecp);
@@ -88,6 +89,9 @@ static void jogTrack(int first, char dircode, int velocity);
 static void jogSlew(int first, char dircode, int velocity);
 static int checkAxes(void);
 static char *sayWhere(double alt, double az);
+
+/* RGW */
+static void readStats(void);
 
 /* config entries */
 static double TRACKACC; /* tracking accuracy, rads. 0 means 1 enc step*/
@@ -135,12 +139,14 @@ void tel_msg(msg)
 		tel_limits(1, msg);
 	else if (strncasecmp(msg, "stow", 4) == 0)
 		tel_stow(1, msg);
+	else if (strncasecmp(msg, "park", 4) == 0)
+		tel_park(1, msg);
 	else if (strncasecmp(msg, "OpenCover", 9) == 0)
 		tel_cover(1, "O");
 	else if (strncasecmp(msg, "CloseCover", 10) == 0)
 		tel_cover(1, "C");
 	else if (strncasecmp(msg, "status", 6) == 0) //IEEC
-		tel_status();                           //IEEC
+		tel_status(1);                           //IEEC
 	else if (sscanf(msg, "RA:%lf Dec:%lf Epoch:%lf", &a, &b, &c) == 3)
 		tel_radecep(1, a, b, c);
 	else if (sscanf(msg, "RA:%lf Dec:%lf", &a, &b) == 2)
@@ -194,6 +200,7 @@ static void tel_poll()
 		mkCook();
 		dummyTarg();
 	}
+	/*	readStats();*/
 }
 
 /* stop and reread config files */
@@ -500,6 +507,28 @@ static void tel_stow(int first, ...)
 	}
 }
 
+/* Place the telescope in PARK position
+ */
+static void tel_park(int first, ...)
+{
+	char buf[128];
+
+	fifoWrite(Tel_Id, 0, "Telescope park underway");
+	allstop();
+	//	sprintf(buf, "Alt:%g Az:%g", STOWALT, STOWAZ);
+	//	tel_msg(buf);
+	csi_w(MIPCFD(HMOT), "xdel=0;");
+	csi_w(MIPCFD(HMOT), "clock=0;");
+	//	csi_w(MIPCFD(HMOT), "maxvel=s;");
+	csi_w(MIPCFD(HMOT), "timeout=300000;");
+	csi_w(MIPCFD(HMOT), "etpos=%d;", 0);
+	csi_w(MIPCFD(DMOT), "xdel=0;");
+	csi_w(MIPCFD(DMOT), "clock=0;");
+	//	csi_w(MIPCFD(DMOT), "maxvel=s;");
+	csi_w(MIPCFD(DMOT), "timeout=300000;");
+	csi_w(MIPCFD(DMOT), "etpos=%d;", -10475000);
+}
+
 /* handle tracking an astrometric position */
 static void tel_radecep(int first, ...)
 {
@@ -700,9 +729,9 @@ static void tel_altaz(int first, ...)
 				else
 				{
 					//ICE
-                    mip->xdelta = 0.0;
 					csi_w(MIPCFD(mip), "xdel=0;");
 					csi_w(MIPCFD(mip), "clock=0;");
+					//					csi_w(MIPCFD(mip), "maxvel=s;");
 					csi_w(MIPCFD(mip), "timeout=300000;");
 					//ICE
 
@@ -831,9 +860,9 @@ static void tel_hadec(int first, ...)
 				else
 				{
 					//ICE
-                    mip->xdelta = 0.0;
 					csi_w(MIPCFD(mip), "xdel=0;");
 					csi_w(MIPCFD(mip), "clock=0;");
+					//				csi_w(MIPCFD(mip), "maxvel=s;");
 					csi_w(MIPCFD(mip), "timeout=300000;");
 					//ICE
 					
@@ -1013,83 +1042,43 @@ static void tel_cover(int first, ...)
 	toTTS("The mirror cover command is complete.");
 }
 
-static void tel_status(void)
+static void tel_status(int first, ...)
 {
     /* IEEC function to provide telescope status through fifo calls */
     int hstatus, dstatus;
     hstatus = dstatus = -1;
 
+    readRaw();
+    mkCook();
     if(virtual_mode)
     {
-        fifoWrite(Tel_Id, 0, "Telescope equatorial position ( RA , Dec ): ( %g , %g ) ", 
+        fifoWrite(Tel_Id, 0, "Telescope equatorial position ( RA , Dec ): ( %g , %g )", 
                   telstatshmp->CJ2kRA,telstatshmp->CJ2kDec);
-        fifoWrite(Tel_Id, 0, "Telescope altazimutal position ( Az , Alt ):  (%g , %g ) ", 
+        fifoWrite(Tel_Id, 0, "Telescope altazimutal position ( Az , Alt ):  (%g , %g )", 
                   telstatshmp->Caz,telstatshmp->Calt);
     }
     else
     {
 	    if (HMOT->have)
-            hstatus = HMOT->ishomed;
+            hstatus = csi_rix(MIPCFD(HMOT),"=isHomed();");
 	    if (DMOT->have)
-            dstatus = DMOT->ishomed;
+            dstatus = csi_rix(MIPCFD(DMOT),"=isHomed();");
 
-        switch(telstatshmp->telstate)
-        {
-            case TS_HOMING:
-                fifoWrite(Tel_Id, 0, "Telescope hour angle and declination axes are being homed ");
-                break;
-            case TS_STOPPED:
-                if(hstatus && dstatus)
-            	{
-                    fifoWrite(Tel_Id, 1, "Telescope stopped at Right Ascension %g ", 
-                              telstatshmp->CJ2kRA);
-                    fifoWrite(Tel_Id, 1, "Telescope stopped at Declination %g ", 
-                              telstatshmp->CJ2kDec);
-					fifoWrite(Tel_Id, 1, "Telescope stopped at Azimuth %g ",
-                              telstatshmp->Caz);
-                    fifoWrite(Tel_Id, 1, "Telescope stopped at Elevation %g ", 
-                              telstatshmp->Calt);
-                }
-                else
-                    fifoWrite (Tel_Id, 2, "Telescope stopped at unknown position ");
-                break;
-            case TS_HUNTING:
-            case TS_SLEWING:
-                if(hstatus && dstatus)
-            	{
-                    fifoWrite(Tel_Id, 3, "Telescope moving from Right Ascension %g to %g ", 
-                              telstatshmp->CJ2kRA,telstatshmp->DJ2kRA);
-                    fifoWrite(Tel_Id, 3, "Telescope moving from Declination %g to %g ", 
-                              telstatshmp->CJ2kDec,telstatshmp->DJ2kDec);
-					fifoWrite(Tel_Id, 3, "Telescope moving from Azimuth %g to %g ",
-                              telstatshmp->Caz,telstatshmp->Daz);
-                    fifoWrite(Tel_Id, 3, "Telescope moving from Elevation %g to %g ", 
-                              telstatshmp->Calt,telstatshmp->Dalt);
-                }
-                else
-                    fifoWrite (Tel_Id, 4, "Telescope moving to unknown position ");
-                break;
-            case TS_TRACKING:
-                if(hstatus && dstatus)
-            	{
-                    if(atTarget() == 0)
-                    {
-                        fifoWrite(Tel_Id, 1, "Telescope tracking at Right Ascension %g ", 
-                            telstatshmp->CJ2kRA);
-                        fifoWrite(Tel_Id, 1, "Telescope tracking at Declination %g ", 
-                            telstatshmp->CJ2kDec);
-					    fifoWrite(Tel_Id, 1, "Telescope tracking at Azimuth %g ",
-                            telstatshmp->Caz);
-                        fifoWrite(Tel_Id, 1, "Telescope tracking at Elevation %g ", 
-                            telstatshmp->Calt);
-                    }
-                }
-                else
-                    fifoWrite (Tel_Id, -1, "Error: telescope tracking an unknown position ");
-                break;
-            default:
-                fifoWrite(Tel_Id, -1, "Error retrieving telescope position ");
+        if(hstatus==1 && dstatus==1)
+    	{
+            fifoWrite(Tel_Id, 0, "Telescope equatorial position ( RA , Dec ): ( %g , %g )", 
+                      telstatshmp->CJ2kRA,telstatshmp->CJ2kDec);
+            fifoWrite(Tel_Id, 0, "Telescope altazimutal position ( Az , Alt ): ( %g , %g )", 
+                      telstatshmp->Caz,telstatshmp->Calt);
         }
+        else if(hstatus==0 && dstatus==0)
+            fifoWrite (Tel_Id, 2, "Telescope position is completely unknown");
+		else if(hstatus==1 && dstatus==0)
+            fifoWrite (Tel_Id, 1, "Declination axis position is unknown");
+		else if(hstatus==0 && dstatus==1)
+            fifoWrite (Tel_Id, 1, "Hour angle axis position is unknown");
+        else
+            fifoWrite(Tel_Id, -1, "Error reading telescope position");
     }
     return;
 }
@@ -1214,7 +1203,6 @@ static void tel_set_xdelta(double HA, double DEC)
 		double radsHA = HA * (2 * PI) / 360.0;
 		stepsHA = HMOT->esign * HMOT->estep * radsHA / (2 * PI);
 		csi_w(MIPCFD(HMOT), "xdel=%d;", stepsHA);
-        HMOT->xdelta = radsHA;
 		debug_printf("HA xdelta %d encoder steps\n", stepsHA);
 		fifoWrite(Tel_Id, 0, "HA xdelta %d encoder steps\n", stepsHA);
 	}
@@ -1229,9 +1217,9 @@ static void tel_set_xdelta(double HA, double DEC)
 		double radsDEC = DEC * (2 * PI) / 360.0;
 		stepsDEC = DMOT->esign * DMOT->estep * radsDEC / (2 * PI);
 		csi_w(MIPCFD(DMOT), "xdel=%d;", stepsDEC);
-        DMOT->xdelta = radsDEC;
 		debug_printf("DEC xdelta %d encoder steps\n", stepsDEC);
 		fifoWrite(Tel_Id, 0, "DEC xdelta %d encoder steps\n", stepsDEC);
+
 	}
 	else
 	{
@@ -1253,8 +1241,19 @@ static int buildXTrack(Now *np, Obj *op)
 	Now localNow = *np;
 	MotorInfo *mip;
 	int axis;
+	static int axrelax[NMOT];
+	static float axjit[NMOT];
 
 	double tnow = (localNow.n_mjd - xstrack) * SPD;
+
+	// RGW
+	if(xttrack==0) {
+	  int idx;
+	  for(idx=0; idx<NMOT; idx++) {
+	    axrelax[idx]=4;
+	    axjit[idx]=0.5;
+	  }
+	}
 
 	while ((xttrack - tnow) <= 2 * XTRACKINT)
 	{
@@ -1292,26 +1291,31 @@ static int buildXTrack(Now *np, Obj *op)
 					scale = mip->sign * mip->step / (2 * PI);
 
 				double pos = scale * (*xyrp);
+				double rpos=pos+axrelax[axis];
+				if(axrelax[axis]==0) rpos+=axjit[axis];
+				rpos=round(rpos);
 				if (xttrack == 0)
 				{
 					csi_w(cfd, "xdel=0;");
 					csi_w(cfd, "clock=0;");
+					//					csi_w(cfd, "maxvel=s;");
 					csi_w(cfd, "timeout=%d;", 1000); //1 second
 					csi_w(cfd, "xtrack(%d,%.0f,%.0f,%.0f,%.0f,%.0f);",
-							mip->haveenc ? 1 : 0, 0.0, round(xttrack),
-							round(pos), 0.0, 0.0);
+					      mip->haveenc ? 1 : 0, 0.0, round(xttrack),
+					      rpos, 0.0, 0.0);
 					debug_printf(
-							"axis=%d time=%.0f -> xtrack(%d,%.0f,%.0f,%.0f,%.0f,%.0f)\n",
-							axis, tnow, mip->haveenc ? 1 : 0, 0.0,
-							round(xttrack), round(pos), 0.0, 0.0);
-                    mip->xdelta = 0.0;
+						     "axis=%d time=%.0f -> xtrack(%d,%.0f,%.0f,%.0f,%.0f,%.0f)\n",
+						     axis, tnow, mip->haveenc ? 1 : 0, 0.0,
+						     round(xttrack), rpos, 0.0, 0.0);
 				}
 				else
 				{
-					csi_w(cfd, "xpos(%.0f,%.0f);", round(xttrack), round(pos));
+					csi_w(cfd, "xpos(%.0f,%.0f);", round(xttrack), rpos);
 					debug_printf("axis=%d time=%.0f -> xpos(%.0f,%.0f);\n", axis,
-							tnow, round(xttrack), round(pos));
+							tnow, round(xttrack), rpos);
 				}
+				axrelax[axis]/=2;
+				axjit[axis]=-axjit[axis];
 
 				fflush(stdout);
 			}
@@ -1337,6 +1341,7 @@ double xgetvar(int sfd, int index)
 
 	return 0;
 }
+
 //ICE
 
 
@@ -1557,6 +1562,9 @@ static int trackObj(Obj *op, int first)
 			debug_printf("clock = %lf\t", clocknow/1000.0);
 
 
+			// double HApos = xxgetpos(MIPSFD(HMOT));
+			long HApos=HMOT->raw;
+			debug_printf("HApos = %ld\t", HApos);
 			double HAVel = xgetvar(MIPSFD(HMOT), 3);
 			debug_printf("HAvel = %lf\t", HAVel);
 			double HAVg = xgetvar(MIPSFD(HMOT), 1);
@@ -1568,6 +1576,9 @@ static int trackObj(Obj *op, int first)
 
 		if (DMOT->xtrack)
 		{
+		  //			double DECpos = xxgetpos(MIPSFD(DMOT));
+		  long DECpos=DMOT->raw;
+			debug_printf("DECpos = %ld\t", DECpos);
 			double DECVel = xgetvar(MIPSFD(DMOT), 3);
 			debug_printf("DECvel = %lf\t", DECVel);
 			double DECVg = xgetvar(MIPSFD(DMOT), 1);
@@ -1809,7 +1820,7 @@ static int onTarget(MotorInfo **mipp)
 		trackacc = TRACKACC == 0.0 ? 1.5 * (2 * PI)
 				/ (mip->haveenc ? mip->estep : mip->step) : TRACKACC;
 
-		if (delra(mip->cpos - mip->dpos - mip->xdelta) > trackacc)
+		if (delra(mip->cpos - mip->dpos) > trackacc)
 		{
 			*mipp = mip;
 			return (-1);
@@ -1840,7 +1851,7 @@ static int atTarget()
 		trackacc = TRACKACC == 0.0 ? 1.5 * (2 * PI)
 				/ (mip->haveenc ? mip->estep : mip->step) : TRACKACC;
 
-		if (delra(mip->cpos - mip->dpos - mip->xdelta) > trackacc)
+		if (delra(mip->cpos - mip->dpos) > trackacc)
 		{
 			mjd0 = 0;
 			return (-1);
@@ -2025,11 +2036,7 @@ static void jogTrack(int first, char dircode, int velocity)
 	else
 	{
 //ICE
-		if (mip->xtrack) 
-        {
-            csi_w(MIPCFD(mip), "while(1) {xdel += %d/5; pause(200);}", stpv);
-            mip->xdelta += gvel; // This will produce bad results in most cases
-        }
+		if (mip->xtrack) csi_w(MIPCFD(mip), "while(1) {xdel += %d/5; pause(200);}", stpv);
 		else
 //ICE
 		 csi_w(MIPCFD(mip), "while(1) {toffset += %d/5; pause(200);}", stpv);
@@ -2127,6 +2134,7 @@ static void jogSlew(int first, char dircode, int velocity)
 	{
 		//ICE
 		csi_w(MIPCFD(mip), "clock=0;");
+		//		csi_w(MIPCFD(mip), "maxvel=s;");
 		csi_w(MIPCFD(mip), "timeout=300000;");
 		//ICE
 		csi_w(MIPCFD(mip), "mtvel=%d;", CVELStp(mip));
@@ -2539,6 +2547,31 @@ sayWhere(double alt, double az)
 
 	return (w);
 }
+
+/* RGW */
+/* Read stats() and print to log every minute */
+static void readStats(void)
+{
+  static time_t tlast=0;
+  MotorInfo *fd[]={HMOT, DMOT};
+
+  time_t t=time(NULL);
+  if(t-tlast<60) return;
+  tlast=t;
+  int idx;
+  for(idx=0; idx<2; idx++) {
+    MotorInfo *mip=fd[idx];
+    int pexpect=(idx==0)?2:1;
+    csi_w(MIPSFD(mip), "stats();");
+    char buf[1024];
+    int pcnt=0;
+    while(csi_r(MIPSFD(mip), buf, sizeof(buf))>0 && pcnt<pexpect) {
+      tdlog("%s", buf);
+      if(strstr(buf, "Peer")) pcnt++;
+    }
+  }
+}
+
 
 /* For RCS Only -- Do Not Edit */
 static char

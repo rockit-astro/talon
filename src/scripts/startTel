@@ -5,5 +5,5 @@ rund telescoped
 rund camerad
 rund wxd.php -f /usr/local/telescope/archive/logs/wxd.dat -d 1 -h rebei -e 0
 rund wxd -st /usr/local/telescope/archive/logs/wxd.dat -l -
-#rund gpsd -fsac
+rund gpsd -fsac
 

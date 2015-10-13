@@ -383,10 +383,15 @@ msg (char *fmt, ...)
 	va_list ap;
 	int ul, ml;
 
+	time_t t=time(NULL);
+	struct tm *tmp = gmtime (&t);
+	sprintf (utbuf, "%04d-%02d-%02dT%02d:%02d:%02d", tmp->tm_year+1900,
+		 tmp->tm_mon+1, tmp->tm_mday, tmp->tm_hour,
+		 tmp->tm_min, tmp->tm_sec);
 	/* start mbuf with current UT */
-	ut = utc_now (&telstatshmp->now);
-	fs_sexa (utbuf, ut, 2, 3600);
-	ul = sprintf (mbuf, "%s UT: ", utbuf);
+	/*	ut = utc_now (&telstatshmp->now);
+		fs_sexa (utbuf, ut, 2, 3600);*/
+	ul = sprintf (mbuf, "%s ", utbuf);
 
 	/* append the message */
 	va_start (ap, fmt);

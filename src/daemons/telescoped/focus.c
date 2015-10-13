@@ -319,32 +319,23 @@ focus_status(void)
 {
     /* IEEC function to provide the focus status through fifo calls */
     MotorInfo *mip = OMOT;
-    double upos = 0, ugoal = 0;
+    int cfd = MIPCFD(mip);
+    int status = -1;
+    double upos = 0;
 
+    readFocus();
     upos = (mip->cpos*mip->step) / (2*PI*mip->focscale);
-    ugoal = (mip->dpos*mip->step) / (2*PI*mip->focscale);
     if(virtual_mode)
-        fifoWrite(Focus_Id, 0, "Focus position is %g um ", upos);
+        fifoWrite(Focus_Id, 0, "Focus position is %g um", upos);
     else
     {
-        if (telstatshmp->autofocus && mip->ishomed)
-        {
-            fifoWrite (Focus_Id, 0, "Auto-focus enabled at position %g um ",upos);
-        }
-        else if(mip->cvel)
-        {
-            if(mip->ishomed)
-                fifoWrite(Focus_Id, 0, "Focus moving from %g to %g um ", upos, ugoal);
-            else
-                fifoWrite (Focus_Id, 0, "Focus moving to unknown position ");
-        }
+        status = csi_rix(cfd,"=isHomed();");
+		if(status==1)
+            fifoWrite(Focus_Id, 0, "Focus position is %g um", upos);
+        else if(status==0)
+            fifoWrite (Focus_Id, 0, "Focus position is unknown");
         else
-        {
-            if(mip->ishomed)
-                fifoWrite(Focus_Id, 0, "Focus stopped at %g um ", upos);
-            else
-                fifoWrite (Focus_Id, 0, "Focus stopped at unknown position ");
-        }
+            fifoWrite(Focus_Id, -1, "Error reading focus status");
     }
     return;
 }
@@ -755,23 +746,9 @@ autoFocus()
                 : telstatshmp->filter;
 
     if (!isalnum (newfilter))
-    {
-        if (newfilter)
-            return;	/* turning? */
-        else
-            newfilter = '\0'; /* IEEC: No filter defined */
-    }
+        return;	/* turning? */
     if (islower (newfilter))
         newfilter = toupper (newfilter);
-
-    /* find the entry for this filter */
-    fip = findFilter (newfilter);
-    if (!fip) {
-        fifoWrite (Focus_Id, -8, "Autofocus failed: no filter named %c",
-                   newfilter);
-        telstatshmp->autofocus = 0;
-        return;
-    }
 
     /* get focus temp */
     newtemp = focusTemp();
@@ -789,6 +766,15 @@ autoFocus()
     /* nothing to do if same filter and about same temp again */
     if (newfilter == last_filter && fabs(newtemp-last_temp) <= MINAFDT)
     {
+        return;
+    }
+
+    /* find the entry for this filter */
+    fip = findFilter (newfilter);
+    if (!fip) {
+        fifoWrite (Focus_Id, -8, "Autofocus failed: no filter named %c",
+                   newfilter);
+        telstatshmp->autofocus = 0;
         return;
     }
 

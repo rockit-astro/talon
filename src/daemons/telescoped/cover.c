@@ -257,30 +257,40 @@ void initCfg() {
 
 void cover_status(void) 
 {
-    /* IEEC function to retrieve cover status through fifo calls */
+    /* IEEC function to provide cover status through fifo calls */
+   	int status;
+    char buf[1024];
     
-    /* Read CS (from SHM) to get cover status */
-    switch(CS)
+    if(COVERHAVE)
     {
-        case CV_CLOSED:
-            fifoWrite(Cover_Id, 0, "Covers are closed");
-            break;
-        case CV_OPEN:
-            fifoWrite(Cover_Id, 1, "Covers are open");
-            break;
-        case CV_CLOSING:
-            fifoWrite(Cover_Id, 2, "Covers are closing");
-            break;
-        case CV_OPENING:
-            fifoWrite(Cover_Id, 3, "Covers are opening");
-            break;
-        case CV_ABSENT:
-            fifoWrite(Cover_Id, 0, "No covers defined");
-            break;
-        default:
-            fifoWrite(Cover_Id, -1, "Error retrieving covers status");
-            break;
+        if(csi_wr(cfd, buf, sizeof(buf), "coverStatus();")>0)
+            status = atoi(&buf[0]);
+        else
+            status = -1;
+        
+        /* CSIMC output (buf) could be directly passed to FIFOs, but better
+           define error level as -1 (instead of 4) */
+        switch(status)
+        {
+            case 0:
+                fifoWrite(Cover_Id, 0, "Covers are closed");
+                break;
+            case 1:
+                fifoWrite(Cover_Id, 1, "Covers are open");
+                break;
+            case 2:
+                fifoWrite(Cover_Id, 2, "Covers are closing");
+                break;
+            case 3:
+                fifoWrite(Cover_Id, 3, "Covers are opening");
+                break;
+            default:
+                fifoWrite(Cover_Id, -1, "Error retrieving covers status");
+                break;
+        }
     }
+    else
+      fifoWrite(Cover_Id, 0, "No covers defined");
 
 	return;
 }
