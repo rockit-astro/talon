@@ -5,7 +5,6 @@ project (fs)
 set(FS_SRC gsc.c sadump.c usno.c)
  
 include_directories ("${CORE_LIBS_DIR}/astro")
-#include_directories ("${CORE_LIBS_DIR}/fits")
 include_directories ("${CORE_LIBS_DIR}/misc")
 
 
