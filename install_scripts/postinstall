@@ -29,7 +29,7 @@ mkfifo -m 0666 ${TELHOME}/comm/xephem_out_fifo
 
 
 #read -p "Talon username: " -e USER
-chown -hR ops:users /usr/local/telescope
+chown -hR saft:saft /usr/local/telescope
 
 chown root:root ${TELHOME}/bin/gpsd
 chmod 6755 ${TELHOME}/bin/gpsd
