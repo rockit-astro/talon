@@ -1,0 +1,3 @@
+boot.cfg:#set telApogee = "$TELHOME/archive/config/ap8b.ini 1000"
+boot.cfg~:#set telApogee = "$TELHOME/archive/config/ap8b.ini 1000"
+boot.cfg_root:#set telApogee = "$TELHOME/archive/config/ap8b.ini 1000"
