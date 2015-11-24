@@ -9,7 +9,6 @@ else(PREFIX)
     set(CMAKE_INSTALL_PREFIX /usr/local/telescope)
 endif(PREFIX)
 
-
 IF(${CORE_64_BITS} EQUAL 1)
     set(CMAKE_C_FLAGS -m64)
 ELSE(${CORE_64_BITS} EQUAL 1)
@@ -45,7 +44,7 @@ set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "TCS software for the warwick 1m telescope
 set(CPACK_PACKAGE_NAME "Talon")
 set(CPACK_PACKAGE_VERSION "1.0.0")
 set(CPACK_RPM_PACKAGE_RELEASE 1)
-set(CPACK_RPM_PACKAGE_REQUIRES "libX11 libXpm libXt")
+set(CPACK_RPM_PACKAGE_REQUIRES "libX11 libXpm libXt xorg-x11-fonts-75dpi xorg-x11-fonts-misc")
 set(CPACK_PACKAGING_INSTALL_PREFIX /usr/local/telescope)
 set(CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION /usr/local /etc/profile.d /usr/lib/udev /usr/lib/udev/rules.d)
 #set(CPACK_RPM_PRE_INSTALL_SCRIPT_FILE ${CORE_DIR}/install_scripts/preinstall)
