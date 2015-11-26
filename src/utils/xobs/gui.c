@@ -61,15 +61,6 @@ String fallbacks[] = {
     "XObs*foreground: #11f",
     "XObs*Query*background: #d33",
     "XObs*Query*foreground: white",
-    "XObs*XmTextField.fontList: \
-	-*-lucidatypewriter-medium-r-*-*-12-*-*-*-*-*-*-*",
-    "XObs*messageST.fontList: \
-	-*-lucidatypewriter-medium-r-*-*-12-*-*-*-*-*-*-*",
-    "XObs*fontList: \
-    	-*-lucidatypewriter-bold-r-*-*-12-*-*-*-*-*-*-*=prompt, \
-    	-*-lucidatypewriter-bold-r-*-*-12-*-*-*-*-*-*-*=button, \
-	-*-times-bold-i-*-*-14-*-*-*-*-*-*-*=frame, \
-	",
 
     "XObs*highlightThickness: 0",
     "XObs*XmFrame.shadowThickness: 4",
