@@ -31,9 +31,8 @@ set(CORE_DAEMONS csimcd telescoped)
 set(CORE_CSIMC_DIR ${CORE_INSTALL_DIR}/CSIMC)
 set(CORE_CSIMC_ICC_DIR ${CORE_CSIMC_DIR}/icc)
 
-
 # Compile the lib path into the binaries instead of hacking the search path
-set(CMAKE_INSTALL_RPATH /usr/local/telescope/lib)
+set(CMAKE_INSTALL_RPATH ${CORE_LIB_INSTALL_DIR})
 
 add_subdirectory (src)
 add_subdirectory (archive)
@@ -45,10 +44,8 @@ set(CPACK_PACKAGE_NAME "Talon")
 set(CPACK_PACKAGE_VERSION "1.0.0")
 set(CPACK_RPM_PACKAGE_RELEASE 1)
 set(CPACK_RPM_PACKAGE_REQUIRES "libX11 libXpm libXt xorg-x11-fonts-75dpi xorg-x11-fonts-misc")
-set(CPACK_PACKAGING_INSTALL_PREFIX /usr/local/telescope)
+set(CPACK_PACKAGING_INSTALL_PREFIX ${CORE_INSTALL_DIR})
 set(CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION /usr/local /etc/profile.d /usr/lib/udev /usr/lib/udev/rules.d)
-#set(CPACK_RPM_PRE_INSTALL_SCRIPT_FILE ${CORE_DIR}/install_scripts/preinstall)
-set(CPACK_RPM_POST_INSTALL_SCRIPT_FILE ${CORE_DIR}/install_scripts/postinstall)
 set(CPACK_RPM_POST_UNINSTALL_SCRIPT_FILE ${CORE_DIR}/install_scripts/uninstall)
 
 include(CPack)
