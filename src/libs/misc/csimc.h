@@ -4,6 +4,8 @@
 #ifndef _CSIMC_H
 #define _CSIMC_H
 
+#include<stddef.h>
+
 /* datalink packet details */
 
 typedef unsigned char Byte;	/* unsigned int 0..255 */
@@ -65,17 +67,14 @@ typedef struct {
     Byte data[PMXDAT];		/* count bytes of data */
 } Pkt;				/* basic data link level packet */
 
-//#define offof(s,m)	((int)&((s*)0)->m)	/* offset-of */
-#define offof(s,m)	((long)&((s*)0)->m)	/* offset-of */
-
-#define	PB_SYNC		offof(Pkt,sync)
-#define	PB_TO		offof(Pkt,to)
-#define	PB_FR		offof(Pkt,fr)
-#define	PB_INFO		offof(Pkt,info)
-#define	PB_COUNT	offof(Pkt,count)
-#define	PB_HCHK		offof(Pkt,hchk)
-#define	PB_DCHK		offof(Pkt,dchk)
-#define	PB_DATA		offof(Pkt,data)
+#define	PB_SYNC		offsetof(Pkt,sync)
+#define	PB_TO		offsetof(Pkt,to)
+#define	PB_FR		offsetof(Pkt,fr)
+#define	PB_INFO		offsetof(Pkt,info)
+#define	PB_COUNT	offsetof(Pkt,count)
+#define	PB_HCHK		offsetof(Pkt,hchk)
+#define	PB_DCHK		offsetof(Pkt,dchk)
+#define	PB_DATA		offsetof(Pkt,data)
 #define	PB_HSZ		(PB_HCHK+1)	/* size of header portion */
 #define	PB_NZHSZ	(PB_HSZ+1)	/* size of header with non-zero COUNT */
 #define	PB_NHCHK	(PB_HSZ-1)	/* bytes used to calc HCHK */
