@@ -1,6 +1,0 @@
-It is required "lib/libc.so.5" and otherwise the ICC
-compiler will not work
-
-Be sure LD_LIBRARY_PATH points to $TELHOME/CSIMC/icc/libc5
-
-export LD_LIBRARY_PATH=$TELHOME/CSIMC/icc/libc5

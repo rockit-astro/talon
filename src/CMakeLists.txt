@@ -1,4 +1,3 @@
-add_subdirectory (CSIMC)
 add_subdirectory (daemons)
 add_subdirectory (libs)
 add_subdirectory (scripts)

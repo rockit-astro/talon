@@ -1,7 +1,0 @@
-z; Z; b
-w COPCTL 0; w INITRM 8; w INITRG  0; w INITEE f1; w MODE  e0; w MODE  e0;
-w DDRF  4c; w CSCTL0 31; w CSCTL1 10; w CSSTR0 0; w CSSTR1 0;
-w PPAGE  0; w DPAGE  0; w WINDEF c0; w MXAR   0f; w MISC   0;
-w PEAR  1c; w DDRE  10; w DDRH  ff; w PORTH   00; w DDRJ   0;
-w RTICTL 0;
-w EEPROT 0;
