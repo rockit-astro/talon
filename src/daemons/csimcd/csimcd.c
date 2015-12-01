@@ -548,6 +548,11 @@ mainLoop()
 	    if (verbose > 3)
 		daemonLog ("Token is ours\n");
 	    checkClients();
+
+            //HACK: give the network 10ms to propagate sent
+            // data downthe chain.  If we poll again too
+            // quickly then we never receive a response.
+            usleep(10000);
 	} else {
 	    sendCurToken();
 	    wait4TokenBack();
