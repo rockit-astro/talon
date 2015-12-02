@@ -239,9 +239,7 @@ function touch_protected($file) {
 
 // LOAD ALL ALIAS
 $alias=array();
-$file1=getenv("HOME")."/.talon_alias";
-if(file_exists($file1)) $alias=array_merge($alias,file($file1));
-$file2=dirname($_SERVER["SCRIPT_NAME"])."/talon_alias";
+$file2="/usr/local/telescope/talon_alias";
 if(file_exists($file2)) $alias=array_merge($alias,file($file2));
 foreach($alias as $key=>$val) {
 	unset($alias[$key]);
