@@ -1,28 +1,3 @@
-# CCD_VIS commands
-camsky=/usr/local/telescope/comm/Camera.in "Expose 0+0x2048x2048 1x1 $1 1 0 $2\nOBJECT\nCOMMENT\nCOMMENT\nOBSERVER" /usr/local/telescope/comm/Camera.out $1+5 error unknown created "timed out"
-camsubsky=/usr/local/telescope/comm/Camera.in "Expose $1+$2x$3x$4 1x1 $5 1 0 $6\nSOURCE\nCOMMENT\nTITLE\nOBSERVER" /usr/local/telescope/comm/Camera.out $1+5 error unknown created "timed out"
-cambias=/usr/local/telescope/comm/Camera.in "Expose 0+0x2048x2048 1x1 0 0 0 $1\nSOURCE\nCOMMENT\nTITLE\nOBSERVER" /usr/local/telescope/comm/Camera.out 5 error unknown created "timed out"
-camdark=/usr/local/telescope/comm/Camera.in "Expose 0+0x2048x2048 1x1 $1 0 0 $2\nSOURCE\nCOMMENT\nTITLE\nOBSERVER" /usr/local/telescope/comm/Camera.out $1+5 error unknown created "timed out"
-camstatus=/usr/local/telescope/comm/Camera.in Temperature /usr/local/telescope/comm/Camera.out 5 error temperature
-
-# MEIA commands
-meiasky=/usr/local/telescope/comm/Camera.in "Expose 0+0x2048x2048 1x1 $1 1 0 $2\nSOURCE\nCOMMENT\nTITLE\nOBSERVER" /usr/local/telescope/comm/Camera.out $1+5 error unknown created "timed out"
-meiasubsky=/usr/local/telescope/comm/Camera.in "Expose $1+$2x$3x$4 1x1 $5 1 0 $6\nSOURCE\nCOMMENT\nTITLE\nOBSERVER" /usr/local/telescope/comm/Camera.out $1+5 error unknown created "timed out"
-meiabias=/usr/local/telescope/comm/Camera.in "Expose 0+0x2048x2048 1x1 0 0 0 $1\nSOURCE\nCOMMENT\nTITLE\nOBSERVER" /usr/local/telescope/comm/Camera.out 5 error unknown created "timed out"
-meiadark=/usr/local/telescope/comm/Camera.in "Expose 0+0x2048x2048 1x1 $1 0 0 $2\nSOURCE\nCOMMENT\nTITLE\nOBSERVER" /usr/local/telescope/comm/Camera.out $1+5 error unknown created "timed out"
-meiastatus=/usr/local/telescope/comm/Camera.in Temperature /usr/local/telescope/comm/Camera.out 5 error temperature
-
-# Camera commands (mainly for testing)
-camerasky=/usr/local/telescope/comm/Camera.in "Expose 0+0x512x768 1x1 $1 1 0 $2\nSOURCE\nCOMMENT\nTITLE\nOBSERVER" /usr/local/telescope/comm/Camera.out $1+5 error unknown created "timed out"
-camerabias=/usr/local/telescope/comm/Camera.in "Expose 0+0x512x768 1x1 0 0 0 $1\nSOURCE\nCOMMENT\nTITLE\nOBSERVER" /usr/local/telescope/comm/Camera.out 5 error unknown created "timed out"
-cameradark=/usr/local/telescope/comm/Camera.in "Expose 0+0x512x768 1x1 $1 0 0 $2\nSOURCE\nCOMMENT\nTITLE\nOBSERVER" /usr/local/telescope/comm/Camera.out $1+5 error unknown created "timed out"
-cameratest=/usr/local/telescope/comm/Camera.in "Expose 0+0x512x512 1x1 1 1 0 $1\nSOURCE\nCOMMENT\nTITLE\nOBSERVER" /usr/local/telescope/comm/Camera.out 60 error unknown created "timed out"
-cameranewton=/usr/local/telescope/comm/Camera.in "Expose 0+0x2048x512 1x1 1 1 0 $1\nSOURCE\nCOMMENT\nTITLE\nOBSERVER" /usr/local/telescope/comm/Camera.out 60 error unknown created "timed out"
-cameraikonl=/usr/local/telescope/comm/Camera.in "Expose 0+0x2088x2048 1x1 1 1 0 $1\nSOURCE\nCOMMENT\nTITLE\nOBSERVER" /usr/local/telescope/comm/Camera.out 60 error unknown created "timed out"
-cameraexpose=/usr/local/telescope/comm/Camera.in "Expose $1+$2x$3x$4 $5x$6 $7 $8 $9 $10\n$11\n$12\n$13\n$14" /usr/local/telescope/comm/Camera.out 60 error unknown created "timed out"
-camerastop=/usr/local/telescope/comm/Camera.in Stop /usr/local/telescope/comm/Camera.out 60 "stop complete"
-camerareset=/usr/local/telescope/comm/Camera.in Reset /usr/local/telescope/comm/Camera.out 60 "reset complete"
-cameratemperature=/usr/local/telescope/comm/Camera.in Temperature /usr/local/telescope/comm/Camera.out 1 "current temperature"
 
 # Telescope commands
 telhome=/usr/local/telescope/comm/Tel.in homeHD /usr/local/telescope/comm/Tel.out 90 "scope homing complete"
@@ -69,30 +44,7 @@ focusstop=/usr/local/telescope/comm/Focus.in j0 /usr/local/telescope/comm/Focus.
 focusoffset=/usr/local/telescope/comm/Focus.in $1 /usr/local/telescope/comm/Focus.out 60 "focus offset complete"
 focusstatus=/usr/local/telescope/comm/Focus.in status /usr/local/telescope/comm/Focus.out 3 
 
-# Filter commands
-filterhome=/usr/local/telescope/comm/Filter.in home /usr/local/telescope/comm/Filter.out 75 "filter in place"
-filterright=/usr/local/telescope/comm/Filter.in j+ /usr/local/telescope/comm/Filter.out 60 "filter in place"
-filterleft=/usr/local/telescope/comm/Filter.in j- /usr/local/telescope/comm/Filter.out 60 "filter in place"
-filterset=/usr/local/telescope/comm/Filter.in $1 /usr/local/telescope/comm/Filter.out 60 "filter in place"
-filterstatus=/usr/local/telescope/comm/Filter.in status /usr/local/telescope/comm/Filter.out 3 
-
-# Dome commands
-domehome=/usr/local/telescope/comm/Dome.in home /usr/local/telescope/comm/Dome.out 150 "home complete"
-domeopen=/usr/local/telescope/comm/Dome.in open /usr/local/telescope/comm/Dome.out 150 "open complete"
-domeclose=/usr/local/telescope/comm/Dome.in close /usr/local/telescope/comm/Dome.out 150 "close complete"
-domeslew=/usr/local/telescope/comm/Dome.in Az:$1 /usr/local/telescope/comm/Dome.out 150 "azimuth command complete" "error"
-domestepleft=/usr/local/telescope/comm/Dome.in "j-\nsleep 3\nj0" /usr/local/telescope/comm/Dome.out 6 "paddle command stop"
-domestepright=/usr/local/telescope/comm/Dome.in "j+\nsleep 3\nj0" /usr/local/telescope/comm/Dome.out 6 "paddle command stop"
-domeright=/usr/local/telescope/comm/Dome.in j+ /usr/local/telescope/comm/Dome.out 150 "paddle command cw"
-domeleft=/usr/local/telescope/comm/Dome.in j- /usr/local/telescope/comm/Dome.out 150 "paddle command ccw"
-domestop=/usr/local/telescope/comm/Dome.in stop /usr/local/telescope/comm/Dome.out 5 "stop complete"
-domepark=/usr/local/telescope/comm/Dome.in Az:2.7 /usr/local/telescope/comm/Dome.out 150 "azimuth command complete" "error"
-domeauto_on=/usr/local/telescope/comm/Dome.in auto /usr/local/telescope/comm/Dome.out
-domeauto_off=/usr/local/telescope/comm/Dome.in off /usr/local/telescope/comm/Dome.out
-domestatus=/usr/local/telescope/comm/Dome.in status /usr/local/telescope/comm/Dome.out 3 "Dome" "dome"
-
 # Cover commands
 coveropen=/usr/local/telescope/comm/Cover.in coveropen /usr/local/telescope/comm/Cover.out 60 "open complete"
 coverclose=/usr/local/telescope/comm/Cover.in coverclose /usr/local/telescope/comm/Cover.out 60 "close complete"
 coverstatus=/usr/local/telescope/comm/Cover.in status /usr/local/telescope/comm/Cover.out 3
-
