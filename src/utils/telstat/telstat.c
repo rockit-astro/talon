@@ -70,8 +70,8 @@ int main (int argc, char **argv)
     for (i = 0; i < 3; i++)
     {
          MotorInfo m = telstatshmp->minfo[axes[i]];
-         printf("\t\t{\"ishomed\": %d, \"cpos\": %f, \"cvel\": %f, \"poslim\": %f, \"neglim\": %f }%s\n",
-	    m.ishomed, m.cpos, m.cvel, m.poslim, m.neglim, (i < 2 ? "," : ""));
+         printf("\t\t{\"ishomed\": %d, \"cpos\": %f, \"cvel\": %f, \"step\": %d, \"df\": %f, \"poslim\": %f, \"neglim\": %f }%s\n",
+	    m.ishomed, m.cpos, m.cvel, m.step, m.df, m.poslim, m.neglim, (i < 2 ? "," : ""));
     }
     printf("\t],\n");
     printf("\t\"ra\": \"%f\",\n", telstatshmp->CJ2kRA);
