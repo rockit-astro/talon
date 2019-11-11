@@ -358,16 +358,13 @@ focus_offset(int first, ...)
         char buf[128];
 
         // make sure we're homed to begin with
-        
-        // Disabled until we can fix focus homing
-        /*
         if (axisHomedCheck(mip, buf)) {
             active_func = NULL;
             stopFocus(0);
             fifoWrite (Focus_Id, -1, "Focus error: %s", buf);
             toTTS ("Focus error: %s", buf);
             return;
-        }*/
+        }
 
         /* fetch offset, in microns, canonical direction */
         va_start (ap, first);
