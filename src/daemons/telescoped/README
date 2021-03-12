@@ -7,8 +7,6 @@ Uses the following fifo pairs (.in and .out suffix are wrt us):
 	Filter.{in,out}
 	Focus.{in,out}
 	Dome.{in,out}
-	Lights.{in,out}
-	Powerfail.{in,out}
 
 Uses the csimcd daemon to control the stepper motors:
 

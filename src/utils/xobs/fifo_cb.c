@@ -36,7 +36,6 @@ static void tel_rd_cb (XtPointer client, int *fdp, XtInputId *idp);
 static void filter_rd_cb (XtPointer client, int *fdp, XtInputId *idp);
 static void focus_rd_cb (XtPointer client, int *fdp, XtInputId *idp);
 static void dome_rd_cb (XtPointer client, int *fdp, XtInputId *idp);
-static void lights_rd_cb (XtPointer client, int *fdp, XtInputId *idp);
 static void cam_rd_cb (XtPointer client, int *fdp, XtInputId *idp);
 static void cover_rd_cb(XtPointer client, int *fdp, XtInputId *idp);
 
@@ -56,7 +55,6 @@ static FifoCallback fifocb[] = {
     {Focus_Id,	focus_rd_cb},
     {Dome_Id,	dome_rd_cb},
     {Cover_Id,	cover_rd_cb},
-    {Lights_Id,	lights_rd_cb},
     {Cam_Id,	cam_rd_cb},
 };
 
@@ -186,22 +184,6 @@ XtInputId  *idp;		/* pointer to input id */
 
 	fifoRead(Cover_Id, buf, sizeof(buf));
 	msg("Cover: %s", buf);
-
-	updateStatus(1);
-}
-
-/* called whenever we get input from the Lights fifo */
-/* ARGSUSED */
-static void
-lights_rd_cb (client, fdp, idp)
-XtPointer client;       /* file name */
-int *fdp;               /* pointer to file descriptor */
-XtInputId *idp;         /* pointer to input id */
-{
-	char buf[1024];
-
-	fifoRead (Lights_Id, buf, sizeof(buf));
-	msg ("Lights: %s", buf);
 
 	updateStatus(1);
 }

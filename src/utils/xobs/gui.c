@@ -120,7 +120,6 @@ static void drawLt (Widget wid);
 static void wltprintf (char *tag, Widget w, char *fmt, ...);
 static void filterCB (Widget w, XtPointer client, XtPointer call);
 static Widget mkFilterOp (Widget fof_w);
-static void mkFlatLights (Widget form_w, Widget light_w);
 static void mkGC(void);
 
 static char logfn[] = "archive/logs/xobsmsgs.log";
@@ -768,8 +767,6 @@ mkCamera(Widget main_w)
 		XmNrightAttachment, XmATTACH_FORM,
 		XmNforeground, getColor (toplevel_w, "gray"),
 		NULL);
-
-	    mkFlatLights (lgt_w, g_w[CLLT_W]);
 
 	return (fr_w);
 }
@@ -1620,80 +1617,6 @@ mkFilterOp (Widget fof_w)
 	XtSetSensitive (g_w[CFICB_W], 1);
 
 	return (fmb_w);
-}
-
-/* callback from the flat lights tbs.
- * client is button number, 1 or 2
- */
-static void
-flatLtCB (Widget w, XtPointer client, XtPointer call)
-{
-	int set = XmToggleButtonGetState (w);
-	int n = (int)client;
-	int v;
-
-	v = telstatshmp->lights;
-	if (set)
-	    v += n;
-	else
-	    v -= n;
-
-	fifoMsg (Lights_Id, "%d", v);
-}
-
-/* create stuff to show and control the dome flat lights */
-static void
-mkFlatLights (Widget form_w, Widget light_w)
-{
-	Widget l_w, tb1_w, tb2_w;
-
-	l_w = XtVaCreateManagedWidget ("Lights", xmLabelWidgetClass, form_w,
-	    XmNtopAttachment, XmATTACH_FORM,
-	    XmNleftAttachment, XmATTACH_FORM,
-	    XmNbottomAttachment, XmATTACH_FORM,
-	    XmNalignment, XmALIGNMENT_BEGINNING,
-	    NULL);
-
-	tb2_w = XtVaCreateManagedWidget ("Lights", xmToggleButtonWidgetClass,
-	    form_w,
-	    XmNtopAttachment, XmATTACH_FORM,
-	    XmNrightAttachment, XmATTACH_WIDGET,
-	    XmNrightWidget, light_w,
-	    XmNrightOffset, 10,
-	    XmNbottomAttachment, XmATTACH_FORM,
-	    XmNalignment, XmALIGNMENT_BEGINNING,
-	    XmNindicatorOn, True,
-	    XmNindicatorType, XmN_OF_MANY,
-	    XmNvisibleWhenOff, True,
-	    XmNmarginHeight, 0,
-	    NULL);
-
-	wltprintf (pbT, tb2_w, "2");
-	XtAddCallback (tb2_w, XmNvalueChangedCallback, flatLtCB, (XtPointer)2);
-	wtip (tb2_w, "Indicates and Controls whether dome flat light #2 is on");
-
-
-	tb1_w = XtVaCreateManagedWidget ("Lights", xmToggleButtonWidgetClass,
-	    form_w,
-	    XmNtopAttachment, XmATTACH_FORM,
-	    XmNrightAttachment, XmATTACH_WIDGET,
-	    XmNrightWidget, tb2_w,
-	    XmNrightOffset, 2,
-	    XmNbottomAttachment, XmATTACH_FORM,
-	    XmNalignment, XmALIGNMENT_BEGINNING,
-	    XmNindicatorOn, True,
-	    XmNindicatorType, XmN_OF_MANY,
-	    XmNvisibleWhenOff, True,
-	    XmNmarginHeight, 0,
-	    NULL);
-
-	wltprintf (pbT, tb1_w, "1");
-	XtAddCallback (tb1_w, XmNvalueChangedCallback, flatLtCB, (XtPointer)1);
-	wtip (tb1_w, "Indicates and Controls whether dome flat light #1 is on");
-
-	g_w[CL1_W] = tb1_w;
-	g_w[CL2_W] = tb2_w;
-	g_w[CL_W] = l_w;
 }
 
 static void

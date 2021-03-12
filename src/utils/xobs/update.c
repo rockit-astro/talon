@@ -385,7 +385,6 @@ showFocus()
 static void
 showCamera()
 {
-	static int last_maxflint = -1;
 	LtState camlt;
 	Widget w;
 	int i;
@@ -436,36 +435,6 @@ showCamera()
 	    break;
 	}
 	setLt (g_w[CTLT_W], camlt);
-
-	/* even have dome flat lights? */
-	if (MAXFLINT != last_maxflint) {
-	    /* label depends only on whether, TB's depend on passive too */
-	    if (MAXFLINT > 0) {
-		XtSetSensitive (g_w[CL_W], True);
-		XtSetSensitive (g_w[CL1_W], xobs_alone);
-		XtSetSensitive (g_w[CL2_W], MAXFLINT > 1 && xobs_alone);
-	    } else {
-		XtSetSensitive (g_w[CL_W], False);
-		XtSetSensitive (g_w[CL1_W], False);
-		XtSetSensitive (g_w[CL2_W], False);
-	    }
-
-	    last_maxflint = MAXFLINT;
-	}
-
-	i = telstatshmp->lights;
-	if (i >= 0) {
-	    int now;
-
-	    now = XmToggleButtonGetState (g_w[CL1_W]);
-	    if (!!now != !!(i&1))
-		XmToggleButtonSetState (g_w[CL1_W], !now, False);
-
-	    now = XmToggleButtonGetState (g_w[CL2_W]);
-	    if (!!now != !!(i&2))
-		XmToggleButtonSetState (g_w[CL2_W], !now, False);
-	}
-
 	setLt (g_w[CLLT_W], i <= 0 ? LTIDLE : LTACTIVE);
 }
 

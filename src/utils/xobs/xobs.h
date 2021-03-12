@@ -45,7 +45,6 @@ extern int OnTargDuration;
 extern int OnTargPercent;
 extern int BeepPeriod;
 extern char BANNER[80];
-extern int MAXFLINT;
 
 /* control.c */
 extern void g_stop (Widget w, XtPointer client, XtPointer call);

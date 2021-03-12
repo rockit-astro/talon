@@ -24,7 +24,6 @@ FifoInfo fifos[] = { {"Tel",     Tel_Id},
                      {"Filter",  Filter_Id},
                      {"Focus",   Focus_Id},
                      {"Dome",    Dome_Id},
-                     {"Lights",  Lights_Id},
                      {"Camera",  Cam_Id},
                      {"Cover", Cover_Id}	};
 
@@ -138,8 +137,7 @@ void sendFifoResets()
     /*fifoMsg (Tel_Id, "Reset");
     fifoMsg (Dome_Id, "Reset");
     fifoMsg (Filter_Id, "Reset");
-    fifoMsg (Focus_Id, "Reset");
-    fifoMsg (Lights_Id, "Reset"); */
+    fifoMsg (Focus_Id, "Reset"); */
 }
 
 /* shut down all activity */

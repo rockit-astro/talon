@@ -16,7 +16,6 @@
  *   Filter	desired filter, first char of name as setup in filter.cfg.
  *   Focus	desired focus motion, microns as per focus.cfg
  *   Dome	dome and shutter controls
- *   Power	for powerfail/powerok messages
  *
  * v0.1	10/28/93 First draft: Elwood C. Downey
  */
@@ -199,7 +198,6 @@ allstop()
     filter_msg ("Stop");
     focus_msg ("Stop");
     dome_msg ("Stop");
-    lights_msg ("Stop");
 }
 
 /* read the config files for variables we use here */
@@ -254,7 +252,6 @@ allreset()
     filter_msg ("Reset");
     focus_msg ("Reset");
     dome_msg ("Reset");
-    lights_msg ("Reset");
     cover_msg("Reset");
     init_cfg();	/* even us */
 }

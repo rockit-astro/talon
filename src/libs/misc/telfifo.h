@@ -7,23 +7,13 @@
 #ifndef TELFIFO_H
 #define TELFIFO_H
 
-/* Set to 1 if we have a windscreen (i.e. JSF) */
-#ifndef WINDSCREEN
-#define WINDSCREEN 0
-#endif
-
 /* quick indices into the fifos[] array, below.
    N.B. order must agree with order of FifoInfo array in tel_fifo.c
         so that these values match up as indices!!!
  */
 
 typedef enum {
-#if WINDSCREEN
-    Tel_Id=0, Filter_Id, Focus_Id, Dome_Id, Lights_Id, Cam_Id, Screen_Id,
-#else
-    Tel_Id=0, Filter_Id, Focus_Id, Dome_Id, Lights_Id, Cam_Id, Cover_Id,
-#endif
-    numFifos
+    Tel_Id=0, Filter_Id, Focus_Id, Dome_Id, Cam_Id, Cover_Id, numFifos
 } FifoId;
 
 /* this is used to describe the several FIFOs used to communicate with

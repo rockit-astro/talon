@@ -32,8 +32,6 @@ char BANNER[80];
 
 double DOMETOL;
 
-int MAXFLINT;
-
 char icfn[] = "archive/config/filter.cfg";
 FilterInfo *filtinfo;
 int nfilt;
@@ -46,12 +44,6 @@ static char tcfn[] = "archive/config/telescoped.cfg";
 void
 initCfg()
 {
-#define NTCFG   (sizeof(tcfg)/sizeof(tcfg[0]))
-
-	static CfgEntry tcfg[] = {
-	    {"MAXFLINT",	CFG_INT, &MAXFLINT},
-	};
-
 #define NTSCFG   (sizeof(tscfg)/sizeof(tscfg[0]))
 
 	static CfgEntry tscfg[] = {
@@ -74,13 +66,6 @@ initCfg()
 	};
 	char buf[1024];
 	int n;
-
-	/* read stuff from telescoped.cfg */
-	n = readCfgFile (1, tcfn, tcfg, NTCFG);
-	if (n != NTCFG) {
-	    cfgFileError (tcfn, n, NULL, tcfg, NTCFG);
-	    die();
-	}
 
 	/* read stuff from telsched.cfg */
 	n = readCfgFile (1, tscfn, tscfg, NTSCFG);

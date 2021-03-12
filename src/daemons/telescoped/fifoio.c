@@ -46,8 +46,6 @@ static FifoInfo fifo[] = {
     {Filter_Id,	"Filter",     filter_msg},
     {Focus_Id,	"Focus",      focus_msg},
     {Dome_Id, 	"Dome",       dome_msg},
-    {Lights_Id, "Lights",     lights_msg},
-    {Power_Id,	"Powerfail",  power_msg},
     {Cover_Id,	"Cover",      cover_msg}
 };
 #define	N_F	(sizeof(fifo)/sizeof(fifo[0]))
@@ -160,11 +158,8 @@ chk_fifos()
             /* keep time current */
             set_shmtime();
 
-            /* dispatch, unless powerfail underway */
-            if (fip->id == Power_Id || chkPowerfail() < 0)
-                (*fip->fp) (msg);
-            else
-                fifoWrite (fip->id, -1, "Power fail in progress");
+            /* dispatch */
+            (*fip->fp) (msg);
 
             /* handled this one */
             s--;
