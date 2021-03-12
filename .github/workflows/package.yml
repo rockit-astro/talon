@@ -15,7 +15,7 @@ jobs:
         run: |
           # CentOS 7's git version is too old for the checkout action so fetch from ius instead
           yum -y install https://repo.ius.io/ius-release-el7.rpm https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-          yum -y install git224 rpm-build rpm-sign make gcc gcc-c++ motif-devel libXpm-devel cmake3
+          yum -y install git224 rpm-build rpm-sign make gcc gcc-c++ motif-devel libXpm-devel cmake
 
       - name: Clone Repository
         uses: actions/checkout@v2
@@ -29,14 +29,10 @@ jobs:
 
       - name: Package RPMs
         run: |
-          mkdir build
-          cd build
-          cmake3 ..
           make
-          make package
 
       - name: Push Packages
         env:
           RPM_SIGNING_KEY: ${{ secrets.RPM_SIGNING_KEY }}
         run: |
-          centos-packages/sign-and-push-packages.sh build/*.rpm
+          centos-packages/sign-and-push-packages.sh *.rpm

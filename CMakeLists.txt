@@ -1,4 +1,3 @@
-cmake_minimum_required (VERSION 3.0)
 project (core)
 
 set(CORE_64_BITS 1)
@@ -25,7 +24,7 @@ set(CORE_LIBS_DIR ${CORE_SRC_DIR}/libs)
 set(CORE_DAEMONS_DIR ${CORE_SRC_DIR}/daemons)
 set(CORE_SDK_DIR ${CORE_SRC_DIR}/sdk)
 
-set(CORE_LIBS astro fits fs misc wcs)
+set(CORE_LIBS astro misc)
 set(CORE_DAEMONS csimcd telescoped)
 
 set(CORE_CSIMC_DIR ${CORE_INSTALL_DIR}/CSIMC)
@@ -38,13 +37,3 @@ add_subdirectory (src)
 add_subdirectory (archive)
 add_subdirectory (install_scripts)
 
-set(CPACK_GENERATOR "RPM")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "TCS software for the warwick 1m telescope")
-set(CPACK_PACKAGE_NAME "onemetre-talon")
-set(CPACK_PACKAGE_VERSION "1.4")
-set(CPACK_RPM_PACKAGE_RELEASE 0)
-set(CPACK_PACKAGING_INSTALL_PREFIX ${CORE_INSTALL_DIR})
-set(CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION /usr/local /etc/profile.d /usr/lib/udev /usr/lib/udev/rules.d)
-set(CPACK_RPM_POST_UNINSTALL_SCRIPT_FILE ${CORE_DIR}/install_scripts/uninstall)
-
-include(CPack)
