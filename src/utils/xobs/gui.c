@@ -260,13 +260,6 @@ mkGUI(char *version)
 	    NULL);
 }
 
-void
-nyi ()
-{
-	query (toplevel_w, "Not yet implemented :-(", "Ok", NULL, NULL, NULL,
-								    NULL, NULL);
-}
-
 /* set the given Pixel resource to newp.
  * return 1 if it was different, 0 if it was the same already.
  */
@@ -790,10 +783,6 @@ mkControl(Widget main_w)
 	    	"Start telescope seeking all home switches, if any"},
 	    {"Find Limits", 0, g_limit,  &g_w[CFLIM_W],
 	    	"Start telescope seeking all limit switches, if any"},
-	    {"Test",        0, (XtCallbackProc)nyi, &g_w[CTEST_W],
-	    	"Toggle a low-level diagnostic utility"}, 
-	    {"Reload",      0, g_init,   &g_w[CRELOAD_W],
-	    	"Reread all .cfg config files"},
 	    {"Calib Axes",  0, g_calib,  &g_w[CCALIBA_W],
 	    	"Toggle a tool to calibrate telescope axis orientations"},
 	    {"No Confirm",  1, g_confirm,   &g_w[CCNFOFF_W],

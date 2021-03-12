@@ -122,21 +122,6 @@ fifoRead (FifoId fid, char buf[], int buflen)
     return (v);
 }
 
-void sendFifoResets()
-{
-
-    /* always send to all in case being turned off/on */
-
-    int i;
-    for (i = 0; i < numFifos; i++) { // Loop through all defined FIFOs
-        fifoMsg (i, "Reset");
-    }
-
-    /*fifoMsg (Tel_Id, "Reset");
-    fifoMsg (Dome_Id, "Reset");
-    fifoMsg (Focus_Id, "Reset"); */
-}
-
 /* shut down all activity */
 void
 stopAllDevices()

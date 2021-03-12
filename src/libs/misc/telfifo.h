@@ -30,7 +30,6 @@ typedef struct {
 FifoInfo getFIFO(int id);
 int fifoMsg(FifoId fid, char *fmt, ...);
 int fifoRead(FifoId fid, char buf[], int buflen);
-void sendFifoResets(void);
 void stopAllDevices(void);
 void openFIFOs(void);
 void closeFIFOs(void);

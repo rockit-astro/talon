@@ -93,15 +93,6 @@ g_exit (Widget w, XtPointer client, XtPointer call)
 }
 
 void
-g_init (Widget w, XtPointer client, XtPointer call)
-{
-	if (!rusure (toplevel_w, "reload all config files"))
-	    return;
-
-	resetSW();
-}
-
-void
 g_confirm (Widget w, XtPointer client, XtPointer call)
 {
 	/* let them turn confirmations back on without a confirmation */

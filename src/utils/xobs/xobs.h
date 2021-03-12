@@ -39,7 +39,6 @@ extern char BANNER[80];
 /* control.c */
 extern void g_stop (Widget w, XtPointer client, XtPointer call);
 extern void g_exit (Widget w, XtPointer client, XtPointer call);
-extern void g_init (Widget w, XtPointer client, XtPointer call);
 extern void g_home (Widget w, XtPointer client, XtPointer call);
 extern void g_limit (Widget w, XtPointer client, XtPointer call);
 extern void g_focus (Widget w, XtPointer client, XtPointer call);
@@ -58,7 +57,6 @@ extern void coverOpenCB (Widget w, XtPointer client, XtPointer call);
 extern void coverCloseCB (Widget w, XtPointer client, XtPointer call);
 
 /* fifo_cb.c */
-void resetSW(void);
 void initPipesAndCallbacks(void);
 void closePipesAndCallbacks(void);
 
@@ -72,7 +70,6 @@ extern Pixel editableColor;
 extern Pixel uneditableColor;
 extern void mkGUI (char *version);
 extern int setColor (Widget w, char *resource, Pixel newp);
-extern void nyi (void);
 extern String fallbacks[];
 extern void setLt (Widget w, LtState s);
 extern Widget mkLight (Widget p_w);

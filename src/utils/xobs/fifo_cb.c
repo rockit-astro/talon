@@ -54,22 +54,6 @@ static FifoCallback fifocb[] = {
     {Cover_Id,	cover_rd_cb},
 };
 
-
-
-/* send all the daemons a reset command.
- * also reload our own info.
- * N.B. we assume there can not be any aux functions running.
- */
-void
-resetSW()
-{
-	/* read ours */
-	initCfg();
-
-	sendFifoResets(); // Send resets to all FIFOs
-}
-
-
 /* make connections to daemons.
  * N.B. do nothing gracefully if connections are already ok.
  */
