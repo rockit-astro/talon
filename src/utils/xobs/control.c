@@ -53,7 +53,6 @@ static HLInfo hl_info[N_AX] = {
     {"Scope Dec/Alt", Tel_Id,    'D'},
     {"Rotator",       Tel_Id,    'R'},
     {"Focus",         Focus_Id},
-    {"Filter",        Filter_Id},
     {"Dome",          Dome_Id},
     {"Cover",		  Cover_Id},
 };
@@ -334,8 +333,6 @@ homeCB (Widget w, XtPointer client, XtPointer call)
 	int naxcodes;
 	int i;
 	
-	fillFilterMenu();	
-
 	/* N.B. must build *one* composite fifo command to Tel_Id */
 	
 	naxcodes = 0;

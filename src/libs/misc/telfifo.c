@@ -21,10 +21,8 @@ static TelStatShm *telstatshmp; /* to shared memory segment */
 
 
 FifoInfo fifos[] = { {"Tel",     Tel_Id},
-                     {"Filter",  Filter_Id},
                      {"Focus",   Focus_Id},
                      {"Dome",    Dome_Id},
-                     {"Camera",  Cam_Id},
                      {"Cover", Cover_Id}	};
 
 FifoInfo getFIFO(int id)
@@ -75,7 +73,7 @@ fifoMsg (FifoId fid, char *fmt, ...)
         fifo_error();
     }
 
-    /* fifos can be closed while telrun is on; passive; or if no camera */
+    /* fifos can be closed while telrun is on; passive */
     if (!fip->fdopen) {
         printf("Service not available.");
         return (-1);
@@ -136,7 +134,6 @@ void sendFifoResets()
 
     /*fifoMsg (Tel_Id, "Reset");
     fifoMsg (Dome_Id, "Reset");
-    fifoMsg (Filter_Id, "Reset");
     fifoMsg (Focus_Id, "Reset"); */
 }
 
@@ -169,15 +166,12 @@ stopAllDevices()
     if (telstatshmp->domestate != DS_ABSENT
                     || telstatshmp->shutterstate != SH_ABSENT)
         fifoMsg (Dome_Id, "Stop");
-    if (IMOT->have)
-        fifoMsg (Filter_Id, "Stop");
     if (OMOT->have)
         fifoMsg (Focus_Id, "Stop");
 }
 
 /* make connections to daemons.
  * N.B. do nothing gracefully if connections are already ok.
- * N.B. not fatal if no camerad.
  */
 void
 openFIFOs()
@@ -193,7 +187,8 @@ openFIFOs()
                 fip->fdopen = 1;
                 fprintf (stderr, "%s opened\n",fip->name);
             }
-            else if (fip->fid != Cam_Id) {
+            else
+            {
                 fprintf (stderr, "%s: %s\n", fip->name, buf);
                 fifo_error();
             }

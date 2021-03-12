@@ -99,8 +99,8 @@ pollCB (XtPointer client, XtIntervalId *id)
 	    break;
 	}
 
-	/* or beep if filter or focus is moving */
-	if ((IMOT->have && IMOT->cvel != 0) || (OMOT->have && OMOT->cvel != 0))
+	/* or beep if focus is moving */
+	if ((OMOT->have && OMOT->cvel != 0))
 	    beep_this_time = 1;
 
 	/* beep -- just a matter of pitch */

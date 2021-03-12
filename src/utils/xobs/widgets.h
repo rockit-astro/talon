@@ -22,27 +22,6 @@ typedef enum {
     PDAZ_W,
     PDDAZ_W,
 
-    /* camera */
-    CFIL_W,
-    CFICB_W,
-    CFIPD_W,
-    CFILT_W,
-    CFO_W,
-    CFOLT_W,
-    CT_W,
-    CTLT_W,
-    CC_W,
-    CCLT_W,
-    CS_W,
-    CSLT_W,
-    CR_W,
-    CRL_W,
-    CRLT_W,
-    CL_W,
-    CL1_W,
-    CL2_W,
-    CLLT_W,
-
     /* control */
     CSTOP_W,
     CEXIT_W,
@@ -56,6 +35,12 @@ typedef enum {
     CBATCH_W,
     CCNFOFF_W,
     CSOUND_W,
+
+    CFO_W,
+    CFOLT_W,
+    CR_W,
+    CRL_W,
+    CRLT_W,
 
     /* status */
     SBLT_W,

@@ -225,9 +225,6 @@ typedef struct {
 #define	FOCUS_READY	(!telstatshmp->minfo[TEL_OM].have	\
 				    || telstatshmp->minfo[TEL_OM].cvel == 0)
 
-#define	FILTER_READY	(!telstatshmp->minfo[TEL_IM].have       \
-			    || telstatshmp->filter == telstatshmp->scan.filter)
-
 #define	ANY_HOMING	( 					\
 			telstatshmp->minfo[TEL_HM].homing ||	\
 			telstatshmp->minfo[TEL_DM].homing ||	\

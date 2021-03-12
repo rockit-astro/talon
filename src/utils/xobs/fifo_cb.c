@@ -33,10 +33,8 @@
 #include "widgets.h"
 
 static void tel_rd_cb (XtPointer client, int *fdp, XtInputId *idp);
-static void filter_rd_cb (XtPointer client, int *fdp, XtInputId *idp);
 static void focus_rd_cb (XtPointer client, int *fdp, XtInputId *idp);
 static void dome_rd_cb (XtPointer client, int *fdp, XtInputId *idp);
-static void cam_rd_cb (XtPointer client, int *fdp, XtInputId *idp);
 static void cover_rd_cb(XtPointer client, int *fdp, XtInputId *idp);
 
 /* this is used to describe the several FIFOs used to communicate with
@@ -51,11 +49,9 @@ typedef struct {
 /* list of fifos to the control daemons */
 static FifoCallback fifocb[] = {
     {Tel_Id,	tel_rd_cb},
-    {Filter_Id,	filter_rd_cb},
     {Focus_Id,	focus_rd_cb},
     {Dome_Id,	dome_rd_cb},
     {Cover_Id,	cover_rd_cb},
-    {Cam_Id,	cam_rd_cb},
 };
 
 
@@ -71,15 +67,11 @@ resetSW()
 	initCfg();
 
 	sendFifoResets(); // Send resets to all FIFOs
-
-	/* keep up with filter assignments */
-	fillFilterMenu();
 }
 
 
 /* make connections to daemons.
  * N.B. do nothing gracefully if connections are already ok.
- * N.B. not fatal if no camerad.
  */
 void
 initPipesAndCallbacks()
@@ -127,21 +119,6 @@ XtInputId *idp;         /* pointer to input id */
 	updateStatus(1);
 }
 
-/* called whenever we get input from the Filter fifo */
-/* ARGSUSED */
-static void
-filter_rd_cb (client, fdp, idp)
-XtPointer client;       /* unused */
-int *fdp;               /* pointer to file descriptor */
-XtInputId *idp;         /* pointer to input id */
-{
-	char buf[1024];
-
-	fifoRead (Filter_Id, buf, sizeof(buf));
-	msg ("Filter: %s", buf);
-	updateStatus(1);
-}
-
 /* called whenever we get input from the Focus fifo */
 /* ARGSUSED */
 static void
@@ -186,21 +163,6 @@ XtInputId  *idp;		/* pointer to input id */
 	msg("Cover: %s", buf);
 
 	updateStatus(1);
-}
-
-/* called whenever we get input from the camerad fifo */
-/* ARGSUSED */
-static void
-cam_rd_cb (client, fdp, idp)
-XtPointer client;       /* unused name */
-int *fdp;               /* pointer to file descriptor */
-XtInputId *idp;         /* pointer to input id */
-{
-	char buf[1024];
-	int s;
-
-	s = fifoRead (Cam_Id, buf, sizeof(buf));
-	msg ("Camera: %s", buf);
 }
 
 /* For RCS Only -- Do Not Edit */

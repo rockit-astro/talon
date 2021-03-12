@@ -25,7 +25,6 @@
 #include "telenv.h"
 #include "cliserv.h"
 #include "tts.h"
-#include "focustemp.h"
 
 #include "teled.h"
 

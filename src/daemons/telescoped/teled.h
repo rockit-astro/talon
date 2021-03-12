@@ -3,7 +3,7 @@
  * N.B. see fifos[] in telescoped.c
  */
 typedef enum {
-    Tel_Id, Filter_Id, Focus_Id, Dome_Id, Cover_Id
+    Tel_Id, Focus_Id, Dome_Id, Cover_Id
 } FifoId;
 
 /* CSIMC info */
@@ -49,10 +49,6 @@ extern void init_fifos(void);
 extern void chk_fifos(void);
 extern void close_fifos(void);
 
-/* filter.c */
-extern void filter_msg (char *msg);
-extern FilterInfo *findFilter (char name);
-
 /* focus.c */
 extern void focus_msg (char *msg);
 
@@ -65,7 +61,6 @@ extern void tel_msg (char *msg);
 
 /* telescoped.c */
 extern double STOWALT, STOWAZ;
-extern char STOWFILTER[32];
 extern TelStatShm *telstatshmp;
 extern int virtual_mode;
 extern char tscfn[];

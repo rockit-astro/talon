@@ -4,7 +4,6 @@ For use with CSIMC.
 Uses the following fifo pairs (.in and .out suffix are wrt us):
 
 	Tel.{in,out}
-	Filter.{in,out}
 	Focus.{in,out}
 	Dome.{in,out}
 
@@ -39,7 +38,6 @@ Reads parameters from:
 Reads parameters from and makes updates to:
 
 	home.cfg
-	filter.cfg
 
 "Canonical" directions are used throughout to eliminate the need to know
 the signs of the actual motors. If the latter are referred to, they
@@ -49,7 +47,6 @@ are called "raw" directions. The canonical conventions are as follows:
     Dec(Alt):	+moving towards scope's pole (like Dec)
     Field:	+cw rotation, looking "through" the camera
     Focus:	+moving to shorten the optical path from primary to camera
-    Filter:	+cw rotation, looking "through" the camera
     Dome:	+cw looking down from above
 
 ! For RCS Only -- Do Not Edit

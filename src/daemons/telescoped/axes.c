@@ -30,10 +30,8 @@
 static void recordLimit (MotorInfo *mip, char dir);
 static void recordStep (MotorInfo *mip, int motdiff, int encdiff);
 
-// external access to read code for filter/focus for allowing read to work during limits
-extern void readFilter();
+// external access to read code for focus for allowing read to work during limits
 extern void readFocus();
-
 
 /* find home, direction as per POSSIDE.
  * return 1 if in-progress, 0 done, else -1.
@@ -369,10 +367,7 @@ axis_limits (MotorInfo *mip, FifoId fid, int first)
 
         // HACK TO ALLOW READING WITH LIMITS
         if (mip->enchome) {
-            if (mip == &telstatshmp->minfo[TEL_IM]) {
-                readFilter();
-            }
-            else if (mip == &telstatshmp->minfo[TEL_OM]) {
+            if (mip == &telstatshmp->minfo[TEL_OM]) {
                 readFocus();
             }
         }

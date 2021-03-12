@@ -37,9 +37,7 @@ static void noTarg (void);
 static void computeSunMoon(void);
 static void showTime (void);
 static void showSunMoon (void);
-static void showFilter(void);
 static void showFocus(void);
-static void showCamera(void);
 static void showScope(void);
 static void showHL(void);
 static void showWx(void);
@@ -59,7 +57,7 @@ updateStatus(int force)
 
 	static double last_slow, last_fast;
 	static double last_tbusy, last_dbusy, last_obusy;
-	static double last_ibusy, last_wbusy;
+	static double last_wbusy;
 	Now *np = &telstatshmp->now;
 	int doslow = force || mjd > last_slow + SLOW_DT;
 	int dofast = force || mjd > last_fast + FAST_DT;
@@ -83,7 +81,6 @@ updateStatus(int force)
 	if (dofast) {
 	    showTime();
 	    batchUpdate();
-	    showCamera();
 	    last_fast = mjd;
 	}
 
@@ -116,13 +113,6 @@ updateStatus(int force)
 	    showFocus();
 	    if (busy)
 		last_obusy = mjd;
-	}
-
-	busy = IMOT->cvel != 0;
-	if (doslow || busy || mjd < last_ibusy + COAST_DT) {
-	    showFilter();
-	    if (busy)
-		last_ibusy = mjd;
 	}
 
 	/* always be very responsive to the scope */
@@ -329,37 +319,6 @@ showSunMoon ()
 }
 
 static void
-showFilter()
-{
-	char curf;
-
-	if (!IMOT->have)
-	    return;
-
-	curf = telstatshmp->filter;
-
-	if (curf == '<' || curf == '>' || IMOT->cvel != 0) {
-	    /* busy */
-	    setLt (g_w[CFILT_W], LTACTIVE);
-	    return;
-	} else {
-	    /* show name matching curf */
-	    int i;
-
-	    for (i = 0; i < nfilt; i++) {
-		if (filtinfo[i].name[0] == curf) {
-		    wlprintf (g_w[CFICB_W], filtinfo[i].name);
-		    setLt (g_w[CFILT_W], LTOK);
-		    return;
-		}
-	    }
-	}
-
-	/* trouble if get here */
-	setLt (g_w[CFILT_W], LTWARN);
-}
-
-static void
 showFocus()
 {
 	double tmp;
@@ -380,62 +339,6 @@ showFocus()
 		else tmp = OMOT->step*(OMOT->cpos - OMOT->dpos)/(2*PI);
 	    setLt (g_w[CFOLT_W], fabs(tmp) < 1.5 ? LTOK : LTWARN);
 	}
-}
-
-static void
-showCamera()
-{
-	LtState camlt;
-	Widget w;
-	int i;
-
-	w = g_w[CS_W];
-	switch (telstatshmp->camstate) {
-	case CAM_IDLE: wtprintf(w,"    IDLE");  camlt = LTIDLE;    break;
-	case CAM_EXPO: wtprintf(w,"EXPOSING");  camlt = LTACTIVE;  break;
-	case CAM_READ: wtprintf(w," READING");  camlt = LTACTIVE;  break;
-	default:				camlt = LTWARN;	   break;
-	}
-	setLt (g_w[CSLT_W], camlt);
-
-	wtprintf (g_w[CT_W], "%8d", telstatshmp->camtemp);
-
-	w = g_w[CC_W];
-	switch (telstatshmp->coolerstatus) {
-	case CCDTS_AT:   wtprintf(w," At Targ"); camlt = LTOK;     break;
-	case CCDTS_UNDER:wtprintf(w,"  < Targ"); camlt = LTWARN;   break;
-	case CCDTS_OVER: wtprintf(w,"  > Targ"); camlt = LTWARN;   break;
-	case CCDTS_OFF:  wtprintf(w,"     Off"); camlt = LTIDLE;   break;
-	case CCDTS_RDN:  wtprintf(w," Ramping"); camlt = LTACTIVE; break;
-	case CCDTS_RUP:  wtprintf(w,"  To Amb"); camlt = LTACTIVE; break;
-	case CCDTS_STUCK:wtprintf(w," Ceiling"); camlt = LTWARN;   break;
-	case CCDTS_MAX:  wtprintf(w,"   Floor"); camlt = LTWARN;   break;
-	case CCDTS_AMB:  wtprintf(w,"  At Amb"); camlt = LTIDLE;   break;
-	case CCDTS_ERR: /* FALLTHRU */
-	default:         wtprintf(w,"   Error"); camlt = LTWARN;   break;
-	    break;
-	}
-
-	setLt (g_w[CCLT_W], camlt);
-
-	switch (telstatshmp->coolerstatus) {
-	case CCDTS_OFF:	/* FALLTHRU */
-	case CCDTS_RUP:	/* FALLTHRU */
-	case CCDTS_AMB:
-	    camlt = LTIDLE;
-	    break;
-	default:
-	    i = abs (telstatshmp->camtarg - telstatshmp->camtemp);
-	    if (i == 0)
-		camlt = LTOK;
-	    else if (i <= MAXTEMPERR)
-		camlt = LTACTIVE;
-	    else
-		camlt = LTWARN;
-	    break;
-	}
-	setLt (g_w[CTLT_W], camlt);
-	setLt (g_w[CLLT_W], i <= 0 ? LTIDLE : LTACTIVE);
 }
 
 static void

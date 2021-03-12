@@ -33,18 +33,7 @@
 
 #include "xobs.h"
 
-#ifndef WINDSCREEN
-    #define WINDSCREEN 0
-#endif
-#ifndef COVER
-    #define COVER 0
-#endif
-
-#if WINDSCREEN
-	#define	ARROWSZ	60
-#else
-	#define ARROWSZ 30
-#endif
+#define ARROWSZ 30
 
 static void mkPadGUI(void);
 static Widget mkArrows (Widget p_w);
@@ -60,12 +49,6 @@ static Widget paddle_w;			/* the main shell */
 static Widget n_w, s_w, e_w, w_w;	/* the 4 direction buttons */
 static Widget nl_w, sl_w, el_w, wl_w;	/* the 4 direction button labels */
 static Widget roof_w, oi_w, coarse_w, fine_w;	/* the 4 control buttons */
-#if WINDSCREEN
-static Widget screenE_w, screenW_w, screenS_w;
-#endif
-#if COVER
-static Widget cover_w;
-#endif
 
 /* toggle the paddle */
 void
@@ -182,11 +165,7 @@ mkPadGUI()
 	XtSetArg (args[n], XmNbottomAttachment, XmATTACH_WIDGET); n++;
 	XtSetArg (args[n], XmNbottomWidget, close_w); n++;
 	XtSetArg (args[n], XmNleftAttachment, XmATTACH_POSITION); n++;
-#if WINDSCREEN	
-	XtSetArg (args[n], XmNleftPosition, 65); n++;
-#else
 	XtSetArg (args[n], XmNleftPosition, 55); n++;
-#endif
 	XtSetArg (args[n], XmNrightAttachment, XmATTACH_FORM); n++;
 	XtSetValues (buttonbox_w, args, n);
 
@@ -313,27 +292,9 @@ mkButtons (Widget p_w)
 	} ButtonW;
 	static ButtonW buttons[] = {
 	    {"C", "Coarse scope", 10, &coarse_w, "Coarse telescope control"},
-#if WINDSCREEN	
-	    {"D", "Fine scope",   20, &fine_w,   "Fine telescope control"},
-	    {"B", "Focus/Filter", 30, &oi_w,     "Focus and Filter control"},
-	    {"A", "Roof/Dome",	  40, &roof_w,   "Roof and Dome control"},
-	    {"E", "East wind screen",  50, &screenE_w, \
-	     "East wind screen control"},
-	    {"F", "West wind screen",  60, &screenW_w, \
-	     "West wind screen control"},
-	    {"G", "South wind screen",  70, &screenS_w, \
-	     "South wind screen control"},
-#elif COVER
-	    {"D", "Fine scope",   25, &fine_w,   "Fine telescope control"},
-	    {"B", "Focus/Filter", 40, &oi_w,     "Focus and Filter control"},
-	    {"A", "Roof/Dome",	  55, &roof_w,   "Roof and Dome control"},	
-	    {"H", "Cover",        70, &cover_w,  "Mirror cover control"},	
-#else
 	    {"D", "Fine scope",   30, &fine_w,   "Fine telescope control"},
-	    {"B", "Focus/Filter", 50, &oi_w,     "Focus and Filter control"},
+	    {"B", "Focus", 50, &oi_w,     "Focus control"},
 	    {"A", "Roof/Dome",	  70, &roof_w,   "Roof and Dome control"},	
-#endif
-	
 	};
 
 	Widget f_w;
@@ -374,10 +335,6 @@ armArrow (Widget w)
 		fifoMsg (Focus_Id, "j-");
 	    if (w == s_w)
 		fifoMsg (Focus_Id, "j+");
-	    if (w == e_w)
-		fifoMsg (Filter_Id, "j-");
-	    if (w == w_w)
-		fifoMsg (Filter_Id, "j+");
 	}
 	if (XmToggleButtonGetState(coarse_w)) {
 	    if (w == n_w)
@@ -409,36 +366,6 @@ armArrow (Widget w)
 	    if (w == w_w)
 		fifoMsg (Dome_Id, "j-");
 	}
-#if WINDSCREEN	
-	if (XmToggleButtonGetState(screenE_w)) {
-	   if (w == n_w)
-	     system("windscreen 1 open");
-	   if (w == s_w)
-	     system("windscreen 1 close");
-	}
-	if (XmToggleButtonGetState(screenW_w)) {
-	   if (w == n_w)
-	     system("windscreen 2 open");
-	   if (w == s_w)
-	     system("windscreen 2 close");
-	}
-	if (XmToggleButtonGetState(screenS_w)) {
-	   if (w == n_w)
-	     system("windscreen 3 open");
-	   if (w == s_w)
-	     system("windscreen 3 close");
-	}
-#endif	
-#if COVER
-    if(XmToggleButtonGetState(cover_w)) {
-        if(w == n_w) {
-            fifoMsg(Tel_Id, "OpenCover");
-        }
-        if(w == s_w) {
-            fifoMsg(Tel_Id, "CloseCover");
-        }
-    }
-#endif
 }
 
 static void
@@ -447,8 +374,6 @@ disarmArrow (Widget w)
 	if (XmToggleButtonGetState(oi_w)) {
 	    if (w == n_w || w == s_w)
 		fifoMsg (Focus_Id, "j0");
-	    if (w == e_w || w == w_w)
-		fifoMsg (Filter_Id, "j0");
 	}
 	if (XmToggleButtonGetState(coarse_w))
 	    fifoMsg (Tel_Id, "j0");
@@ -492,14 +417,6 @@ buttonCB (Widget w, XtPointer client, XtPointer call)
 	if (w != oi_w)     XmToggleButtonSetState (oi_w,     False, True);
 	if (w != coarse_w) XmToggleButtonSetState (coarse_w, False, True);
 	if (w != fine_w)   XmToggleButtonSetState (fine_w,   False, True);
-#if WINDSCREEN	
-	if (w != screenE_w) XmToggleButtonSetState (screenE_w, False, True);
-	if (w != screenW_w) XmToggleButtonSetState (screenW_w, False, True);
-	if (w != screenS_w) XmToggleButtonSetState (screenS_w, False, True);
-#endif
-#if COVER
-	if (w != cover_w) XmToggleButtonSetState (cover_w, False, True);
-#endif
 
 	/* then set up new labels and sensitivity according to context */
 	if (w == fine_w || w == coarse_w) {
@@ -543,58 +460,6 @@ buttonCB (Widget w, XtPointer client, XtPointer call)
 	    XtSetSensitive (e_w, have);
 	    XtSetSensitive (w_w, have);
 	}
-	
-#if WINDSCREEN	
-	if (w == screenW_w) {
-	  have = 1;
-	  wlprintf (nl_w, "Up");
-	  wlprintf (sl_w, "Down");
-	  XtSetSensitive (n_w, have);
-	  XtSetSensitive (s_w, have);
-	  
-	  have = 0;
-	  wlprintf (el_w, "   ");
-	  wlprintf (wl_w, "   ");
-	  XtSetSensitive (e_w, have);
-	  XtSetSensitive (w_w, have);
-	}
-	if (w == screenE_w) {
-	  have = 1;
-	  wlprintf (nl_w, "Up");
-	  wlprintf (sl_w, "Down");
-	  XtSetSensitive (n_w, have);
-	  XtSetSensitive (s_w, have);
-	  
-	  have = 0;
-	  wlprintf (el_w, "   ");
-	  wlprintf (wl_w, "   ");
-	  XtSetSensitive (e_w, have);
-	  XtSetSensitive (w_w, have);
-	}
-	if (w == screenS_w) {
-	  have = 1;
-	  wlprintf (nl_w, "Up");
-	  wlprintf (sl_w, "Down");
-	  XtSetSensitive (n_w, have);
-	  XtSetSensitive (s_w, have);
-	  
-	  have = 0;
-	  wlprintf (el_w, "   ");
-	  wlprintf (wl_w, "   ");
-	  XtSetSensitive (e_w, have);
-	  XtSetSensitive (w_w, have);
-	}
-#endif	
-#if COVER
-	if (w == cover_w) {
-	    wlprintf (nl_w, "Open");
-	    wlprintf (sl_w, "Close");
-	    XtSetSensitive (n_w, 1);
-	    XtSetSensitive (s_w, 1);
-	    XtSetSensitive (e_w, 0);
-	    XtSetSensitive (w_w, 0);
-    }
-#endif
 
 	if (w == oi_w) {
 	    have = OMOT->have;

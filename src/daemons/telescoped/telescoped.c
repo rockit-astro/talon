@@ -1,5 +1,5 @@
 /* This process listens to several FIFO pairs for generic telescope, dome,
- * filter and focus commands and manipulates CSIMCs accordingly.
+ * and focus commands and manipulates CSIMCs accordingly.
  * The fifo names all end with ".in" and ".out" which are with respect to us,
  * the server. Several config files establish several options and parameters.
  *
@@ -13,7 +13,6 @@
  *
  * FIFO pairs:
  *   Tel	telescope axes, field rotator
- *   Filter	desired filter, first char of name as setup in filter.cfg.
  *   Focus	desired focus motion, microns as per focus.cfg
  *   Dome	dome and shutter controls
  *
@@ -55,10 +54,7 @@ char tscfn[] = "archive/config/telsched.cfg";
 char tdcfn[] = "archive/config/telescoped.cfg";
 char hcfn[] = "archive/config/home.cfg";
 char ocfn[] = "archive/config/focus.cfg";
-char icfn[] = "archive/config/filter.cfg";
 char dcfn[] = "archive/config/dome.cfg";
-char csidcfn[] = "archive/config/dome_csi.cfg";
-char chdcfn[] = "archive/config/dome_commhub.cfg";
 char ccfn[] = "archive/config/cover.cfg";
 
 static void usage (void);
@@ -74,7 +70,6 @@ static char *progname;
 
 // Global values read from config
 double STOWALT, STOWAZ;
-char STOWFILTER[32] = "";
 
 int
 main (ac, av)
@@ -195,7 +190,6 @@ void
 allstop()
 {
     tel_msg ("Stop");
-    filter_msg ("Stop");
     focus_msg ("Stop");
     dome_msg ("Stop");
 }
@@ -209,7 +203,6 @@ init_cfg()
     static CfgEntry tscfg[] = {
         {"STOWALT",		CFG_DBL, &STOWALT},
         {"STOWAZ",		CFG_DBL, &STOWAZ},
-        {"STOWFILTER",	CFG_STR, STOWFILTER, sizeof(STOWFILTER)},
         {"LONGITUDE",	CFG_DBL, &LONGITUDE},
         {"LATITUDE",	CFG_DBL, &LATITUDE},
         {"TEMPERATURE",	CFG_DBL, &TEMPERATURE},
@@ -249,7 +242,6 @@ static void
 allreset()
 {
     tel_msg ("Reset");
-    filter_msg ("Reset");
     focus_msg ("Reset");
     dome_msg ("Reset");
     cover_msg("Reset");

@@ -25,18 +25,8 @@
 #include "telenv.h"
 #include "cliserv.h"
 #include "tts.h"
-#include "focustemp.h"
 
 #include "teled.h"
-
-// now a configuration setting... so is MAXINTERP
-double MINAFDT	= 2.0; /* minimum autofocus temp change to cause a move */
-
-// config setting for enabling/disabling temperature based "autofocus"
-int OUSETEMPFOC = 1; // default to on
-
-// during setup, allow a reprieve if we don't have step set yet
-static int noOffsetOnHome = 0;
 
 /* the current activity, if any */
 static void (*active_func) (int first, ...);
@@ -56,16 +46,10 @@ static void focus_status(void); //IEEC
 static void initCfg(void);
 static void stopFocus(int fast);
 void readFocus (void);
-static void autoFocus (void);
-static double targetPosition (FilterInfo *fip, double newtemp);
-static double focusTemp(void);
 
 static double OJOGF;
 static int OSHAREDNODE;
 
-// moved from inside autofocus code to here
-static char last_filter;	/* filter we last checked */
-static double last_temp;	/* temp we last read */
 static int last_rawgoal;
 static int focusInPlace;
 
@@ -107,8 +91,6 @@ char *msg;
         focus_stop(1);
     else if (strncasecmp (msg, "limits", 6) == 0)
         focus_limits(1);
-    else if (strncasecmp (msg, "auto", 4) == 0)
-        focus_auto(1);
     else if (strncasecmp (msg, "status", 6) == 0) //IEEC
         focus_status();                          //IEEC
     else if (sscanf (msg, "j%1[0+-]", jog) == 1)
@@ -129,8 +111,6 @@ focus_poll()
     }
     if (active_func)
         (*active_func)(0);
-    else if (telstatshmp->autofocus)
-        autoFocus();
     /* TODO: monitor while idle? */
 }
 
@@ -186,8 +166,7 @@ static void
 focus_home(int first, ...)
 {
     MotorInfo *mip = OMOT;
-    double ugoal, unow, newtemp;
-    FilterInfo *fip;
+    double unow;
 
     if (first) {
         stopFocus(0);
@@ -210,23 +189,13 @@ focus_home(int first, ...)
         break;
     case  0:
         active_func = NULL;
-        fip = findFilter ('\0');
-        newtemp = focusTemp();
-        ugoal = targetPosition (fip, newtemp);
 
-        if (noOffsetOnHome) {
-            fifoWrite (Focus_Id,0,"Homing complete.");
-        }
-        else {
-            fifoWrite (Focus_Id,1,"Homing complete. Now going to %.1fum",ugoal);
-//sleep caca!!!!            sleep(2);
-        }
+        fifoWrite (Focus_Id,0,"Homing complete.");
         toTTS ("The focus motor has found home and is now going to the initial position.");
         readFocus();
         unow = mip->cpos*mip->step/(2*PI*mip->focscale);
         mip->cvel = 0;
         mip->homing = 0;
-        if (!noOffsetOnHome) focus_offset (1, ugoal - unow);
         break;
     }
 }
@@ -298,20 +267,6 @@ focus_stop(int first, ...)
     active_func = NULL;
     readFocus();
     fifoWrite (Focus_Id, 0, "Stop complete");
-}
-
-static void
-focus_auto(int first, ...)
-{
-    /* set mode and might as well get started right away */
-    stopFocus(0);
-    telstatshmp->autofocus = 1;
-    focusInPlace = 0;
-    autoFocus();
-
-    /* if still on, report success */
-    if (telstatshmp->autofocus)
-        fifoWrite (Focus_Id, 0, "Auto-focus enabled");
 }
 
 static void
@@ -523,15 +478,9 @@ initCfg()
         {"OSCALE",		CFG_DBL, &OSCALE},
         {"OJOGF",		CFG_DBL, &OJOGF},
     };
-    static int maxInterp;
-    static CfgEntry ocfg2[] = {
-        {"MAXINTERP",	CFG_INT,  &maxInterp},
-        {"MINAFDT",		CFG_DBL,  &MINAFDT},
-    };
 
     static CfgEntry ocfg3[] = {
         {"OHAVEENC",	CFG_INT,  &OHAVEENC},
-        {"OUSETEMPFOC", CFG_INT,  &OUSETEMPFOC},
     };
 
     static CfgEntry ocfg4[] = {
@@ -567,16 +516,10 @@ initCfg()
         die();
     }
 
-    // read the optional MAXINTERP and MINAFDT keywords
-    maxInterp = 0; // zero is not allowed -- use this to test setting/validity
-    readCfgFile (1, ocfn, ocfg2, sizeof(ocfg2)/sizeof(ocfg2[0]));
-    if (maxInterp) focusPositionSetMaxInterp(maxInterp);
-
     // read the optional OHAVEENC keyword.
     // If set, then read the sign,step, and home values
     // Also read the autofocus disable option flag here
     OHAVEENC = 0;
-    OUSETEMPFOC = 1; // default to true
     OESTEP = 0;
     OESIGN = 1;
     readCfgFile(1, ocfn, ocfg3, 2);
@@ -588,9 +531,6 @@ initCfg()
         // on error, defaults will == encoder value
         // subsequent Find Limits operation will write correct values
         n = readCfgFile(1,hcfn,hcfg2,sizeof(hcfg2)/sizeof(hcfg2[0]));
-        if (n != sizeof(hcfg2)/sizeof(hcfg2[0])) {
-            noOffsetOnHome = 1; // don't try to move to first position  if we don't have steps set yet
-        }
     }
 
     // read the optional OSHAREDNODE keyword, meaning we share this csimc board with the dome control
@@ -637,9 +577,6 @@ initCfg()
 
     mip->focscale = OSCALE;
 
-    // Read in the focus position table
-    focusPositionReadData();
-
     mip->ishomed = oldhomed;
 
 #undef NOCFG
@@ -664,11 +601,6 @@ stopFocus(int fast)
 
     //STO: 20010523 Focus stop (red light) visual bug due to position mismatch on stop
     OMOT->dpos = OMOT->cpos;
-
-    // STO: 2002-06-28
-    // Reset the filter and temperature used for autofocus to force first autofocus to find position
-    last_filter = 0;
-    last_temp = 0;
 }
 
 /* read the raw value */
@@ -698,175 +630,6 @@ readFocus ()
             mip->cpos = (2*PI) * mip->sign * mip->raw / mip->step;
         }
     }
-}
-
-/* keep an eye on the focus and insure it tracks scan.filter (if scan.running,
- * else filter) and temperature. as to which temp to use, use highest defined
- * WxStats.auxt else now.n_temp.
- * if trouble, write to Focus_id and turn autofocus back off.
- * N.B. be graceful if not enough temp info and during filter changes.
- */
-static void
-autoFocus()
-{
-    MotorInfo *mip = OMOT;
-    int cfd = MIPCFD(mip);
-    FilterInfo *fip;
-    double newtemp;
-    double ugoal, goal;
-    int rawgoal;
-    char newfilter;
-    char buf[128];
-
-    // if we've disabled it, never mind
-    if (!OUSETEMPFOC) return;
-
-    /* if under way, just check for success or hard fail */
-    if (mip->cvel) {
-        readFocus();
-		double target_error = (2*PI)/mip->step; //radians for 1 motor step
-		if (!virtual_mode && mip->haveenc) target_error = (2*PI)/mip->estep; //radians 1 encoder step
-
-        if (fabs(mip->cpos - mip->dpos) < target_error)
-            mip->cvel = 0;
-        else
-            return;
-    }
-
-    // make sure we're homed to begin with
-    if (axisHomedCheck(mip, buf)) {
-        telstatshmp->autofocus = 0;
-        fifoWrite (Focus_Id, -1, "Focus error: %s", buf);
-        toTTS ("Focus error: %s", buf);
-        return;
-    }
-
-    /* find expected filter */
-    newfilter = telstatshmp->scan.starttm ? telstatshmp->scan.filter
-                : telstatshmp->filter;
-
-    if (!isalnum (newfilter))
-        return;	/* turning? */
-    if (islower (newfilter))
-        newfilter = toupper (newfilter);
-
-    /* get focus temp */
-    newtemp = focusTemp();
-
-	if (focusInPlace == 0)
-	{
-		int epos = csi_rix(cfd,"=epos;");
-		if (abs(last_rawgoal - epos) <= 1)
-		{
-			focusInPlace = 1;
-	        fifoWrite (Focus_Id, 0, "Autofocus offset complete");
-		}
-	}
-
-    /* nothing to do if same filter and about same temp again */
-    if (newfilter == last_filter && fabs(newtemp-last_temp) <= MINAFDT)
-    {
-        return;
-    }
-
-    /* find the entry for this filter */
-    fip = findFilter (newfilter);
-    if (!fip) {
-        fifoWrite (Focus_Id, -8, "Autofocus failed: no filter named %c",
-                   newfilter);
-        telstatshmp->autofocus = 0;
-        return;
-    }
-
-    /* interpolate temperatures to find new focus position. */
-    ugoal = targetPosition (fip, newtemp);
-
-    /* file contains canonical microns, we want canonical rads */
-    goal = ugoal * (2*PI)*mip->focscale/mip->step;
-
-    /* clamp goals to within limits */
-    if (goal > mip->poslim) {
-        fifoWrite (Focus_Id, -3,
-                   "Auto move hits positive limit for %s at %.1fC",
-                   fip->name, newtemp);
-        goal = mip->poslim;
-    }
-    if (goal < mip->neglim) {
-        fifoWrite (Focus_Id, -4,
-                   "Auto move hits negative limit for %s at %.1fC",
-                   fip->name, newtemp);
-        goal = mip->neglim;
-    }
-
-    /* go */
-    if (virtual_mode) {
-        rawgoal = mip->sign*(int)floor(mip->step*goal/(2*PI) + 0.5);
-        vmcSetTargetPosition(mip->axis, rawgoal);
-    } else {
-        if (mip->haveenc) {
-            rawgoal = (int)floor(mip->esign*mip->estep*goal/(2*PI) + 0.5);
-            csi_w (cfd, "etpos=%d;", rawgoal);
-        } else {
-            rawgoal = (int)floor(mip->sign*mip->step*goal/(2*PI) + 0.5);
-            csi_w (cfd, "mtpos=%d;", rawgoal);
-        }
-
-    }
-    mip->cvel = mip->maxvel * (goal > mip->cpos ? 1 : -1);
-    mip->dpos = goal;
-
-    fifoWrite (Focus_Id, 4, "Auto moving to %.1fum for %s at %.1fC", ugoal,
-               fip->name, newtemp);
-
-    /* remember new goals */
-    last_temp = newtemp;
-    last_filter = newfilter;
-    last_rawgoal = rawgoal;
-    focusInPlace = 0;
-}
-
-/* given a temperature and a fip, find the interpolated position, in microns,
- * canonical direction.
- */
-static double
-targetPosition (FilterInfo *fip, double newtemp)
-{
-    double ugoal;
-
-    /*
-    if (fip->t1 != fip->t0)
-        ugoal = (newtemp - fip->t0)*(fip->f1 - fip->f0)/(fip->t1 - fip->t0)
-    							    + fip->f0;
-    else
-        ugoal = fip->f0;	// pick one
-    */
-
-    if (focusPositionFind(fip->name[0],newtemp,&ugoal) < 0) {
-        ugoal = fip->f0;
-    }
-
-    return ugoal;
-
-}
-
-/* get the temp to use to set focus.
- * first aux sensor takes priority over ambient
- */
-static double
-focusTemp()
-{
-    double newtemp = telstatshmp->now.n_temp;
-    WxStats *wxp = &telstatshmp->wxs;
-    int i;
-
-    for (i = MAUXTP; --i >= 0; ) {
-        if (wxp->auxtmask & (1<<i)) {
-            newtemp = wxp->auxt[i];
-            break;
-        }
-    }
-
-    return (newtemp);
 }
 
 /* For RCS Only -- Do Not Edit */

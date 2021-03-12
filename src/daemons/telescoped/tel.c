@@ -490,7 +490,6 @@ static void tel_limits(int first, ...)
 }
 
 /* Place the telescope in STOW position
- Stow the filter
  */
 static void tel_stow(int first, ...)
 {
@@ -500,11 +499,6 @@ static void tel_stow(int first, ...)
 	allstop();
 	sprintf(buf, "Alt:%g Az:%g", STOWALT, STOWAZ);
 	tel_msg(buf);
-	if (STOWFILTER[0])
-	{ // if we have a stow filter defined
-		sprintf(buf, "%s", STOWFILTER);
-		filter_msg(buf);
-	}
 }
 
 /* Place the telescope in PARK position
