@@ -798,8 +798,6 @@ mkControl(Widget main_w)
 	    	"Toggle a tool to calibrate telescope axis orientations"},
 	    {"No Confirm",  1, g_confirm,   &g_w[CCNFOFF_W],
 	    	"Toggle whether to confirm actions first"},
-	    {"Batch Mode",  1, batchCB,  &g_w[CBATCH_W],
-	    	"Toggle controlling things here or via a prepared schedule"},
 	    {"Paddle",      0, g_paddle, &g_w[CPADDLE_W],
 	    	"Toggle a tool to directly command telescope motions"}, 
 	    {"Sounds",      1, soundCB,  &g_w[CSOUND_W],
@@ -873,7 +871,6 @@ mkStatus(Widget main_w)
 	    Widget *wp;
 	} Ctrl;
 	static Ctrl ctrls[] = {
-	    {"Batch", &g_w[SBLT_W]},
 	    {"Tracking", &g_w[STLT_W]},
 	    {"Slewing", &g_w[SSLT_W]},
 	    {"Homing", &g_w[SHLT_W]},

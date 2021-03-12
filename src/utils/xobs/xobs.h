@@ -15,13 +15,6 @@ extern void afoc_foc_cb (int code, char msg[]);
 extern void afoc_cam_cb (int code, char msg[]);
 extern void afoc_initCfg (void);
 
-/* batch.c */
-extern int batchIsOn(void);
-extern void batchOn(void);
-extern void batchOff(void);
-extern void batchUpdate();
-extern void batchCB (Widget w, XtPointer client, XtPointer call);
-
 /* calaxes.c */
 extern void axes_manage (void);
 extern int axes_xephemSet (char *buf);

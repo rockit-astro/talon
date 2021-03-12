@@ -45,7 +45,6 @@ static void showDome(void);
 static void showTemps(void);
 
 static char blank[] = " ";
-static int batchison;
 
 /* update the display.
  * called periodically and on specific impulses.
@@ -67,7 +66,6 @@ updateStatus(int force)
 	int busy;
 
 	/* do once per swing through */
-	batchison = batchIsOn();
 	soundIsOn();
 
 	/* always do these at least occasionally */
@@ -80,7 +78,6 @@ updateStatus(int force)
 	/* always do these at least more often */
 	if (dofast) {
 	    showTime();
-	    batchUpdate();
 	    last_fast = mjd;
 	}
 
@@ -344,15 +341,6 @@ showFocus()
 static void
 showScope()
 {
-	/* batch status */
-	setLt (g_w[SBLT_W], batchison ? LTOK : LTIDLE);
-	if (!xobs_alone) {
-	    /* track state if passive */
-	    int now = XmToggleButtonGetState(g_w[CBATCH_W]);
-	    if (now != batchison)
-		XmToggleButtonSetState (g_w[CBATCH_W], batchison, False);
-	}
-
 	switch (telstatshmp->telstate) {
 	case TS_STOPPED:
 	    setLt(g_w[STLT_W],LTIDLE); setLt(g_w[SSLT_W],LTIDLE);
@@ -469,9 +457,8 @@ showDome()
 	int go;
 
 	/* first check whether to allow operator access.
-	 * N.B. must cooperate with batchOn/Off
 	 */
-	go = ds != DS_ABSENT && xobs_alone && !batchison;
+	go = ds != DS_ABSENT && xobs_alone;
 	if (go != last_godome) {
 	    if (go) {
 		XtSetSensitive (g_w[DAUTO_W], True);
@@ -486,7 +473,7 @@ showDome()
 	    }
 	    last_godome = go;
 	}
-	go = telstatshmp->shutterstate != SH_ABSENT && xobs_alone && !batchison;
+	go = telstatshmp->shutterstate != SH_ABSENT && xobs_alone;
 	if (go != last_goshutter) {
 	    if (go) {
 		XtSetSensitive (g_w[DOPEN_W], True);

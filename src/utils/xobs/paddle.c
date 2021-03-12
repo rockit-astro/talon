@@ -29,8 +29,6 @@
 #include "telstatshm.h"
 #include "cliserv.h"
 
-#include "buildcfg.h"
-
 #include "xobs.h"
 
 #define ARROWSZ 30

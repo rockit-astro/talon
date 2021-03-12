@@ -3,7 +3,6 @@ project (xobs)
 
 set(XOBS_SRC 
         xobs.c 
-        batch.c 
         calaxes.c 
         config.c 
         control.c 
@@ -16,7 +15,6 @@ set(XOBS_SRC
         scope.c 
         skymap.c 
         sound.c 
-        telrun.c 
         tips.c 
         update.c 
         xephem.c

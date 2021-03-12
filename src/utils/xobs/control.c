@@ -67,10 +67,6 @@ g_stop (Widget w, XtPointer client, XtPointer call)
 
 	msg ("All stop");
 
-	/* if batch is on reinstate direct controls and fifos */
-	if (batchIsOn())
-	    batchOff();
-
 	/* issue stops to all fifos */
 	stopAllDevices();
 
