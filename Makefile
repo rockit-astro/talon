@@ -6,10 +6,16 @@ RPMBUILD = rpmbuild --define "_topdir %(pwd)/build/../build/../build/../build/" 
         --define "_sourcedir %(pwd)" \
         --undefine=_disable_source_fetch
 
-all: onemetre
+all: onemetre superwasp
 
 onemetre:
 	mkdir -p build
 	${RPMBUILD} -ba onemetre-talon.spec
+	mv build/x86_64/*.rpm .
+	rm -rf build
+
+superwasp:
+	mkdir -p build
+	${RPMBUILD} -ba superwasp-talon.spec
 	mv build/x86_64/*.rpm .
 	rm -rf build

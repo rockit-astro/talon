@@ -1,0 +1,17 @@
+// Dec axis switch bit connections
+homebit = 0x1;
+nlimit = 0x4;
+plimit = 0x2;
+
+olevel=1;
+
+// Damping factor
+kv     = 800;
+
+// these are just until telescoped starts
+maxvel = 150000;
+maxacc = 150000;
+limacc = 500000;
+esteps = 12976128;
+msteps = 1440000;
+

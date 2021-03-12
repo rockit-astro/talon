@@ -1,0 +1,27 @@
+// absolute value
+define abs($v) {return ($v < 0 ? -$v : $v);}
+
+// max of 2
+define max($a,$b) {return ($a > $b ? $a : $b); }
+
+// min of 2
+define min($a,$b) {return ($a < $b ? $a : $b); }
+
+// sign
+define sign($x) {return ($x < 0 ? -1 : 1); }
+
+// pause $n ms
+define pause($n) {for ($0=$n+clock-10; clock<$0;);}
+
+// print a variable in hex
+define hex($v) {printf ("0x%02x\n", $v); }
+
+// report basic current values:
+define report()
+{
+	printf("%9d %8d %8d %8d %d %d %d\n", clock, mpos, mvel, epos,
+			!!(ilev&plimbit), !!(ilev&nlimbit), !!(ilev&homebit));
+}
+
+# For RCS Only -- Do Not Edit
+# @(#) $RCSfile: basic.cmc,v $ $Date: 2001/06/26 03:48:01 $ $Revision: 1.1 $ $Name:  $

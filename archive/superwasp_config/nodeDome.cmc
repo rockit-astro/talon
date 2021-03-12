@@ -1,0 +1,598 @@
+
+///////////////////////////
+//
+// Dome control cmc script
+//
+// 1.5b 10/17/01 STO -- bug in homing direction variable
+// 1.5  10/16/01 STO -- new home, removed some unused variables
+// 1.4c  9/05/01 STO -- update movement and seek code
+// 1.3   7/13/01 STO -- update of interfaces to telescoped
+// 1.2   6/13/01 STO -- parse in CSIMC
+// 1.1   6/13/01 STO -- var name update
+// 1.0   6/7/01  STO -- written
+//
+///////////////////////////
+
+// THIS VERSION SET FOR SWASP
+
+
+// REQUIRES BASIC.CMC ON SAME NODE
+// abs() function
+
+// Assumes encoder is attached to dome rotation
+
+// ======================================
+// Configuration section:
+//
+// Note: Modify return values below to match installation bit switch settings
+//
+// Note bit value with notation (1<<n) where n is bit number 0 - 7
+// Combine bits with | operator ex:  ((1<<3) | (1<<4)) sets both bits 3 and 4
+//
+// (Connector pin # reference)
+// bit  JP21(in)   JP22(out)
+// ---  --------   ---------
+//  0      1       1(hi) 2(lo)
+//  1      3       3(hi) 4(lo)
+//  2      5       5(hi) 6(lo)
+//  3      7       7(hi) 8(lo)
+//  4      9       9(hi) 10(lo)
+//  5      11      11(hi) 12(lo)
+//  6      13	   13(hi) 14(lo)
+//  7      15      15(hi) 16(lo)
+
+//---------------------------------------
+//
+// SWASP connection for QUB interface electronics
+//
+// input JP21
+// Bit  Pin
+//  7   15  open limit (black)
+//  6   13  close limit (brown)
+//
+// output JP22
+// Bit  Pin
+//  7   15  mains/battery (red) (possibly redundant)
+//  6   13  open (blue)   
+//  5   11  close (green)
+//  4    9  alarm (yellow)
+//  3    7  auxilliary (white) (possibly redundant)
+//
+//  EXT 20 Ground (purple)
+//
+//--------------------------------------
+// Output line switches
+// Connector JP22.  "1" initiates action.
+// 
+// roof/shutter
+define open_the_door()
+	{ return (1<<6); }		// output bit that initiates door open
+
+define close_the_door()
+	{ return (1<<5); }		// output bit that initiates door close
+
+// new for swasp alarm out
+define door_error_alarm()
+        { return (1<<4); }                      // output bit that initiates alarm condition in interface electronics
+
+
+// dome
+define CW_rotate()
+	{ return (0); }		// output bit that initiates CW rotation
+
+define CCW_rotate()
+	{ return (0); }		// output bit that initiates CCW rotation
+
+//----------------------------------------
+// Input state switches
+// Connector JP21.  "1" indicates 'true' status
+
+// Define input bits for roof status -- see also the 'r' time setting, below
+define isOpen_door_status()
+	{ return (1<<7); } 		// input bit that indicates door is open, or 0 if none
+
+define isClosed_door_status()
+	{ return (1<<6); } 		// input bit that indicates door is closed, or 0 if none
+
+define isError_door_status()
+	{ return (0); } 		// if there is a separate error condition input
+							// (0 if none)
+
+// Define the home and limit input switches for dome
+// If no limits, define as 0
+// There MUST be a home bit defined
+define home_bit_dome()
+	{ return (1<<0); }		// JP21 input bit that indicates home
+
+define pos_limit_dome()
+	{ return (0); }			// JP21 input bit that indicates end of
+							// positive encoder dome rotation (0 if none)
+
+define neg_limit_dome()
+	{ return (0); }			// JP21 bit that indicates end of
+							// negative encoder dome rotation (0 if none)
+
+// Define bit(s) that indicate an emergency stop is in effect, or 0 if none
+// (this may be a signal from weather equipment, or local operator, for example)
+define emg_stop_signal()
+	{ return (0); }
+
+// (end of configuration section)
+
+// ====================================
+
+// Module variables
+h = 0;	// flag if dome has been homed before a seek is made
+
+// (set by code: s = sign, w = dome timeout)
+// (r = time for door to open, v = time for door to close,
+//  t = timeout for door opening, u = timeout for door closing)
+// Times are in milliseconds. Set these here to override setting by code for unusual circumstances.
+
+// actual times are roof open 19s, close 51s, give 5s extra on open and 10s on close time outs
+
+//t=10000;   
+// above t for test purposes
+
+// t=24000;
+// u=61000;
+// timeouts lengthened as occassional roof alarms noted
+
+t=27000;
+u=67000;
+
+// note, not using r and v as we have open/close limit switch feedback
+// 
+////////////////////////////////////////////////////////
+//
+// pause function
+// delay in ms
+//
+//////////////////////////////////////////////////////
+define pause($ms)
+{
+	$0 = clock + $ms;
+	while(clock < $0);
+}
+
+
+////////////////////////////////////////////////////////
+//
+// roofseek( $action )
+//   Opens dome shutter or roll-off roof
+//   $action is 0 for stop, 1 for open, -1 for close
+//   If roof is simply 'go' activated, use open for both
+//   This will output return string of form "n: msg" where n
+//   is a number <0 (error) >0 (working) or 0 (success)
+//   and msg is a descriptive message of the status.
+//
+/////////////////////////////////////////////////////////
+define roofseek( $action )
+{
+	
+	// figure bitmask for output bits opening/closing/alarm
+	$0 = 255 ^ (open_the_door() | close_the_door() | door_error_alarm() );
+	// mask current olevel
+	$0 = olevel & $0;
+	
+	// always stop first
+	olevel = $0;
+		
+	pause(200); // wait for relays to click and so forth...
+
+
+	if($action > 0) {		// open the roof or shutter
+		olevel = $0 | open_the_door();
+	}
+	else if($action < 0) {	// close the roof or shutter
+		olevel = $0 | close_the_door();
+	}
+	
+	// stopping
+	if($action == 0)
+	{
+		return;
+	}
+
+	// get bitmask
+	$2 = isOpen_door_status() | isClosed_door_status() | isError_door_status();
+
+	$1 = ilevel & $2;	// read
+		
+	if(isError_door_status()) {
+		if($1 & isError_door_status()) {
+			printf("-1:Error with door! (%d)\n",isError_door_status());
+			return;
+		}
+	}			
+			
+	if($action > 0)	{
+		printf("1:Opening door\n");
+
+		if(isOpen_door_status()) { // if we can tell if we're open
+		
+			$1 = ilevel & $2;
+			if($1 & isOpen_door_status()) {
+				printf("0:Door is open\n");
+				return;
+			}
+
+			$3 = clock + t;  // timeout on open
+			
+			while(clock < $3) {
+				$1 = ilevel & $2;  // update
+
+				if($1 & isOpen_door_status()) {
+					olevel = $0;
+					printf("0:Door is open\n");
+					return;
+				}
+			}
+			olevel = $0 | door_error_alarm();  // timeout alarm on opening
+			printf("-2: status reply timeout on door open - Radio Alarm activated\n");
+			return;
+		}
+		else
+		{
+			$3 = clock + r; // time to open
+			
+			// wait a while for door to open
+			while(clock < $3) {
+			}
+			olevel = $0;
+			printf("0:Door is open\n");
+			return;
+		}
+	}
+	else {
+		printf("1:Closing door\n");
+		
+		if(isClosed_door_status()) { // if we can tell if we're closed
+		
+			$1 = ilevel & $2;
+			if($1 & isClosed_door_status()) {
+				printf("0:Door is closed\n");
+				return;
+			}
+
+			$3 = clock + u; // timeout on close
+		
+			while(clock < $3) {
+				$1 = ilevel & $2;  // update
+
+				if($1 & isClosed_door_status()) {
+					olevel = $0;
+					printf("0:Door is closed\n");
+					return;
+				}
+			}
+			olevel = $0 | door_error_alarm(); // timeout alarm on closing
+			printf("-2: status reply timeout on door close - Radio Alarm activated\n");
+			return;
+		}
+		else
+		{
+			$3 = clock + v; // time to close;
+			
+			// wait a while for door to close
+			while(clock < $3) {
+			}
+			olevel = $0;
+			printf("0:Door is closed\n");
+			return;
+		}
+	}	
+}
+
+define alarm_set( $action )
+{
+	// get current output
+	$0 = olevel;
+
+	// set alarm bit
+	if($action > 0)
+	{
+		olevel = $0 | (door_error_alarm());
+	}
+	else
+	{
+		olevel = $0 & ~(door_error_alarm());
+	}
+}
+
+define get_shutter_status()
+{
+	$2 = isOpen_door_status() | isClosed_door_status() | isError_door_status();
+	$1 = ilevel & $2;
+	if($1 & isOpen_door_status()) {
+		return 1;
+	}
+	else if($1 & isClosed_door_status()) {
+		return 2;
+	}
+	else {
+		return 0;
+	}
+}
+
+/////////////////////////////
+//
+// Basic dome movement functions
+//
+/////////////////////////////
+define dome_stop()
+{
+	// stop dome motors
+	olevel &= 255 ^ (CW_rotate() | CCW_rotate());
+	
+	// wait for motion to cease
+	do {
+		$1 = epos;
+		pause(500);
+	} while($1 != epos);
+}
+
+define dome_CW()
+{
+	if(0 != (olevel & CW_rotate()))
+		return;		// already turning CW
+		
+	dome_stop();
+	
+	$0 = 255 ^ (CW_rotate() | CCW_rotate());
+	$0 = olevel & $0;
+	
+	olevel = $0 | CW_rotate();
+}	
+
+define dome_CCW()
+{
+	if(0 != (olevel & CCW_rotate()))
+		return;		// already turning CCW
+	
+	dome_stop();
+	
+	$0 = 255 ^ (CW_rotate() | CCW_rotate());
+	$0 = olevel & $0;
+	
+	olevel = $0 | CCW_rotate();
+}	
+
+
+/////////////////////////////
+//
+// Return if emergency stop is
+// in effect 
+//
+/////////////////////////////
+define roofestop()
+{
+	if(iedge & emg_stop_signal()) {
+	
+		iedge |= emg_stop_signal();
+		return 1;
+	}
+	return 0;
+}
+
+//////////////////
+//
+// Rationalize encoder steps
+//
+//////////////////
+
+define ratenc($raw)
+{
+	$1 = $raw;
+
+	while(abs($1) > esteps/2) {
+		if($1 < 0) $1 += esteps;
+		else	   $1 -= esteps;
+	}
+	return $1;
+}
+
+/////////////////////////////////////////////////////////
+//
+// domeseek($target, $tol)
+//   Move dome so encoder is at $target +/- $tol
+//   This will return string of form "n: msg" where n
+//   is a number <0 (error) >0 (working) or 0 (success)
+//   and msg is a descriptive message of the status.
+//
+// (CSIMC manual, ECD)
+//
+// STO 7/13/01 -- added percentage feedback
+//
+/////////////////////////////////////////////////////////
+
+define domeseek($target, $tol)
+{
+	if(!h) {
+		printf("-1: Homing has not yet been performed for dome.\n");
+		return;
+	}
+
+	$0 = epos;					// previous encoder position
+	$1 = s*(epos - $target);	// previous error
+	$1 = ratenc($1);			// rationalize
+	$4 = 0;						// count loops stopped to check for stuck
+
+	printf("1: Dome Seeking %d\n",$target);
+
+	$5 = 0;
+	$6 = $1;
+
+	// loop until tolerance or detect stuck
+	while(1) {
+		pause(200);
+		$2 = s*(epos - $target); // error now
+		$2 = ratenc($2);		// rationalize
+		$3 = epos - $0;			// movement since last time
+		if(abs($2) <= $tol) {	// if in tolerance
+			if($3 == 0) {		//    if stopped, done
+				printf("0: Dome moved to %d\n",$target);
+				return;
+			}
+			dome_stop();		//     otherwise stop
+		} else {				// otherwise, not in tolerance
+			if($3 == 0) {		// if stopped
+		      if(++$4 > 5)		// see if we're stuck (1 second of no encoder movement)
+		      	break;
+
+		      if($2 > 0) 		// if stopped CW of target
+		      	dome_CCW();		// go CCW
+		      else
+		        dome_CW();		// else go CW
+		    } else {			// if not stopped
+		    	$4 = 0;			//  then we're not stuck
+		    	if(abs($2) > abs($1))	// if going wrong way
+		    		dome_stop();	// stop
+		    }
+		}
+		
+		$0 = epos;						// update position
+		$1 = s * (epos - $target);  	// update error (sign adjusted)
+		$1 = ratenc($1);				// rationalize
+		
+		$5++;
+		if($5 == 5) { // feedback each second			
+			// calculate percent complete
+			$5 = $6 ? 100 - (abs($1) * 100 / abs($6)) : 100;
+			printf("1: Rotation %d%% complete\n",$5);
+			
+			$5 = 0;
+		}
+		      	
+	}
+	
+	// got here on break... dome is stuck.
+	printf("-1: Dome appears to be stuck\n");
+}
+		
+/////////////////////////////////////////////
+//
+// Move the dome in a given direction
+//
+// Intended for use with paddle code
+//
+////////////////////////////////////////////
+
+define domejog($dir)
+{
+	$0 = 255 ^ (CW_rotate() | CCW_rotate());
+	$0 = olevel & $0;
+	
+	if($dir > 0)
+		olevel = $0 | CW_rotate();	
+	else if($dir < 0)
+		olevel = $0 | CCW_rotate();
+	else
+		olevel = $0;
+
+}
+
+/////////////////////////////////////////////////////////
+//
+// finddomehomes()
+//   Rotates dome to home position
+//   This will output a return string of form "n: msg" where n
+//   is a number <0 (error) >0 (working) or 0 (success)
+//   and msg is a descriptive message of the status.
+//
+/////////////////////////////////////////////////////////
+define finddomehomes()
+{
+  // Motion bitmask
+  $0 = 255 ^ (CW_rotate() | CCW_rotate());
+  $0 = olevel & $0;
+
+  dome_stop();
+
+  if(!s) {
+	printf("-1: No sign defined. Check configuration.\n");
+	return;
+  }
+
+  if(!esteps) {
+  	printf("-1: No encoder steps defined. Check configuration.\n");
+ 	return;
+  }
+
+  $6 = s;
+
+  printf("1: Finding Home\n");
+  iedge = pos_limit_dome() | neg_limit_dome() | home_bit_dome();
+
+  $5 = clock;
+  $9 = 4000;	// four seconds to get up to full speed?
+
+  while(clock - $5 < w) {
+
+	// which direction are we going
+	if($6 > 0)
+		dome_CW();
+	else
+		dome_CCW();
+
+	pause(200);
+
+	// reverse direction if we hit limit
+	if((iedge | ilevel) & (pos_limit_dome() | neg_limit_dome())) {
+		olevel = $0;
+		$6 = -$6;
+		iedge = pos_limit_dome() | neg_limit_dome() | home_bit_dome();
+		$5 = clock;
+        	printf("3: Hit limit, reversing\n");
+	}
+
+	// See if we've tripped our bit
+	if((iedge | ilevel) & home_bit_dome()) {
+
+		printf("2: Hit...\n");
+
+		// Were we going in the right direction? Have we been moving long enough?
+		if($6 !=s || clock - $5 < $9/2)
+		{
+			//   If not, go a little further because we need to reverse and build up speed again
+			printf("3: One moment...\n");
+			pause($9);
+			if($6 == s) {
+				printf("4: Backing up to retry approach...\n");
+			} else {
+				printf("4: Beginning homing approach\n");
+			}
+
+			// and now reverse
+			dome_stop();
+			$6 = -$6;
+			$5 = clock;
+		}
+		else
+		{
+			dome_stop(); // final stop
+
+			if((iedge | ilevel) & (pos_limit_dome() | neg_limit_dome())) {
+				// report error
+				printf("-1: Limit reached during homing pass\n");
+				return;
+			}
+
+			// set home positions and
+			// report success if so
+			epos = 0;
+			printf("0: Dome is Home\n");
+			h = 1;
+			return;
+		}
+	}
+
+	// reset latch
+	iedge = pos_limit_dome() | neg_limit_dome() | home_bit_dome();
+
+  } // repeat until we get there or hit error.. or time out
+
+  // timed out
+  printf("-1: Dome is unresponsive\n");
+
+}

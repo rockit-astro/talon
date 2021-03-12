@@ -1,22 +1,22 @@
-Name:      onemetre-talon
+Name:      superwasp-talon
 Version:   20210312
 Release:   0
-Summary:   Stripped down Talon installation for the W1m telescope
+Summary:   Stripped down Talon installation for the SuperWASP telescope
 License:   proprietary
 Group:     Unspecified
 BuildArch: x86_64
 Requires: xorg-x11-fonts-misc
 
 %description
-Stripped down Talon installation for the W1m telescope.
+Stripped down Talon installation for the SuperWASP telescope.
 
 %build
 
 cmake %{_sourcedir}
 make
 make DESTDIR=%{buildroot} install
-mv %{buildroot}/usr/local/telescope/archive/onemetre_config %{buildroot}/usr/local/telescope/archive/config
-rm -rf %{buildroot}/usr/local/telescope/archive/superwasp_config
+mv %{buildroot}/usr/local/telescope/archive/superwasp_config %{buildroot}/usr/local/telescope/archive/config
+rm -rf %{buildroot}/usr/local/telescope/archive/onemetre_config
 
 %files
 %defattr(0644,root,root,-)

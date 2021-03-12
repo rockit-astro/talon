@@ -1,0 +1,142 @@
+
+/* Find Homes function.  Works off iedge and not necessarily ilevel. */
+/* Described in CSIMC manual Rev C/10311 */
+
+////////////
+//
+// Version 2.1
+// 10-08-02 STO -- Created 'homed' set/clear/test support to indicate need for homing or not
+//
+////////////
+
+/* NOTE: Uses 'h' variable as flag to indicate that this motor has been homed */
+define setHomed() 	{ h=1; }
+define clearHomed() { h=0; }
+define isHomed() 	{ return h; }
+
+/* synchronous operation */
+define sync()
+{
+	while(working) {continue;}
+}
+
+/* go $way until the given bit triggers with opposite than its usual polarity */
+define goback($way, $bit)
+{
+	ipolar ^= $bit;			// looking for opposite edge
+	iedge = $bit;			// arm the latch
+	mtvel = $way*maxvel;	// move the motor
+	while(!(iedge & $bit));	// wait until we trigger the (opposite) edge
+	ipolar ^= $bit;			// back to normal
+	mtpos = mpos;			// go here and stop
+	sync();					// wait until it's done before returning
+}
+
+/* move away from either limit */
+define nolim() 
+{
+	mtpos = mpos;				// stop where we are
+	sync();						// wait until really stopped
+	if((ilevel|iedge) & plimbit)// if at or past positive limit
+		goback(-1, plimbit);	// go negative
+	if((ilevel|iedge) & nlimbit)// if at or past negative limit
+		goback(1,nlimbit);		// go positive
+}
+
+
+/* go $way until given bit turns off */
+define goboff ($way, $bit)
+{
+	while (ilevel & $bit)
+	    mtvel = $way*maxvel;
+}
+
+/* find home in pos/neg direction, according to $way = +/- 1.
+ * N.B. requires ipolar, homebit, plimbit and nlimbit to be set up.
+*/
+define findhome($way) {
+	clearHomed();
+	$0 = homebit|plimbit|nlimbit;
+	if(!$0) {
+		printf("-1: no bits\n");
+	    return;
+	}
+
+	/* allow for case of home and a limit being together */
+	nolim();
+
+	/* find first approx to home, allowing for bouncing off limit. */
+	iedge = $0;
+	$way = $way < 0 ? -1 : 1; 			// insure we're only +/- 1
+	mtvel = $way * maxvel;
+	$1 = $way > 0 ? plimbit : nlimbit;	// look for proper limit
+	while(!(iedge & homebit)) {			// look for home
+		if(iedge & $1) {
+			printf("3: hit limit\n"); 	// report bounce
+			goback(-$way, homebit);
+		}
+	}
+
+	/* Found approx home, now go slowly */
+	/* Do several iterations so we can nail it with best precision */
+	$2 = maxvel;
+	while($2 > 1) {
+		$2 = $2 / 10;
+		if(!$2) $2 = 1;
+		printf("2: backing up...\n");		// setting up for final run...
+		mtpos = mtrig-$way*4*$2;			// go four seconds back
+		sync();
+		iedge = homebit;
+		printf("1: fine tuning at %d\n",$2);// here we go...
+		$3 = clock + 10000;					// timeout at 10 seconds
+		mtvel = $way * $2;					// go ahead slowly
+		while(!(iedge & homebit) && ($3 > clock));			// wait to see home (sets e/mtrig) or timeout
+		mtpos = mtrig;						// go to this point
+		sync();
+		if((iedge & homebit) == 0) break; // we timed out and took last setting, so break.
+	}
+
+	// done!
+	epos = mpos = 0;					// set the new home
+	setHomed();
+	printf("0: done!\n");
+}
+
+/* find and report encoder position of either limit, according to $way = +1/-1
+ * N.B. requires ipolar and plimbit or nlimbit (as appropriate) to be set up.
+ */
+define findlim($way) {
+    printf ("1 Seeking limit\n");
+
+    // set $0 to target bit, and insure $way is +1 or -1
+    if ($way > 0) {
+	if (!plimbit) {
+	    printf ("-1 No plimbit\n");
+	    return;
+	}
+	$0 = plimbit;
+	$way = 1;
+    } else {
+	if (!nlimbit) {
+	    printf ("-1 No nlimbit\n");
+	    return;
+	}
+	$0 = nlimbit;
+	$way = -1;
+    }
+
+    /* back off if on limit already */
+    goboff (-$way, $0);
+
+    /* go */
+    iedge = $0;				// arm latch
+    mtvel = $way*maxvel/2;		// go at modest speed in $way dir
+    while (!(iedge & $0));		// wait for encounter. sets etrig
+    goboff (-$way, $0);			// back off
+    mtvel = 0;				// nice stop
+    iedge = $0;				// reset
+    printf ("0 Found limit\n");
+}
+
+# For RCS Only -- Do Not Edit
+# @(#) $RCSfile: find.cmc,v $ $Date: 2002/10/23 21:44:13 $ $Revision: 1.1 $ $Name:  $
