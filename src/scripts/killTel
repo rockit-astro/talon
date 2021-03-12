@@ -1,14 +1,12 @@
 #!/bin/csh -f
 # kill all telescope-related daemons and tools.
 
-set common = (rund xobs shm telescoped camerad csimcd wxd camera telshed xephem csimc telrun)
+set common = (rund xobs shm telescoped csimcd csimc telrun)
 
 foreach p ($common)
     echo -n "$p "
     killp -q $p
 end
-
-ps auxw | grep wxd.php | grep -v grep | gawk '{print "kill -9 "$2}' | sh
 
 echo ""
 echo -n "Cleaning comm"
