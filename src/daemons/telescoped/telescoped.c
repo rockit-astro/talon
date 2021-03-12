@@ -124,29 +124,14 @@ char *av[];
 }
 
 /* write a log message to stdout with a time stamp.
- * if a scan is running then also append to its log in user/logs.
  * N.B. if fmt doesn't end with \n we add it.
  */
 void
 tdlog (char *fmt, ...)
 {
-    Scan *sp = telstatshmp ? &telstatshmp->scan : NULL; /* maybe not yet */
     char buf[1024];
     va_list ap;
-    FILE *fp;
     int l;
-
-    /* set up fp as per-schedule log file if appropriate */
-    if (sp && sp->running) {
-        sprintf (buf, "%s/%s", logdir, sp->schedfn);
-        l = strlen (buf);
-        if (l >= 4 && strcasecmp (&buf[l-4], ".sch") == 0)
-            strcpy (&buf[l-4], ".log");	/* change .sch to .log */
-        else
-            strcat (buf, ".log");		/* or just append it */
-        fp = telfopen (buf, "a+");
-    } else
-        fp = NULL;
 
     /* start with time stamp */
     l = sprintf (buf, "%s INFO ", timestamp(time(NULL)));
@@ -165,13 +150,6 @@ tdlog (char *fmt, ...)
     /* log to stdout */
     fputs (buf, stdout);
     fflush (stdout);
-
-    /* and to fp if possible */
-    if (fp) {
-        fputs (buf, fp);
-        fclose (fp);
-    }
-
 }
 
 /* stop the telescope then exit */

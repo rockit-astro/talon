@@ -6,8 +6,7 @@
 #include <sys/types.h>
 #include <sys/time.h>
 
-#include "ccdcamera.h"
-#include "scan.h"
+#include "circum.h"
 
 /* shared memory key; can be anything unlikely ;-)
  * N.B. bug in some ipcrm's prevents removing it if it's greater than 1<<31.
@@ -188,13 +187,6 @@ typedef struct {
 
     /* various status indicators */
     TelState telstate;		/* telescope state */
-    CCDTempStatus coolerstatus;	/* one of CCDTempStatus values */
-    CamState camstate;		/* camera state */
-    int camtemp;		/* current ccd camera temperature, C */
-    int camtarg;		/* target ccd camera temperature */
-    char filter;		/* current filter, or < or > if moving */
-    int lights;			/* flat lights: -1 none; 0 off; > 0 intensity */
-    int autofocus : 1;		/* set when focus is tracking filter and temp */
     int jogging_ison : 1;	/* currently jogged/jogging from target */
     int autodome : 1;		/* set when dome is tracking scope */
     double domeaz;		/* current dome az, rads +E of N */
@@ -202,9 +194,6 @@ typedef struct {
     DomeState domestate;	/* dome state */
     DShState shutterstate;	/* shutter state */
     CoverState coverstate;
-
-    /* info about the current or next run. filled periodically by telrun */
-    Scan scan;
 
     /* other weather stats */
     WxStats wxs;
@@ -246,7 +235,6 @@ typedef struct {
 #define RMOT    (&telstatshmp->minfo[TEL_RM])
 #define OMOT    (&telstatshmp->minfo[TEL_OM])
 #define IMOT    (&telstatshmp->minfo[TEL_IM])
-
 
 /* telaxes.c */
 extern void tel_hadec2xy (double H, double D, TelAxes *tap, double *X,

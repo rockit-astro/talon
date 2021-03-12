@@ -28,7 +28,6 @@
 #include "telstatshm.h"
 #include "running.h"
 #include "cliserv.h"
-#include "scan.h"
 
 #include "xobs.h"
 #include "widgets.h"
@@ -189,7 +188,6 @@ makeBatch()
 static void
 batch_updateStatus()
 {
-	Scan *sp = &telstatshmp->scan;
 
 	/* init which widget to use */
 	ibatchw = 0;
@@ -197,26 +195,6 @@ batch_updateStatus()
 	/* tell the story */
 	if (chkTelrun() < 0) {
 	    bprintf ("Batch mode is not active.");
-	} else if (sp->running || sp->starttm != 0) {
-	    char *timstr = asctime (gmtime (&sp->starttm));
-
-	    timstr[strlen(timstr)-1] = '\0';	/* no \n */
-
-	    bprintf ("  %s : %s UTC", sp->running ? "      Began" : "Next begins",
-								    timstr);
-	    bprintf ("       Source : %s", sp->obj.o_name);
-	    bprintf ("  Start delta : %d secs", sp->startdt);
-	    bprintf ("        Title : %s", sp->title);
-	    bprintf ("      Schedfn : %s", sp->schedfn);
-	    bprintf ("     Observer : %s", sp->observer);
-	    bprintf ("    ImageFile : %s", sp->imagefn);
-	    bprintf ("      Comment : %s", sp->comment);
-	    bprintf ("  Compression : %d", sp->compress);
-	    bprintf ("  sx/sy/sw/sh : %d/%d/%d/%d",sp->sx,sp->sy,sp->sw,sp->sh);
-	    bprintf ("    binx/biny : %d/%d", sp->binx, sp->biny);
-	    bprintf ("     Duration : %g secs", sp->dur);
-	    bprintf ("      Shutter : %s", ccdSO2Str (sp->shutter));
-	    bprintf ("     CCDCalib : %s", ccdCalib2Str (sp->ccdcalib));
 	} else {
 	    bprintf ("Observing queue is empty.");
 	}

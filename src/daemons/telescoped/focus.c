@@ -355,7 +355,6 @@ focus_offset(int first, ...)
         mip->cvel = mip->maxvel;
         mip->dpos = goal;
         active_func = focus_offset;
-        telstatshmp->autofocus = 0;
     }
 
 // ICE added for not to send csimc commands on virtual mode
@@ -394,9 +393,6 @@ focus_jog(int first, ...)
         //dircode = va_arg (ap, char);
         dircode = va_arg (ap, int); // char is promoted to int, so pass int...
         va_end (ap);
-
-        /* certainly no auto any more */
-        telstatshmp->autofocus = 0;
 
         /* crack the code */
         switch (dircode) {
@@ -518,7 +514,6 @@ initCfg()
 
     // read the optional OHAVEENC keyword.
     // If set, then read the sign,step, and home values
-    // Also read the autofocus disable option flag here
     OHAVEENC = 0;
     OESTEP = 0;
     OESIGN = 1;
@@ -594,7 +589,7 @@ stopFocus(int fast)
     } else {
         csiStop (mip, fast);
     }
-    telstatshmp->autofocus = 0;
+
     OMOT->homing = 0;
     OMOT->limiting = 0;
     OMOT->cvel = 0;
