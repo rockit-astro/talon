@@ -42,7 +42,7 @@ end
 set badkill = 0
 
 foreach pname ($argv)
-    set exp = "[0-9]:[0-9][0-9] [^ ]*${pname}[^a-zA-Z0-9_-/]*"
+    set exp = "[0-9]:[0-9][0-9] [^ ]*${pname}[^a-zA-Z0-9_/-]*"
     set pids = `ps xwa | egrep "$exp" | awk '{print $1}'`
     if ($#pids == 0) then
 	if ($?vflag || ! $?qflag) echo No $pname
