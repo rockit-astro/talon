@@ -8,7 +8,7 @@ include_directories ("${CORE_LIBS_DIR}/misc")
 
 add_executable(getshm ${GETSHM_SRC})
 
-target_link_libraries (getshm astro misc fits m)
+target_link_libraries (getshm astro misc m)
 
 install (TARGETS getshm DESTINATION bin)
 

@@ -10,7 +10,7 @@ include_directories ("digitemp")
 
 add_executable(wxd ${WXD_SRC})
 
-target_link_libraries (wxd astro fits m misc)
+target_link_libraries (wxd astro m misc)
 
 install (TARGETS wxd DESTINATION bin)
 

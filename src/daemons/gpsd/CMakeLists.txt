@@ -8,6 +8,6 @@ include_directories ("${CORE_LIBS_DIR}/misc")
 
 add_executable(gpsd ${GPSD_SRC})
 
-target_link_libraries (gpsd astro fits m misc)
+target_link_libraries (gpsd astro m misc)
 
 install (TARGETS gpsd DESTINATION bin)

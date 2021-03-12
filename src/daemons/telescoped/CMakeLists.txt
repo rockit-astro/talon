@@ -10,7 +10,7 @@ include_directories ("${CORE_LIBS_DIR}/misc")
 
 add_executable(telescoped ${TELESCOPED_SRC})
 
-target_link_libraries (telescoped astro m misc fits)
+target_link_libraries (telescoped astro m misc)
 
 install (TARGETS telescoped DESTINATION bin)
 

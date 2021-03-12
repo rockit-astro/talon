@@ -922,8 +922,6 @@ mkControl(Widget main_w)
 	    	"Toggle a tool to calibrate telescope axis orientations"},
 	    {"No Confirm",  1, g_confirm,   &g_w[CCNFOFF_W],
 	    	"Toggle whether to confirm actions first"},
-	    {"Auto Focus",  0, g_focus,  &g_w[CAUTOF_W],
-	    	"Toggle a tool to automatically focus the camera"},
 	    {"Batch Mode",  1, batchCB,  &g_w[CBATCH_W],
 	    	"Toggle controlling things here or via a prepared schedule"},
 	    {"Paddle",      0, g_paddle, &g_w[CPADDLE_W],

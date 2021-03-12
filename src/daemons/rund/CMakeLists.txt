@@ -8,7 +8,7 @@ include_directories ("${CORE_LIBS_DIR}/misc")
 
 add_executable(rund ${RUND_SRC})
 
-target_link_libraries (rund astro fits m misc)
+target_link_libraries (rund astro m misc)
 
 install (TARGETS rund DESTINATION bin)
 

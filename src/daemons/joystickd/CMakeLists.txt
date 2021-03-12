@@ -8,6 +8,6 @@ include_directories ("${CORE_LIBS_DIR}/misc")
 
 add_executable(joystickd ${JOYSTICKD_SRC})
 
-target_link_libraries (joystickd astro fits m misc)
+target_link_libraries (joystickd astro m misc)
 
 install (TARGETS joystickd DESTINATION bin)

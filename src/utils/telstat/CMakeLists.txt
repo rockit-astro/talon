@@ -8,7 +8,7 @@ include_directories ("${CORE_LIBS_DIR}/misc")
 
 add_executable(telstat ${TELSTAT_SRC})
 
-target_link_libraries (telstat astro misc fits m)
+target_link_libraries (telstat astro misc m)
 
 install (TARGETS telstat DESTINATION bin)
 

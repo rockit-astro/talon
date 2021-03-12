@@ -8,7 +8,7 @@ include_directories ("${CORE_LIBS_DIR}/misc")
 
 add_executable(shmd ${SHMD_SRC})
 
-target_link_libraries (shmd astro fits m misc)
+target_link_libraries (shmd astro m misc)
 
 install (TARGETS shmd DESTINATION bin)
 

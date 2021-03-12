@@ -33,8 +33,6 @@
 #include "telenv.h"
 #include "telstatshm.h"
 #include "cliserv.h"
-#include "fits.h"
-#include "wcs.h"
 #include "strops.h"
 
 #include "xobs.h"

@@ -158,12 +158,6 @@ g_limit (Widget w, XtPointer client, XtPointer call)
 }
 
 void
-g_focus (Widget w, XtPointer client, XtPointer call)
-{
-	afoc_manage();
-}
-
-void
 g_calib (Widget w, XtPointer client, XtPointer call)
 {
 	axes_manage();
