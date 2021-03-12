@@ -979,13 +979,6 @@ mkScope(Widget main_w)
 	g_w[THERE_W] = l_w[0];
 	wtip (l_w[0], "Load all fields with current scope position");
 
-	l_w[1] = XtVaCreateManagedWidget ("SSv", xmPushButtonWidgetClass, rf_w,
-	    NULL);
-	wltprintf (pbT, l_w[1], "Lookup");
-	XtAddCallback (l_w[1], XmNactivateCallback, s_lookup, NULL);
-	g_w[TLOOK_W] = l_w[1];
-	wtip (l_w[1],"Look up source in catalog, or compute unset coordinates");
-
 	l_w[2] = XtVaCreateManagedWidget ("SGT", xmPushButtonWidgetClass, rf_w,
 	    NULL);
 	wltprintf (pbT, l_w[2], "Track");
@@ -994,25 +987,6 @@ mkScope(Widget main_w)
 	wtip (l_w[2], "Slew to coordinates and track");
 
 	mkRow (rf_w, l_w, 3, 8);
-
-	rf_w = XtVaCreateManagedWidget ("SF", xmFormWidgetClass, rrc_w,
-	    XmNverticalSpacing, 3,
-	    NULL);
-	l_w[0] = XtVaCreateManagedWidget ("SSt", xmLabelWidgetClass, rf_w,
-	    NULL);
-	wltprintf (prT, l_w[0], "Source name:");
-	l_w[1] = XtVaCreateManagedWidget ("SSt", xmTextFieldWidgetClass, rf_w,
-	    XmNbackground, editableColor,
-	    XmNcolumns, 10,
-	    XmNmarginHeight, 1,
-	    XmNmarginWidth, 1,
-	    NULL);
-	wtip (l_w[1], "Enter object to look up in catalogs, then press ENTER");
-	XtAddCallback (l_w[1], XmNactivateCallback, s_lookup, NULL);
-	XtAddCallback (l_w[1], XmNvalueChangedCallback, s_edit,
-							    (XtPointer)TOBJ_W);
-	g_w[TOBJ_W] = l_w[1];
-	mkRow (rf_w, l_w, 2, 10);
 
 	rc_w = XtVaCreateManagedWidget ("CRC", xmRowColumnWidgetClass, rrc_w,
 	    XmNmarginWidth, 0,
@@ -1032,7 +1006,6 @@ mkScope(Widget main_w)
 		wtip (tf_w, ctrls[i].tip);
 	    if (ctrls[i].gw)
 		g_w[ctrls[i].gw] = tf_w;
-	    XtAddCallback (tf_w, XmNactivateCallback, s_lookup, NULL);
 	    XtAddCallback (tf_w, XmNvalueChangedCallback, s_edit,
 						    (XtPointer)ctrls[i].gw);
 	}

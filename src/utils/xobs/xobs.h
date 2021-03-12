@@ -81,7 +81,6 @@ extern void rusure_seton (int whether);
 extern void s_stow (Widget w, XtPointer client, XtPointer call);
 extern void s_service (Widget w, XtPointer client, XtPointer call);
 extern void s_here (Widget w, XtPointer client, XtPointer call);
-extern void s_lookup (Widget w, XtPointer client, XtPointer call);
 extern void s_track (Widget w, XtPointer client, XtPointer call);
 extern void s_goto (Widget w, XtPointer client, XtPointer call);
 extern void s_edit (Widget w, XtPointer client, XtPointer call);
