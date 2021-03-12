@@ -30,8 +30,6 @@
 
 #include "teled.h"
 
-#include "buildcfg.h"
-
 #ifndef RIGEL_FILTER
 #define RIGEL_FILTER 0
 #endif
