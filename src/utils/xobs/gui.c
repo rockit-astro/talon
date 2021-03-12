@@ -399,10 +399,7 @@ guiSensitive (int whether)
 	    &g_w[TTRACK_W],
 	    &g_w[CFHOME_W],
 	    &g_w[CFLIM_W],
-	    &g_w[CTEST_W],
-	    &g_w[CRELOAD_W],
 	    &g_w[CAUTOF_W],
-	    &g_w[CCALIBA_W],
 	    &g_w[CPADDLE_W],
 	    &g_w[CCNFOFF_W],
 	    &g_w[CCNFOFF_W],
@@ -415,7 +412,6 @@ guiSensitive (int whether)
 	/* these are only ever sensitive if we are alone */
 	if (!xobs_alone) {
 	    XtSetSensitive (g_w[CSTOP_W], 0);
-	    XtSetSensitive (g_w[CBATCH_W], 0);
 	    XtSetSensitive (g_w[CSOUND_W], 0);
 	}
 
@@ -783,8 +779,6 @@ mkControl(Widget main_w)
 	    	"Start telescope seeking all home switches, if any"},
 	    {"Find Limits", 0, g_limit,  &g_w[CFLIM_W],
 	    	"Start telescope seeking all limit switches, if any"},
-	    {"Calib Axes",  0, g_calib,  &g_w[CCALIBA_W],
-	    	"Toggle a tool to calibrate telescope axis orientations"},
 	    {"No Confirm",  1, g_confirm,   &g_w[CCNFOFF_W],
 	    	"Toggle whether to confirm actions first"},
 	    {"Paddle",      0, g_paddle, &g_w[CPADDLE_W],

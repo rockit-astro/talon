@@ -9,16 +9,6 @@ extern Obj sunobj, moonobj;
 extern int xobs_alone;
 extern void die (void);
 
-/* autofocus.c */
-extern void afoc_manage (void);
-extern void afoc_foc_cb (int code, char msg[]);
-extern void afoc_cam_cb (int code, char msg[]);
-extern void afoc_initCfg (void);
-
-/* calaxes.c */
-extern void axes_manage (void);
-extern int axes_xephemSet (char *buf);
-
 /* config.c */
 extern void initCfg (void);
 extern char icfn[];
@@ -42,7 +32,6 @@ extern void g_exit (Widget w, XtPointer client, XtPointer call);
 extern void g_home (Widget w, XtPointer client, XtPointer call);
 extern void g_limit (Widget w, XtPointer client, XtPointer call);
 extern void g_focus (Widget w, XtPointer client, XtPointer call);
-extern void g_calib (Widget w, XtPointer client, XtPointer call);
 extern void g_paddle (Widget w, XtPointer client, XtPointer call);
 extern void g_confirm (Widget w, XtPointer client, XtPointer call);
 
@@ -105,12 +94,6 @@ extern void soundCB (Widget w, XtPointer client, XtPointer call);
 extern Widget mkSky (Widget p_w);
 extern void showSkyMap (void);
 
-/* telrun.c */
-extern int startTelrun (void);
-extern void stopTelrun(void);
-extern int chkTelrun(void);
-extern void monitorTelrun(int whether);
-
 /* tips.c */
 extern void wtip (Widget w, char *tip);
 extern int tip_geton(void);
@@ -118,9 +101,6 @@ extern void tip_seton(int whether);
 
 /* update.c */
 extern void updateStatus(int force);
-
-/* xephem.c */
-extern void initXEphem(void);
 
 /* For RCS Only -- Do Not Edit
  * @(#) $RCSfile: xobs.h,v $ $Date: 2006/05/28 01:07:18 $ $Revision: 1.4 $ $Name:  $

@@ -144,17 +144,11 @@ g_limit (Widget w, XtPointer client, XtPointer call)
 }
 
 void
-g_calib (Widget w, XtPointer client, XtPointer call)
-{
-	axes_manage();
-}
-
-void
 g_paddle (Widget w, XtPointer client, XtPointer call)
 {
 	pad_manage();
 }
-
+
 /* create the dialog to allow finding each home axis */
 static void
 homeCreateW()

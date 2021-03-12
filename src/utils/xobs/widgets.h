@@ -27,12 +27,8 @@ typedef enum {
     CEXIT_W,
     CFHOME_W,
     CFLIM_W,
-    CTEST_W,
-    CRELOAD_W,
     CAUTOF_W,
-    CCALIBA_W,
     CPADDLE_W,
-    CBATCH_W,
     CCNFOFF_W,
     CSOUND_W,
 
