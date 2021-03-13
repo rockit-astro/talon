@@ -1,5 +1,5 @@
 Name:      superwasp-talon
-Version:   20210312
+Version:   20210313
 Release:   0
 Summary:   Stripped down Talon installation for the SuperWASP telescope
 License:   proprietary
