@@ -87,10 +87,7 @@ static char prT[] = "prompt";
 static char pbT[] = "button";
 static char frT[] = "frame";
 
-#define	LOGODASZ	100	/* size of logo drawing area, pixels */
 static GC guigc;
-static Pixmap logopm;
-static XpmAttributes logoxpma;
 static Pixel tshadow_p, bshadow_p;
 
 static Widget msg_w;
@@ -99,9 +96,7 @@ static int msg_txtl;
 #define	LIGHTW		10	/* width of light indicator */
 #define	LIGHTH		10	/* height of light indicator */
 
-static Widget mkLogo (Widget main_w);
 static Widget mkCurrent(Widget main_w);
-static Widget mkCamera(Widget main_w);
 static Widget mkDome(Widget main_w);
 static Widget mkControl(Widget main_w);
 static Widget mkStatus(Widget main_w);
@@ -131,8 +126,6 @@ mkGUI(char *version)
 	Widget main_w;
 	Widget cur_w;
 	Widget skymap_w;
-	Widget logo_w;
-	Widget cam_w;
 	Widget ctrl_w;
 	Widget status_w;
 	Widget dome_w;
@@ -167,19 +160,12 @@ mkGUI(char *version)
 	    XmNleftAttachment, XmATTACH_FORM,
 	    NULL);
 
-	logo_w = mkLogo(main_w);
-	XtVaSetValues (logo_w,
-	    XmNtopAttachment, XmATTACH_FORM,
-	    XmNrightAttachment, XmATTACH_FORM,
-	    NULL);
-
 	cur_w = mkCurrent(main_w);
 	XtVaSetValues (cur_w,
 	    XmNtopAttachment, XmATTACH_FORM,
 	    XmNleftAttachment, XmATTACH_WIDGET,
 	    XmNleftWidget, skymap_w,
 	    XmNrightAttachment, XmATTACH_WIDGET,
-	    XmNrightWidget, logo_w,
 	    NULL);
 
 	hf_w = XtVaCreateManagedWidget ("HF", xmFormWidgetClass, main_w,
@@ -189,20 +175,11 @@ mkGUI(char *version)
 	    XmNrightAttachment, XmATTACH_FORM,
 	    NULL);
 
-	    cam_w = mkCamera(hf_w);
-	    XtVaSetValues (cam_w,
-		XmNtopAttachment, XmATTACH_FORM,
-		XmNleftAttachment, XmATTACH_FORM,
-		XmNbottomAttachment, XmATTACH_FORM,
-		NULL);
-
 	    ctrl_w = mkControl(hf_w);
 	    XtVaSetValues (ctrl_w,
 		XmNtopAttachment, XmATTACH_FORM,
+		XmNleftAttachment, XmATTACH_FORM,
 		XmNbottomAttachment, XmATTACH_FORM,
-		XmNleftAttachment, XmATTACH_WIDGET,
-		XmNleftWidget, cam_w,
-		XmNleftOffset, 10,
 		NULL);
 
 	    scope_w = mkScope(hf_w);
@@ -418,51 +395,6 @@ guiSensitive (int whether)
 	/* dome sensitivity is left up to updateStatus() */
 }
 
-/* callback for the logo drawing area expose */
-static void
-logoExpCB (Widget w, XtPointer client, XtPointer call)
-{
-	XmDrawingAreaCallbackStruct *s = (XmDrawingAreaCallbackStruct *)call;
-	XExposeEvent *evp = &s->event->xexpose;
-	int logox = (LOGODASZ - logoxpma.width)/2;
-	int logoy = (LOGODASZ - logoxpma.height)/2;
-
-	if (!guigc)
-	    mkGC();
-
-	XCopyArea (evp->display, logopm, evp->window, guigc, evp->x - logox,
-		evp->y - logoy, evp->width, evp->height, evp->x, evp->y); 
-}
-
-static Widget
-mkLogo (Widget main_w)
-{
-	Display *dsp = XtDisplay(main_w);
-	Window root = RootWindow(dsp, 0);
-	char fn[1024];
-	Widget da_w;
-	Widget fr_w;
-	int xpms;
-
-	strcpy (fn, "archive/config/logo.xpm");
-	telfixpath (fn, fn);
-
-	fr_w = XtVaCreateManagedWidget ("LFr", xmFrameWidgetClass, main_w,
-	    NULL);
-
-	logoxpma.valuemask = 0;
-	xpms = XpmReadFileToPixmap(dsp, root, fn, &logopm, NULL, &logoxpma);
-
-	da_w = XtVaCreateManagedWidget ("LDA", xmDrawingAreaWidgetClass, fr_w,
-	    XmNwidth, LOGODASZ,
-	    XmNheight, LOGODASZ,
-	    NULL);
-	if (xpms == XpmSuccess)
-	    XtAddCallback(da_w, XmNexposeCallback, logoExpCB, NULL);
-	
-	return (fr_w);
-}
-
 static Widget
 mkCurrent(Widget main_w)
 {
@@ -476,6 +408,7 @@ mkCurrent(Widget main_w)
 	    {"HA"},
 	    {"Altitude"},
 	    {"Azimuth"},
+	    {"Focus (um)"},
 	};
 
 	Widget fr_w, f_w;
@@ -534,7 +467,7 @@ mkCurrent(Widget main_w)
 	    XmNalignment, XmALIGNMENT_CENTER,
 	    NULL);
 	wltprintf (prT, l_w[0], "Target");
-	for (i = 1; i < XtNumber(l_w); i++) {
+	for (i = 1; i < XtNumber(l_w) - 1; i++) {
 	    l_w[i] = XtVaCreateManagedWidget ("CPT",xmTextFieldWidgetClass,lf_w,
 		XmNbackground, uneditableColor,
 		XmNcolumns, 10,
@@ -550,6 +483,7 @@ mkCurrent(Widget main_w)
 	g_w[PTHA_W] = l_w[3];
 	g_w[PTALT_W] = l_w[4];
 	g_w[PTAZ_W] = l_w[5];
+	g_w[CFO_W] = l_w[6];
 
 	lf_w = XtVaCreateManagedWidget ("CCF", xmFormWidgetClass, f_w,
 	    XmNtopAttachment, XmATTACH_WIDGET,
@@ -561,7 +495,7 @@ mkCurrent(Widget main_w)
 	    XmNalignment, XmALIGNMENT_CENTER,
 	    NULL);
 	wltprintf (prT, l_w[0], "Difference");
-	for (i = 1; i < XtNumber(l_w); i++) {
+	for (i = 1; i < XtNumber(l_w) - 1; i++) {
 	    l_w[i] = XtVaCreateManagedWidget ("CPT",xmTextFieldWidgetClass,lf_w,
 		XmNbackground, uneditableColor,
 		XmNcolumns, 10,
@@ -577,61 +511,6 @@ mkCurrent(Widget main_w)
 	g_w[PDHA_W] = l_w[3];
 	g_w[PDALT_W] = l_w[4];
 	g_w[PDAZ_W] = l_w[5];
-
-	return (fr_w);
-}
-
-static Widget
-mkCamera(Widget main_w)
-{
-	Widget fr_w, f_w;
-	Widget da_w;
-	Widget tbl_w;
-	Widget l_w, tf_w;
-	Widget fof_w, fmb_w;
-	Widget lgt_w;
-	Widget w;
-
-	mkFrame (main_w, "Camera", "Camera", &fr_w, &f_w);
-
-	tbl_w = XtVaCreateManagedWidget ("CRC", xmRowColumnWidgetClass, f_w,
-	    XmNtopAttachment, XmATTACH_FORM,
-	    XmNbottomAttachment, XmATTACH_FORM,
-	    XmNleftAttachment, XmATTACH_FORM,
-	    XmNrightAttachment, XmATTACH_FORM,
-	    XmNnumColumns, 1,
-	    XmNpacking, XmPACK_TIGHT,
-	    NULL);
-
-	w = mkPrompt (tbl_w, 8, &l_w, &tf_w, &da_w);
-	wtip (tf_w, "Current focus position, microns from home, +in");
-	wltprintf (prT, l_w, "Focus, %cm", XK_mu);
-	XtVaSetValues (l_w, XmNalignment, XmALIGNMENT_BEGINNING, NULL);
-	XtVaSetValues (tf_w,
-	    XmNbackground, uneditableColor,
-	    XmNcursorPositionVisible, False,
-	    XmNeditable, False,
-	    XmNmaxLength, 8,
-	    XmNmarginHeight, 1,
-	    XmNmarginWidth, 1,
-	    NULL);
-	g_w[CFO_W] = tf_w;
-	g_w[CFOLT_W] = da_w;
-
-	w = mkPrompt (tbl_w, 8, &l_w, &tf_w, &da_w);
-	wtip (tf_w, "Field rotator position angle");
-	XtVaSetValues (l_w, XmNalignment, XmALIGNMENT_BEGINNING, NULL);
-	wltprintf (prT, l_w, "Rotator");
-	XtVaSetValues (tf_w,
-	    XmNbackground, uneditableColor,
-	    XmNcursorPositionVisible, False,
-	    XmNeditable, False,
-	    XmNmarginHeight, 1,
-	    XmNmarginWidth, 1,
-	    NULL);
-	g_w[CR_W] = tf_w;
-	g_w[CRL_W] = l_w;
-	g_w[CRLT_W] = da_w;
 
 	return (fr_w);
 }

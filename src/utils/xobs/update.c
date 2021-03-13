@@ -125,25 +125,6 @@ curPos ()
 
 	fs_sexa (buf, raddeg(telstatshmp->Caz), 4, 3600);
 	wtprintf (g_w[PCAZ_W], "%s", buf);
-
-	/* even have a rotator? */
-	if (RMOT->have != last_haver) {
-	    if (RMOT->have) {
-		XtSetSensitive (g_w[CRL_W], True);
-		XtSetSensitive (g_w[CR_W], True);
-	    } else {
-		XtSetSensitive (g_w[CRL_W], False);
-		XtSetSensitive (g_w[CR_W], False);
-		setLt (g_w[CRLT_W], LTIDLE);
-	    }
-	    last_haver = RMOT->have;
-	}
-
-	if (RMOT->have) {
-	    double r = RMOT->cpos + telstatshmp->tax.R0;
-	    fs_sexa (buf, raddeg(r), 3, 60);
-	    wtprintf (g_w[CR_W], "%8s", buf);
-	}
 }
 
 static void
@@ -154,7 +135,6 @@ noPos ()
 	wtprintf (g_w[PCHA_W], blank);
 	wtprintf (g_w[PCALT_W], blank);
 	wtprintf (g_w[PCAZ_W], blank);
-	wtprintf (g_w[CR_W], blank);
 }
 
 static void
@@ -313,16 +293,6 @@ showFocus()
 	/* show microns from home */
 	tmp = OMOT->step*OMOT->cpos/OMOT->focscale/(2*PI);
 	wtprintf (g_w[CFO_W], "%8.1f", tmp);
-
-	/* show status */
-	if (OMOT->cvel != 0)
-	    setLt (g_w[CFOLT_W], LTACTIVE);
-	else {
-	    /* ok if within 1 step */
-	    if (OMOT->haveenc) tmp = OMOT->estep*(OMOT->cpos - OMOT->dpos)/(2*PI);
-		else tmp = OMOT->step*(OMOT->cpos - OMOT->dpos)/(2*PI);
-	    setLt (g_w[CFOLT_W], fabs(tmp) < 1.5 ? LTOK : LTWARN);
-	}
 }
 
 static void
@@ -331,46 +301,36 @@ showScope()
 	switch (telstatshmp->telstate) {
 	case TS_STOPPED:
 	    setLt(g_w[STLT_W],LTIDLE); setLt(g_w[SSLT_W],LTIDLE);
-	    setLt (g_w[CRLT_W], LTIDLE);
 	    curPos();
 	    noTarg();
 	    break;
 
 	case TS_SLEWING:
 	    setLt(g_w[STLT_W],LTIDLE); setLt(g_w[SSLT_W],LTOK);
-	    if (RMOT->have)
-		setLt (g_w[CRLT_W], RMOT->cvel ? LTACTIVE : LTOK);
 	    curPos();
 	    curTarg();
 	    break;
 
 	case TS_HUNTING:
 	    setLt(g_w[STLT_W],LTACTIVE); setLt(g_w[SSLT_W],LTOK);
-	    if (RMOT->have)
-		setLt (g_w[CRLT_W], RMOT->cvel ? LTACTIVE : LTOK);
 	    curPos();
 	    curTarg();
 	    break;
 
 	case TS_TRACKING:
 	    setLt(g_w[STLT_W],LTOK); setLt(g_w[SSLT_W],LTIDLE);
-	    if (RMOT->have) setLt (g_w[CRLT_W], LTOK);
 	    curPos();
 	    curTarg();
 	    break;
 
 	case TS_HOMING:
 	    setLt(g_w[STLT_W],LTIDLE); setLt(g_w[SSLT_W],LTIDLE);
-	    if (RMOT->have)
-		setLt (g_w[CRLT_W], RMOT->cvel ? LTACTIVE : LTOK);
 	    noPos();
 	    noTarg();
 	    break;
 
 	case TS_LIMITING:
 	    setLt(g_w[STLT_W],LTIDLE); setLt(g_w[SSLT_W],LTIDLE);
-	    if (RMOT->have)
-		setLt (g_w[CRLT_W], RMOT->cvel ? LTACTIVE : LTOK);
 	    curPos();
 	    noTarg();
 	    break;

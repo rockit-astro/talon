@@ -30,10 +30,6 @@ typedef enum {
     CSOUND_W,
 
     CFO_W,
-    CFOLT_W,
-    CR_W,
-    CRL_W,
-    CRLT_W,
 
     /* status */
     SBLT_W,
