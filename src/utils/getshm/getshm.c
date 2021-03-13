@@ -108,19 +108,6 @@ int main (int argc, char **argv)
         printf("FOCUSPOS = %lf ", fupos);
         printf("/ Focus position from home (microns)\n");
 	}
-	if (time(NULL) - telstatshmp->wxs.updtime < maxtime) 
-    {
-        printf("WXTEMP  = %lf ", telstatshmp->now.n_temp);
-        printf("/ Temperature (degrees C)\n");
-        printf("WXHUMID = %d ", telstatshmp->wxs.humidity);
-        printf("/ Relative humidity (percentage)\n");
-        printf("WXPRES  = %lf ", telstatshmp->now.n_pressure);
-        printf("/ Atmospheric pressure (mbar)\n");
-        printf("WXWNDSPD= %d ", telstatshmp->wxs.wspeed);
-        printf("/ Wind speed (km per hour)\n");
-        printf("WXWNDDIR= %d ", telstatshmp->wxs.wdir);
-        printf("/ Wind direction (degrees E of N)\n");
-    }
 
     exit(EXIT_SUCCESS);
 }

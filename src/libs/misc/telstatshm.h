@@ -28,31 +28,6 @@ typedef struct {
     double hneglim, hposlim;	/* iff GERMEQ: copies of minfo[TEL_HM].*lim */
 } TelAxes;
 
-/* weather info.
- * N.B. temp and pres are in Now.
- */
-#define MAUXTP	3		/* max aux temp probes supported */
-typedef struct {
-    int wspeed;			/* wind speed, kph */
-    int wdir;			/* wind source az, degs E of N */
-    char wdirstr[4];		/* "N", "NNE", etc (includes trailing \0) */
-    int humidity;		/* % */
-    int rain;			/* today's rain total, .1 mm */
-    int alert;			/* "or" of applicable WxAlerts bit flags */
-    double auxt[MAUXTP];	/* aux temp probe values, C */
-    int auxtmask;		/* ((1<<i) & auxtmask) set if auxt[i] is real */
-    time_t updtime;		/* set by wxd when these fields are updated */
-} WxStats;
-
-/* mask of reasons for current weather alert */
-typedef enum {
-    WXA_MAXT = 1,		/* temp is above max */
-    WXA_MINT = 2,		/* temp is below max */
-    WXA_MAXH = 4,		/* humidity is above max */
-    WXA_MAXW = 8,		/* wind is above max */
-    WXA_RAIN = 16,		/* rain detected */
-} WxAlerts;
-
 /* info about each motor.
  * all measures and directions are canonical unless stated as raw.
  * when we say steps we might really mean microsteps.
@@ -194,9 +169,6 @@ typedef struct {
     DomeState domestate;	/* dome state */
     DShState shutterstate;	/* shutter state */
     CoverState coverstate;
-
-    /* other weather stats */
-    WxStats wxs;
 
   /* telescoped pid */
   pid_t teld_pid;

@@ -40,9 +40,7 @@ static void showSunMoon (void);
 static void showFocus(void);
 static void showScope(void);
 static void showHL(void);
-static void showWx(void);
 static void showDome(void);
-static void showTemps(void);
 
 static char blank[] = " ";
 
@@ -82,15 +80,6 @@ updateStatus(int force)
 	}
 
 	/* do these at least occasionally or especially often when busy */
-
-	busy = telstatshmp->wxs.alert;
-	if (doslow || busy || mjd < last_wbusy + COAST_DT) {
-	    showWx();
-	    showTemps();
-	    if (busy)
-		last_wbusy = mjd;
-	}
-
 	busy = ts==TS_SLEWING || ts==TS_HUNTING || ts==TS_LIMITING;
 	if (doslow || busy || mjd < last_tbusy + COAST_DT) {
 	    showSkyMap();
@@ -398,57 +387,6 @@ showHL()
 }
 
 static void
-showWx()
-{
-	Now *np = &telstatshmp->now;
-	WxStats *wp = &telstatshmp->wxs;
-
-	if (time(NULL) - wp->updtime < 30) {
-	    Widget w;
-
-	    w = g_w[IWIND_W];
-	    wtprintf (w, "    %d KPH", wp->wspeed);
-	    setColor (w,XmNbackground,wp->alert & WXA_MAXW ? ltcolors[LTWARN]
-	    						     : uneditableColor);
-
-	    w = g_w[IWDIR_W];
-	    if (wp->wdirstr[0])
-		wtprintf (w, "     %s", wp->wdirstr);
-	    else
-		wtprintf (w, "     %d", wp->wdir);
-
-	    w = g_w[IHUM_W];
-	    wtprintf (w, "   %d %%RH", wp->humidity);
-	    setColor (w,XmNbackground,wp->alert & WXA_MAXH ? ltcolors[LTWARN]
-	    						     : uneditableColor);
-
-	    w = g_w[IRAIN_W];
-	    wtprintf (w, "   %.1f mm", wp->rain/10.);
-	    setColor (w,XmNbackground,wp->alert & WXA_RAIN ? ltcolors[LTWARN]
-	    						     : uneditableColor);
-
-	    w = g_w[ITEMP_W];
-	    wtprintf (w, "%8.1f C", np->n_temp);
-	    setColor (w, XmNbackground, wp->alert & (WXA_MINT|WXA_MAXT)
-					? ltcolors[LTWARN] : uneditableColor);
-
-	    wtprintf (g_w[IPRES_W], "  %.0f mBar", np->n_pressure);
-
-	    setLt (g_w[SWLT_W], wp->alert ? LTWARN : LTOK);
-
-	} else {
-	    setLt (g_w[SWLT_W], LTIDLE);
-	    wtprintf (g_w[IWIND_W], blank);
-	    wtprintf (g_w[IWDIR_W], blank);
-	    wtprintf (g_w[IHUM_W], blank);
-	    wtprintf (g_w[IRAIN_W], blank);
-
-	    wtprintf (g_w[ITEMP_W], " (%.1f C)", np->n_temp);
-	    wtprintf (g_w[IPRES_W], "(%.0f mBar)", np->n_pressure);
-	}
-}
-
-static void
 showDome()
 {
 	static int last_godome = -1, last_goshutter = -1;
@@ -563,23 +501,6 @@ showDome()
 	    } else
 		wtprintf (g_w[PDDAZ_W], blank);
 	}
-}
-
-static void
-showTemps()
-{
-	/* TODO be more legit about knowing we can show only 3 */
-	static int itw[MAUXTP] = {IT1_W, IT2_W, IT3_W};
-	    
-	WxStats *wp = &telstatshmp->wxs;
-	int valid = time(NULL) - wp->updtime < 30;
-	int i;
-
-	for (i = 0; i < MAUXTP; i++)
-	    if (valid && (wp->auxtmask & (1<<i)))
-		wtprintf (g_w[itw[i]], "%8.1f C", wp->auxt[i]);
-	    else
-		wtprintf (g_w[itw[i]], blank);
 }
 
 /* For RCS Only -- Do Not Edit */

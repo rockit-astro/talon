@@ -44,7 +44,6 @@ typedef enum {
     SSLT_W,
     SHLT_W,
     SLLT_W,
-    SWLT_W,
     SCLT_W,
 
     /* dome and shutter */
@@ -86,15 +85,6 @@ typedef enum {
     ISUN_W,
     IDUSK_W,
     IDAWN_W,
-    IWIND_W,
-    IWDIR_W,
-    ITEMP_W,
-    IPRES_W,
-    IHUM_W,
-    IRAIN_W,
-    IT1_W,
-    IT2_W,
-    IT3_W,
 
     /* number of */
     N_W,

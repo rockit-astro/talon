@@ -858,7 +858,6 @@ mkStatus(Widget main_w)
 	    {"Slewing", &g_w[SSLT_W]},
 	    {"Homing", &g_w[SHLT_W]},
 	    {"Limiting", &g_w[SLLT_W]},
-	    {"Weather", &g_w[SWLT_W]},
 	    {"Confirm", &g_w[SCLT_W]},
 	};
 	Widget fr_w, f_w;
@@ -1108,21 +1107,12 @@ mkInfo(Widget main_w)
 	    {"Sun", &g_w[ISUN_W], "Sun direction and altitude"},
 	    {"Dusk", &g_w[IDUSK_W], "UT end of twilight"},
 	    {"Dawn", &g_w[IDAWN_W], "UT start of twilight"},
-	    {"Wind", &g_w[IWIND_W], "Wind speed, KPH"},
-	    {"Direction", &g_w[IWDIR_W], "Wind direction"},
-	    {"Temp", &g_w[ITEMP_W], "Weather station air temperature, C"},
-	    {"Pressure", &g_w[IPRES_W], "Station air pressure, mB"},
-	    {"Humidity", &g_w[IHUM_W], "Percent relative humidity"},
-	    {"Rain", &g_w[IRAIN_W], "Rainfall since last reset, mm"},
-	    {"T1", &g_w[IT1_W], "Temperature probe 1, C"},
-	    {"T2", &g_w[IT2_W], "Temperature probe 2, C"},
-	    {"T3", &g_w[IT3_W], "Temperature probe 3, C"},
 	};
 	char site[1024];
 	Widget fr_w, f_w;
 	Widget lf_w;
 	Widget sep_w;
-	Widget l_w[XtNumber(ctrls)/2];
+	Widget l_w[XtNumber(ctrls)];
 	int i;
 
 	sprintf (site, "Site Information at %s", BANNER);
@@ -1159,49 +1149,6 @@ mkInfo(Widget main_w)
 		*ctrls[i].wp = l_w[i];
 	    if (ctrls[i].tip)
 		wtip (l_w[i], ctrls[i].tip);
-	}
-	mkRow (lf_w, l_w, XtNumber(l_w), 25);
-
-	sep_w = XtVaCreateManagedWidget ("S", xmSeparatorWidgetClass, f_w,
-	    XmNtopAttachment, XmATTACH_WIDGET,
-	    XmNtopWidget, lf_w,
-	    XmNtopOffset, 10,
-	    XmNleftAttachment, XmATTACH_FORM,
-	    XmNrightAttachment, XmATTACH_FORM,
-	    NULL);
-
-	lf_w = XtVaCreateManagedWidget ("ILF", xmFormWidgetClass, f_w,
-	    XmNtopAttachment, XmATTACH_WIDGET,
-	    XmNtopWidget, sep_w,
-	    XmNleftAttachment, XmATTACH_FORM,
-	    XmNrightAttachment, XmATTACH_FORM,
-	    NULL);
-	for (i = 0; i < XtNumber(l_w); i++) {
-	    l_w[i] = XtVaCreateManagedWidget ("IL", xmLabelWidgetClass, lf_w,
-		NULL);
-	    wltprintf (prT, l_w[i], "%s", ctrls[XtNumber(l_w)+i]);
-	}
-	mkRow (lf_w, l_w, XtNumber(l_w), 25);
-
-	lf_w = XtVaCreateManagedWidget ("ILF", xmFormWidgetClass, f_w,
-	    XmNtopAttachment, XmATTACH_WIDGET,
-	    XmNtopWidget, lf_w,
-	    XmNleftAttachment, XmATTACH_FORM,
-	    XmNrightAttachment, XmATTACH_FORM,
-	    NULL);
-	for (i = 0; i < XtNumber(l_w); i++) {
-	    l_w[i] = XtVaCreateManagedWidget ("IL", xmTextFieldWidgetClass,lf_w,
-		XmNbackground, uneditableColor,
-		XmNcolumns, 8,
-		XmNcursorPositionVisible, False,
-		XmNeditable, False,
-		XmNmarginHeight, 1,
-		XmNmarginWidth, 1,
-		NULL);
-	    if (ctrls[XtNumber(l_w)+i].wp)
-		*ctrls[XtNumber(l_w)+i].wp = l_w[i];
-	    if (ctrls[XtNumber(l_w)+i].tip)
-		wtip (l_w[i], ctrls[XtNumber(l_w)+i].tip);
 	}
 	mkRow (lf_w, l_w, XtNumber(l_w), 25);
 

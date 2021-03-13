@@ -1003,14 +1003,8 @@ d_emgstop(char *msg)
 static int
 d_chkWx(char *msg)
 {
-    WxStats *wp = &telstatshmp->wxs;
-    int wxalert;
-
-    if (wp != NULL) {
-        wxalert = (time(NULL) - wp->updtime < 30) && wp->alert;
-    } else {
-        wxalert = 0;
-    }
+    // TODO: Implement heartbeat timeout
+    int wxalert = 0;
 
     if (!wxalert || !SHAVE)
         return(0);
