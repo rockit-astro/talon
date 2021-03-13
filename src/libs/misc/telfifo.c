@@ -148,8 +148,7 @@ stopAllDevices()
     }
     
     fifoMsg (Tel_Id, "Stop");
-    if (telstatshmp->domestate != DS_ABSENT
-                    || telstatshmp->shutterstate != SH_ABSENT)
+    if (telstatshmp->shutterstate != SH_ABSENT)
         fifoMsg (Dome_Id, "Stop");
     if (OMOT->have)
         fifoMsg (Focus_Id, "Stop");

@@ -95,14 +95,6 @@ typedef enum {
     TS_LIMITING			/* finding limit positions */
 } TelState;
 
-/* dome states */
-typedef enum {
-    DS_ABSENT,			/* no dome at all */
-    DS_STOPPED,			/* dome is motionless */
-    DS_ROTATING,		/* dome is rotating */
-    DS_HOMING			/* dome is seeking home */
-} DomeState;
-
 /* dome shutter states */
 typedef enum {
     SH_ABSENT,			/* no shutter at all */
@@ -112,13 +104,6 @@ typedef enum {
     SH_OPEN,			/* shutter is open */
     SH_CLOSED			/* shutter is closed */
 } DShState;
-
-/* camera states */
-typedef enum {
-    CAM_IDLE,			/* shutter closed */
-    CAM_EXPO,			/* shutter open, expose in progress */
-    CAM_READ			/* shutter closed, data being read to host */
-} CamState;
 
 /* cover states */
 typedef enum {
@@ -163,26 +148,16 @@ typedef struct {
     /* various status indicators */
     TelState telstate;		/* telescope state */
     int jogging_ison : 1;	/* currently jogged/jogging from target */
-    int autodome : 1;		/* set when dome is tracking scope */
-    double domeaz;		/* current dome az, rads +E of N */
-    double dometaz;		/* dome target azimuth, rads +E of N */
-    DomeState domestate;	/* dome state */
     DShState shutterstate;	/* shutter state */
     CoverState coverstate;
+    int domealarm : 1;
 
-  /* telescoped pid */
-  pid_t teld_pid;
-  long heartbeat;
+    /* telescoped pid */
+    pid_t teld_pid;
+    long heartbeat;
 } TelStatShm;
 
 /* handy shortcuts that check things for being ready for normal observing */
-#define	DOME_READY						\
-	    ((telstatshmp->domestate == DS_ABSENT ||		\
-		(telstatshmp->autodome &&			\
-		 telstatshmp->domestate == DS_STOPPED)) &&	\
-	     (telstatshmp->shutterstate == SH_ABSENT ||		\
-		(telstatshmp->shutterstate == SH_OPEN)))
-
 #define	FOCUS_READY	(!telstatshmp->minfo[TEL_OM].have	\
 				    || telstatshmp->minfo[TEL_OM].cvel == 0)
 
@@ -191,8 +166,7 @@ typedef struct {
 			telstatshmp->minfo[TEL_DM].homing ||	\
 			telstatshmp->minfo[TEL_RM].homing ||	\
 			telstatshmp->minfo[TEL_OM].homing ||	\
-			telstatshmp->minfo[TEL_IM].homing ||	\
-			telstatshmp->domestate == DS_HOMING)
+			telstatshmp->minfo[TEL_IM].homing)
 
 #define	ANY_LIMITING	( 					\
 			telstatshmp->minfo[TEL_HM].limiting ||	\

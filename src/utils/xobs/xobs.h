@@ -38,8 +38,6 @@ extern void g_confirm (Widget w, XtPointer client, XtPointer call);
 /* dome.c */
 extern void domeOpenCB (Widget w, XtPointer client, XtPointer call);
 extern void domeCloseCB (Widget w, XtPointer client, XtPointer call);
-extern void domeAutoCB (Widget w, XtPointer client, XtPointer call);
-extern void domeGotoCB (Widget w, XtPointer client, XtPointer call);
 
 /* cover.c */
 extern void coverOpenCB (Widget w, XtPointer client, XtPointer call);

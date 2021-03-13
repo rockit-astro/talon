@@ -452,9 +452,9 @@ buttonCB (Widget w, XtPointer client, XtPointer call)
 	    XtSetSensitive (n_w, have);
 	    XtSetSensitive (s_w, have);
 
-	    have = telstatshmp->domestate != DS_ABSENT;
-	    wlprintf (el_w, "CW ");
-	    wlprintf (wl_w, "CCW");
+	    have = 0;
+	    wlprintf (el_w, "   ");
+	    wlprintf (wl_w, "   ");
 	    XtSetSensitive (e_w, have);
 	    XtSetSensitive (w_w, have);
 	}
@@ -467,8 +467,8 @@ buttonCB (Widget w, XtPointer client, XtPointer call)
 	    XtSetSensitive (s_w, have);
 
 	    have = IMOT->have;
-	    wlprintf (el_w, "CW ");
-	    wlprintf (wl_w, "CCW");
+	    wlprintf (el_w, "   ");
+	    wlprintf (wl_w, "   ");
 	    XtSetSensitive (e_w, have);
 	    XtSetSensitive (w_w, have);
 	}

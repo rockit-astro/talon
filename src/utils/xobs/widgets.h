@@ -8,19 +8,16 @@ typedef enum {
     PCHA_W,
     PCALT_W,
     PCAZ_W,
-    PCDAZ_W,
     PTRA_W,
     PTDEC_W,
     PTHA_W,
     PTALT_W,
     PTAZ_W,
-    PTDAZ_W,
     PDRA_W,
     PDDEC_W,
     PDHA_W,
     PDALT_W,
     PDAZ_W,
-    PDDAZ_W,
 
     /* control */
     CSTOP_W,
@@ -51,10 +48,6 @@ typedef enum {
     DCLT_W,
     DOPEN_W,
     DCLOSE_W,
-    DAUTO_W,
-    DAZLT_W,
-    DAZL_W,
-    DAZ_W,
 
     /* mirror covers */
     COLT_W,

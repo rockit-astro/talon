@@ -30,8 +30,6 @@ int OnTargPercent;
 int BeepPeriod;
 char BANNER[80];
 
-double DOMETOL;
-
 static char tscfn[] = "archive/config/telsched.cfg";
 static char dfn[] = "archive/config/dome.cfg";
 static char tcfn[] = "archive/config/telescoped.cfg";
@@ -66,13 +64,6 @@ initCfg()
 	n = readCfgFile (1, tscfn, tscfg, NTSCFG);
 	if (n != NTSCFG) {
 	    cfgFileError (tscfn, n, NULL, tscfg, NTSCFG);
-	    die();
-	}
-
-	/* from dome.cfg */
-	n = read1CfgEntry (1, dfn, "DOMETOL", CFG_DBL, &DOMETOL, 0);
-	if (n < 0) {
-	    fprintf (stderr, "%s: %s not found\n", dfn, "DOMETOL");
 	    die();
 	}
 }

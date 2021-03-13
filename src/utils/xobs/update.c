@@ -59,7 +59,6 @@ updateStatus(int force)
 	int doslow = force || mjd > last_slow + SLOW_DT;
 	int dofast = force || mjd > last_fast + FAST_DT;
 	TelState ts = telstatshmp->telstate;
-	DomeState ds = telstatshmp->domestate;
 	DShState ss = telstatshmp->shutterstate;
 	int busy;
 
@@ -87,7 +86,7 @@ updateStatus(int force)
 		last_tbusy = mjd;
 	}
 
-	busy = ds==DS_ROTATING || ds==DS_HOMING || ss==SH_OPENING || ss==SH_CLOSING;
+	busy = ss==SH_OPENING || ss==SH_CLOSING;
 	if (doslow || busy || mjd < last_dbusy + COAST_DT) {
 	    showDome();
 	    if (busy)
@@ -155,7 +154,6 @@ noPos ()
 	wtprintf (g_w[PCHA_W], blank);
 	wtprintf (g_w[PCALT_W], blank);
 	wtprintf (g_w[PCAZ_W], blank);
-	wtprintf (g_w[PCDAZ_W], blank);
 	wtprintf (g_w[CR_W], blank);
 }
 
@@ -390,27 +388,11 @@ static void
 showDome()
 {
 	static int last_godome = -1, last_goshutter = -1;
-	DomeState ds = telstatshmp->domestate;
-	LtState domelt, sol, scl, col, ccl;
+	LtState sol, scl, col, ccl;
 	int go;
 
 	/* first check whether to allow operator access.
 	 */
-	go = ds != DS_ABSENT && xobs_alone;
-	if (go != last_godome) {
-	    if (go) {
-		XtSetSensitive (g_w[DAUTO_W], True);
-		XtSetSensitive (g_w[DAZ_W], True);
-		XtVaSetValues (g_w[DAZ_W], XmNbackground, editableColor, NULL);
-		XtSetSensitive (g_w[DAZL_W], True);
-	    } else {
-		XtSetSensitive (g_w[DAUTO_W], False);
-		XtSetSensitive (g_w[DAZ_W], False);
-		XtVaSetValues (g_w[DAZ_W], XmNbackground, uneditableColor,NULL);
-		XtSetSensitive (g_w[DAZL_W], False);
-	    }
-	    last_godome = go;
-	}
 	go = telstatshmp->shutterstate != SH_ABSENT && xobs_alone;
 	if (go != last_goshutter) {
 	    if (go) {
@@ -422,31 +404,6 @@ showDome()
 	    }
 	    last_goshutter = go;
 	}
-
-	switch (ds) {
-	case DS_ABSENT:
-	    domelt = LTIDLE;
-	    break;
-
-	case DS_ROTATING:	/* FALLTHRU */
-	case DS_HOMING:
-	    domelt = LTACTIVE;
-	    break;
-
-	case DS_STOPPED:
-	    if (delra(telstatshmp->dometaz - telstatshmp->domeaz) <= DOMETOL)
-		domelt = LTOK;
-	    else if (telstatshmp->shutterstate == SH_OPEN)
-		domelt = LTWARN; /* open but in wrong position */
-	    else
-		domelt = LTIDLE;
-	    break;
-
-	default:
-	    domelt = LTIDLE;
-	    break;
-	}
-	setLt (g_w[DAZLT_W], domelt);
 
 	switch (telstatshmp->shutterstate) {
 	case SH_ABSENT:  sol = LTIDLE;   scl = LTIDLE;   break;
@@ -472,35 +429,6 @@ showDome()
 	}
 	setLt (g_w[COLT_W], col);
 	setLt (g_w[CVLT_W], ccl);
-
-
-	XmToggleButtonSetState (g_w[DAUTO_W], telstatshmp->autodome !=0, False);
-
-	if (ds != DS_ABSENT) {
-	    char buf[128];
-	    double tmp;
-
-	    if (ds != DS_HOMING) {
-		fs_sexa (buf, raddeg(telstatshmp->domeaz), 4, 3600);
-		wtprintf (g_w[PCDAZ_W], "%s", buf);
-		if (!XtIsSensitive (g_w[DAZ_W]))
-		    wtprintf (g_w[DAZ_W], "%.3s", buf);
-	    } else
-		wtprintf (g_w[PCDAZ_W], blank);
-
-	    if (telstatshmp->autodome || ds == DS_ROTATING || ds == DS_HOMING) {
-		fs_sexa (buf, raddeg(telstatshmp->dometaz), 4, 3600);
-		wtprintf (g_w[PTDAZ_W], "%s", buf);
-	    } else
-		wtprintf (g_w[PTDAZ_W], blank);
-
-	    if (telstatshmp->autodome || ds == DS_ROTATING) {
-		tmp = delra (telstatshmp->domeaz - telstatshmp->dometaz);
-		fs_sexa (buf, raddeg(tmp), 4, 3600);
-		wtprintf (g_w[PDDAZ_W], "%s", buf);
-	    } else
-		wtprintf (g_w[PDDAZ_W], blank);
-	}
 }
 
 /* For RCS Only -- Do Not Edit */

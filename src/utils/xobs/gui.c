@@ -476,8 +476,8 @@ mkCurrent(Widget main_w)
 	    {"HA"},
 	    {"Altitude"},
 	    {"Azimuth"},
-	    {"Dome Az"},
 	};
+
 	Widget fr_w, f_w;
 	Widget lf_w;
 	Widget l_w[XtNumber(ctrls)];
@@ -523,7 +523,6 @@ mkCurrent(Widget main_w)
 	g_w[PCHA_W] = l_w[3];
 	g_w[PCALT_W] = l_w[4];
 	g_w[PCAZ_W] = l_w[5];
-	g_w[PCDAZ_W] = l_w[6];
 
 	lf_w = XtVaCreateManagedWidget ("CCF", xmFormWidgetClass, f_w,
 	    XmNtopAttachment, XmATTACH_WIDGET,
@@ -551,7 +550,6 @@ mkCurrent(Widget main_w)
 	g_w[PTHA_W] = l_w[3];
 	g_w[PTALT_W] = l_w[4];
 	g_w[PTAZ_W] = l_w[5];
-	g_w[PTDAZ_W] = l_w[6];
 
 	lf_w = XtVaCreateManagedWidget ("CCF", xmFormWidgetClass, f_w,
 	    XmNtopAttachment, XmATTACH_WIDGET,
@@ -579,7 +577,6 @@ mkCurrent(Widget main_w)
 	g_w[PDHA_W] = l_w[3];
 	g_w[PDALT_W] = l_w[4];
 	g_w[PDAZ_W] = l_w[5];
-	g_w[PDDAZ_W] = l_w[6];
 
 	return (fr_w);
 }
@@ -678,39 +675,6 @@ mkDome(Widget main_w)
 	lf_w = XtVaCreateManagedWidget ("DCF", xmFormWidgetClass, tbl_w, NULL);
 	g_w[DCLT_W] = mkLight(lf_w);
 	mkRow (lf_w, &g_w[DCLT_W], 1, 1);
-
-	w = XtVaCreateManagedWidget ("C", xmSeparatorWidgetClass, tbl_w,
-	    XmNheight, 5,
-	    XmNseparatorType, XmSINGLE_LINE,
-	    NULL);
-
-	lf_w = XtVaCreateManagedWidget ("DAZLF", xmFormWidgetClass, tbl_w,NULL);
-	g_w[DAZLT_W] = mkLight(lf_w);
-	mkRow (lf_w, &g_w[DAZLT_W], 1, 1);
-
-	w = XtVaCreateManagedWidget ("A", xmToggleButtonWidgetClass, tbl_w,
-	    XmNalignment, XmALIGNMENT_CENTER,
-	    XmNindicatorOn, True,
-	    XmNindicatorType, XmN_OF_MANY,
-	    XmNvisibleWhenOff, True,
-	    XmNmarginHeight, 0,
-	    NULL);
-	wltprintf (pbT, w, "Auto");
-	XtAddCallback (w, XmNvalueChangedCallback, domeAutoCB, NULL);
-	g_w[DAUTO_W] = w;
-	wtip (w, "Automatically keep dome slit aligned with telescope");
-
-	w = mkPrompt (tbl_w, 4, &l_w, &tf_w, NULL);
-	wltprintf (prT, l_w, "Az ");
-	g_w[DAZL_W] = l_w;
-	g_w[DAZ_W] = tf_w;
-	XtVaSetValues (tf_w,
-	    XmNbackground, editableColor,
-	    XmNmaxLength, 5, 	/* e.g. 123.5 */
-	    NULL);
-	XtAddCallback (tf_w, XmNactivateCallback, domeGotoCB, NULL);
-	wtip (tf_w, "Enter new dome slit azimuth, then press ENTER");
-	XtVaSetValues (l_w, XmNalignment, XmALIGNMENT_BEGINNING, NULL);
 
 	return (fr_w);
 }
