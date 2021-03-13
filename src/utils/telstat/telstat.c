@@ -27,7 +27,22 @@ static char* coverStateNames[] = {
     "CV_OPENING",
     "CV_CLOSING",
     "CV_OPEN",
-    "CV_CLOSED",
+    "CV_CLOSED"
+};
+
+static char* heartbeatNames[] = {
+    "H_DISABLED",
+    "H_ENABLED",
+    "H_TRIGGERED"
+};
+
+static char* shutterNames[] = {
+    "SH_ABSENT",
+    "SH_IDLE",
+    "SH_OPENING",
+    "SH_CLOSING",
+    "SH_OPEN",
+    "SH_CLOSED"
 };
 
 TelStatShm *init_shm()
@@ -76,6 +91,9 @@ int main (int argc, char **argv)
     printf("\t],\n");
     printf("\t\"ra\": \"%f\",\n", telstatshmp->CJ2kRA);
     printf("\t\"dec\": \"%f\"\n", telstatshmp->CJ2kDec);
+    printf("\t\"roof_state\": \"%s\",\n", shutterNames[telstatshmp->shutterstate]);
+    printf("\t\"roof_heartbeat\": \"%s\"\n", heartbeatNames[telstatshmp->domeheartbeatstate]);
+    printf("\t\"roof_heartbeat_remaining\": \"%d\"\n", telstatshmp->domeheartbeatremaining);
     printf("}\n");
 
     exit(EXIT_SUCCESS);

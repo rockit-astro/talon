@@ -49,6 +49,7 @@ static void dome_open(int first, ...);
 static void dome_close(int first, ...);
 static void dome_stop(int first, ...);
 static void dome_alarmset(int first, int alon);
+static void dome_heartbeatset(int first, int heartbeat);
 
 /* helped along by these... */
 static int d_emgstop(char *msg);
@@ -70,6 +71,7 @@ static char * enclType(void);
 
 /* control and status connections */
 static int cfd = 0, sfd = 0;
+static time_t heartbeat_timeout;
 
 /* called when we receive a message from the Dome fifo plus periodically with
  *   !msg to just update things.
@@ -81,7 +83,7 @@ char *msg;
 {
     char jog_dir[2];
     double az;
-    int alon;
+    int alon, heartbeat;
 
     /* do reset before checking for `have' to allow for new config file */
     if (msg && strncasecmp (msg, "reset", 5) == 0) {
@@ -120,6 +122,12 @@ char *msg;
         return;
     }
 
+    if (msg && sscanf (msg, "heartbeat %d", &heartbeat) == 1)
+    {
+        dome_heartbeatset(1, heartbeat);
+        return;
+    }
+
     /* top priority are emergency stop and weather alerts */
     if (d_emgstop(msg) || d_chkWx(msg))
         return;
@@ -133,7 +141,8 @@ char *msg;
     	dome_open(1);
     else if (strncasecmp (msg, "close", 5) == 0)
     	dome_close(1);
-    else {
+    else
+    {
         fifoWrite (Dome_Id, -1, "Unknown command: %.20s", msg);
         dome_stop (1);	/* default for any unrecognized message */
     }
@@ -223,6 +232,13 @@ dome_open (int first, ...)
     /* nothing to do if no shutter */
     if (!SHAVE) {
         fifoWrite (Dome_Id, -3, "No %s to open", doorType());
+        return;
+    }
+
+    if (telstatshmp->domeheartbeatstate == H_TRIPPED)
+    {
+        fifoWrite(Dome_Id, -10, "Open error: heartbeat monitor has tripped");
+        toTTS("Error opening %s: heartbeat monitor has tripped", doorType());
         return;
     }
 
@@ -457,6 +473,46 @@ static void dome_alarmset (int first, int alon) {
     }
 }
 
+static void dome_heartbeatset(int first, int heartbeat)
+{
+    if (!SHAVE)
+    {
+        fifoWrite(Dome_Id, 0, "Ok, but really no shutter");
+        return;
+    }
+
+    if (heartbeat > 600)
+    {
+        fifoWrite(Dome_Id, -10, "Heartbeat error: timeout must be less than 600s");
+        toTTS("Heartbeat error: timeout must be less than 600s");
+        return;
+    }
+
+    if (heartbeat > 0 && telstatshmp->domeheartbeatstate == H_TRIPPED)
+    {
+        fifoWrite(Dome_Id, -11, "Heartbeat error: heartbeat monitor has tripped");
+        toTTS("Heartbeat error: heartbeat monitor has tripped");
+        return;
+    }
+
+    telstatshmp->domeheartbeatremaining = heartbeat;
+    if (heartbeat > 0)
+    {
+        telstatshmp->domeheartbeatstate = H_ENABLED;
+        heartbeat_timeout = time(NULL) + heartbeat;
+
+        fifoWrite(Dome_Id, 0, "Dome heartbeat expires at %zu", heartbeat_timeout);
+        toTTS("Dome heartbeat expires at %zu", heartbeat_timeout);
+    }
+    else
+    {
+        telstatshmp->domeheartbeatstate = H_DISABLED;
+        heartbeat_timeout = 0;
+        fifoWrite(Dome_Id, 0, "Dome heartbeat disabled");
+        toTTS("Dome heartbeat disabled");
+    }
+}
+
 /* middle-layer support functions */
 
 /* check the emergency stop bit.
@@ -477,19 +533,26 @@ d_emgstop(char *msg)
 static int
 d_chkWx(char *msg)
 {
-    // TODO: Implement heartbeat timeout
-    int wxalert = 0;
-
-    if (!wxalert || !SHAVE)
+    if (!SHAVE || telstatshmp->domeheartbeatstate != H_ENABLED)
         return(0);
 
-    if (msg || (active_func && active_func != dome_close))
-        fifoWrite (Dome_Id,
-                   -16, "Command cancelled.. weather alert in progress");
+    int remaining = heartbeat_timeout - time(NULL);
+    if (remaining > 0)
+    {
+        telstatshmp->domeheartbeatremaining = remaining;
+        return(0);
+    }
 
-    if (active_func != dome_close && SS != SH_CLOSED) {
-        fifoWrite (Dome_Id, 9, "Weather alert asserted -- closing %s", doorType());
-        dome_close (1);
+    telstatshmp->domeheartbeatstate = H_TRIPPED;
+    telstatshmp->domeheartbeatremaining = -1;
+
+    if (msg || (active_func && active_func != dome_close))
+        fifoWrite (Dome_Id, -16, "Command cancelled.. dome heartbeat has tripped");
+
+    if (active_func != dome_close && SS != SH_CLOSED)
+    {
+        fifoWrite(Dome_Id, 9, "Dome heartbeat has tripped -- closing %s", doorType());
+        dome_close(1);
     }
 
     dome_poll();

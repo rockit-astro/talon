@@ -159,7 +159,7 @@ main (int ac, char *av[])
 	signal (SIGHUP, onsig);
 
 	/* init stuff */
-	chkDaemon ("telescoped", "Tel", 1, 60);	/*long for csimcd stale socket*/
+	chkDaemon ("telescoped -v", "Tel", 1, 60);	/*long for csimcd stale socket*/
 	initCfg();
 	initShm();
 	mkGUI(version);

@@ -105,6 +105,12 @@ typedef enum {
     SH_CLOSED			/* shutter is closed */
 } DShState;
 
+typedef enum {
+	H_DISABLED,
+	H_ENABLED,
+	H_TRIPPED
+} DHeartbeatState;
+
 /* cover states */
 typedef enum {
 	CV_ABSENT,
@@ -146,11 +152,14 @@ typedef struct {
     TelAxes tax;
 
     /* various status indicators */
-    TelState telstate;		/* telescope state */
+    TelState telstate : 8;		/* telescope state */
     int jogging_ison : 1;	/* currently jogged/jogging from target */
-    DShState shutterstate;	/* shutter state */
-    CoverState coverstate;
+    DShState shutterstate : 8;	/* shutter state */
+    CoverState coverstate : 8;
     int domealarm : 1;
+
+    DHeartbeatState domeheartbeatstate : 8;
+    int domeheartbeatremaining : 16;
 
     /* telescoped pid */
     pid_t teld_pid;
