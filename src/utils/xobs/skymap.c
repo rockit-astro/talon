@@ -98,7 +98,6 @@ showSkyMap()
 
 	if (!skyGC) {
 	    skyGC = XCreateGC (dsp, win, 0L, NULL);
-	    XSetFont (dsp, skyGC, XLoadFont (dsp, "8x13bold"));
 	    sky_p = getColor (toplevel_w, "#334");
 	    skygrid_p = getColor (toplevel_w, "#777");
 	    skytel_p = getColor (toplevel_w, "#ccf");

@@ -5,7 +5,6 @@ Summary:   Stripped down Talon installation for the W1m telescope
 License:   proprietary
 Group:     Unspecified
 BuildArch: x86_64
-Requires: xorg-x11-fonts-misc
 
 %description
 Stripped down Talon installation for the W1m telescope.
