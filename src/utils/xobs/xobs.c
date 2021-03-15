@@ -80,15 +80,12 @@ static char version[] = "1.28";
 #include <Xm/DrawingA.h>
 #include <Xm/Frame.h>
 
-#include <X11/Xmu/Editres.h>
-
 #include "P_.h"
 #include "astro.h"
 #include "circum.h"
 #include "configfile.h"
 #include "strops.h"
 #include "misc.h"
-/* #include "db.h" */
 #include "telenv.h"
 #include "telstatshm.h"
 #include "running.h"
@@ -141,12 +138,6 @@ main (int ac, char *av[])
 	    tip_seton(0);
 	    rusure_seton(0);
 	}
-
-#ifdef WANT_EDITRES
-	/* support editres */
-        XtAddEventHandler (toplevel_w, (EventMask)0, True,
-	                                        _XEditResCheckMessages, NULL);
-#endif /*  WANT_EDITRES */
 
 	/* handle some signals */
 	signal (SIGPIPE, SIG_IGN);
