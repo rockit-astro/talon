@@ -30,8 +30,6 @@
 #include <Xm/DrawingA.h>
 #include <Xm/Frame.h>
 
-#include <X11/xpm.h>
-
 #include "P_.h"
 #include "astro.h"
 #include "circum.h"

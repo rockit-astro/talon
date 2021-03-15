@@ -80,7 +80,6 @@ static char version[] = "1.28";
 #include <Xm/DrawingA.h>
 #include <Xm/Frame.h>
 
-#include <X11/xpm.h>
 #include <X11/Xmu/Editres.h>
 
 #include "P_.h"

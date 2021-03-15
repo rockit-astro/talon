@@ -24,6 +24,6 @@ include_directories ("${CORE_LIBS_DIR}/xmisc")
 
 add_executable(xobs ${XOBS_SRC})
 
-target_link_libraries (xobs astro m misc xmisc Xm Xt Xpm X11)
+target_link_libraries (xobs astro m misc xmisc Xm Xt X11)
 
 install (TARGETS xobs DESTINATION bin)
