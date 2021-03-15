@@ -5,6 +5,8 @@ Summary:   Stripped down Talon installation for the SuperWASP telescope
 License:   proprietary
 Group:     Unspecified
 BuildArch: x86_64
+BuildRequires: motif-devel
+Requires: tcsh
 
 %description
 Stripped down Talon installation for the SuperWASP telescope.
