@@ -81,7 +81,6 @@ typedef enum {
     TEL_DM,			/* latitudinal motor, "dec" or "alt" */
     TEL_RM,			/* field rotator motor */
     TEL_OM,			/* focus motor */
-    TEL_IM,			/* filter wheel motor */
     TEL_NM			/* total number of potential motors */
 } MotorId;			/* index into minfo[] */
 
@@ -174,22 +173,19 @@ typedef struct {
 			telstatshmp->minfo[TEL_HM].homing ||	\
 			telstatshmp->minfo[TEL_DM].homing ||	\
 			telstatshmp->minfo[TEL_RM].homing ||	\
-			telstatshmp->minfo[TEL_OM].homing ||	\
-			telstatshmp->minfo[TEL_IM].homing)
+			telstatshmp->minfo[TEL_OM].homing)
 
 #define	ANY_LIMITING	( 					\
 			telstatshmp->minfo[TEL_HM].limiting ||	\
 			telstatshmp->minfo[TEL_DM].limiting ||	\
 			telstatshmp->minfo[TEL_RM].limiting ||	\
-			telstatshmp->minfo[TEL_OM].limiting ||	\
-			telstatshmp->minfo[TEL_IM].limiting)
+			telstatshmp->minfo[TEL_OM].limiting)
 
 /* handy shortcuts to motor info */
 #define HMOT    (&telstatshmp->minfo[TEL_HM])
 #define DMOT    (&telstatshmp->minfo[TEL_DM])
 #define RMOT    (&telstatshmp->minfo[TEL_RM])
 #define OMOT    (&telstatshmp->minfo[TEL_OM])
-#define IMOT    (&telstatshmp->minfo[TEL_IM])
 
 /* telaxes.c */
 extern void tel_hadec2xy (double H, double D, TelAxes *tap, double *X,

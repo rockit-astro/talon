@@ -448,8 +448,6 @@ recordLimit (MotorInfo *mip, char dir)
         name[0] = 'R';
     else if (mip == &telstatshmp->minfo[TEL_OM])
         name[0] = 'O';
-    else if (mip == &telstatshmp->minfo[TEL_IM])
-        name[0] = 'I';
     else {
         /* who could it be?? */
         tdlog ("Bogus mip passed to recordLimit: %ld", (long)mip);
@@ -485,8 +483,6 @@ recordStep (MotorInfo *mip, int motdiff, int encdiff)
         name[0] = 'H';
     else if (mip == &telstatshmp->minfo[TEL_DM])
         name[0] = 'D';
-    else if (mip == &telstatshmp->minfo[TEL_IM])
-        name[0] = 'I';
     else if (mip == &telstatshmp->minfo[TEL_OM])
         name[0] = 'O';
     else {
