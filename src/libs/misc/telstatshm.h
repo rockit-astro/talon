@@ -151,14 +151,14 @@ typedef struct {
     TelAxes tax;
 
     /* various status indicators */
-    TelState telstate : 8;		/* telescope state */
-    int jogging_ison : 1;	/* currently jogged/jogging from target */
-    DShState shutterstate : 8;	/* shutter state */
-    CoverState coverstate : 8;
-    int domealarm : 1;
+    TelState telstate;		/* telescope state */
+    int jogging_ison;	/* currently jogged/jogging from target */
+    DShState shutterstate;	/* shutter state */
+    CoverState coverstate;
+    int domealarm;
 
-    DHeartbeatState domeheartbeatstate : 8;
-    int domeheartbeatremaining : 16;
+    DHeartbeatState domeheartbeatstate;
+    int domeheartbeatremaining;
 
     /* telescoped pid */
     pid_t teld_pid;
