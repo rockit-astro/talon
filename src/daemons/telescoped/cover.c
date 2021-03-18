@@ -118,7 +118,28 @@ void cover_close(int first, ...) {
 		fifoWrite(Cover_Id, -3, "No Cover to close");
 		return;
 	}
-	
+
+    if (virtual_mode)
+    {
+        static double mjdend;
+        if (first)
+        {
+            fifoWrite (Cover_Id, 2, "Starting close");
+            CS = CV_CLOSING;
+            active_func = cover_close;
+            mjdend = telstatshmp->now.n_mjd + 5. / 86400;
+        }
+
+        if (telstatshmp->now.n_mjd > mjdend)
+        {
+            fifoWrite(Cover_Id, 0, "Close complete");
+    		CS = CV_CLOSED;
+    		active_func = NULL;
+        }
+
+        return;
+    }
+
 	if(first) {
 		cover_to = mjd + COVERTO;
 		active_func = cover_close;
@@ -181,7 +202,28 @@ void cover_open(int first, ...) {
 		fifoWrite(Cover_Id, -3, "No Cover to open");
 		return;
 	}
-	
+
+    if (virtual_mode)
+    {
+        static double mjdend;
+        if (first)
+        {
+            fifoWrite (Cover_Id, 2, "Starting open");
+            CS = CV_OPENING;
+            active_func = cover_open;
+            mjdend = telstatshmp->now.n_mjd + 5. / 86400;
+        }
+
+        if (telstatshmp->now.n_mjd > mjdend)
+        {
+            fifoWrite(Cover_Id, 0, "Open complete");
+    		CS = CV_OPEN;
+    		active_func = NULL;
+        }
+
+        return;
+    }
+
 	if(first) {
 		cover_to = mjd + COVERTO;
 		active_func = cover_open;

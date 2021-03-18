@@ -42,13 +42,20 @@ extern void readFocus();
 int
 axis_home (MotorInfo *mip, FifoId fid, int first)
 {
+    static double mjdto[TEL_NM];
+    int i = mip - &telstatshmp->minfo[0];
     if (virtual_mode) {
-        vmcSetHome(mip->axis);
-        mip->ishomed = 1;
-        return 0;
+        if (first)
+            mjdto[i] = telstatshmp->now.n_mjd + 5. / 86400;
+        else if (telstatshmp->now.n_mjd > mjdto[i])
+        {
+            vmcSetHome(mip->axis);
+            mip->ishomed = 1;
+            return 0;
+        }
+
+        return 1;
     } else {
-        static double mjdto[TEL_NM];
-        int i = mip - &telstatshmp->minfo[0];
         int axis = (int)mip->axis;
         int cfd = MIPCFD(mip);
         char buf[1024];
@@ -265,17 +272,28 @@ axis_limits (MotorInfo *mip, FifoId fid, int first)
         }
     }
 
+    static double mjdto[TEL_NM];
+    int i = mip - telstatshmp->minfo;
 
     if (virtual_mode) {
-        // TODO: virtualize limits
-        return 0;
+        if (first)
+        {
+            mip->limiting = 1;
+            mjdto[i] = telstatshmp->now.n_mjd + 5. / 86400;
+        }
+
+        if (telstatshmp->now.n_mjd > mjdto[i])
+        {
+            mip->limiting = 0;
+            return 0;
+        }
+
+        return 1;
     } else {
-        static double mjdto[TEL_NM];	/* timeout */
         static char seeking[TEL_NM];	/* canonical dir we seek, '+'/'-' */
         static char found[TEL_NM];	/* last can dir we found, '+'/'-' */
         static int motbeg[TEL_NM];	/* motor at beginning of sweep */
         static int encbeg[TEL_NM];	/* encoder at beginning of sweep */
-        int i = mip - telstatshmp->minfo;
         int axis = (int)mip->axis;
         int cfd = MIPCFD(mip);
         char buf[1024];
