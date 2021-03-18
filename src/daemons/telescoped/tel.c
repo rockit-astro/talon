@@ -1716,6 +1716,7 @@ static void mkCook()
 	telstatshmp->CARA = ra;
 	telstatshmp->CAHA = ha;
 	telstatshmp->CADec = dec;
+    telstatshmp->Clst = lst;
 
 	/* find J2000 astrometric equatorial coords */
 	ap_as(np, J2000, &ra, &dec);

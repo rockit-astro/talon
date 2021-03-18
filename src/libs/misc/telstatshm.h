@@ -134,6 +134,7 @@ typedef struct {
     double CARA, CAHA, CADec;	/* EOD apparent RA/HA/Dec, rads */
     double Calt, Caz;		/* alt, az, rads */
     double CPA;			/* parallactic angle, rads, + when west */
+    double Clst;                /* local sidereal time */
 
     /* desired position now .. N.B. iff TEL_HUNTING/SLEWING/TRACKING */
     double DJ2kRA, DJ2kDec;	/* J2000 astrometric RA/Dec, rads */
