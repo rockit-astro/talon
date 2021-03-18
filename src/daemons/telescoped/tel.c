@@ -322,6 +322,7 @@ static void tel_home(int first, ...)
 		/* if get here, set new state */
 		active_func = tel_home;
 		telstatshmp->telstate = TS_HOMING;
+		telstatshmp->telstateidx++;
 		toTTS("The telescope is seeking the home position.");
 	}
 
@@ -354,6 +355,7 @@ static void tel_home(int first, ...)
 	if (!nwant)
 	{
 		telstatshmp->telstate = TS_STOPPED;
+		telstatshmp->telstateidx++;
 		active_func = NULL;
 		fifoWrite(Tel_Id, 0, "Scope homing complete");
 		toTTS("The telescope has found the home position.");
@@ -436,6 +438,7 @@ static void tel_limits(int first, ...)
 		/* new state */
 		active_func = tel_limits;
 		telstatshmp->telstate = TS_LIMITING;
+		telstatshmp->telstateidx++;
 		toTTS("The telescope is seeking the limit positions.");
 	}
 
@@ -555,6 +558,7 @@ static void tel_radecep(int first, ...)
 		o = *op;
 		active_func = tel_radecep;
 		telstatshmp->telstate = TS_HUNTING;
+		telstatshmp->telstateidx++;
 		telstatshmp->jogging_ison = 0;
 		r_offset = d_offset = 0;
 
@@ -597,6 +601,7 @@ static void tel_radeceod(int first, ...)
 		o = *op;
 		active_func = tel_radeceod;
 		telstatshmp->telstate = TS_HUNTING;
+		telstatshmp->telstateidx++;
 		telstatshmp->jogging_ison = 0;
 		r_offset = d_offset = 0;
 
@@ -629,6 +634,7 @@ static void tel_op(int first, ...)
 		o = *op;
 		active_func = tel_op;
 		telstatshmp->telstate = TS_HUNTING;
+		telstatshmp->telstateidx++;
 		telstatshmp->jogging_ison = 0;
 
 		obj_cir(np, op); /* just for sayWhere */
@@ -672,6 +678,7 @@ static void tel_altaz(int first, ...)
 
 		/* set new state */
 		telstatshmp->telstate = TS_SLEWING;
+		telstatshmp->telstateidx++;
 		active_func = tel_altaz;
 
 		/* set new raw destination */
@@ -804,6 +811,7 @@ static void tel_hadec(int first, ...)
 
 		/* set new state */
 		telstatshmp->telstate = TS_SLEWING;
+		telstatshmp->telstateidx++;
 		active_func = tel_hadec;
 
 		/* set raw destination */
@@ -937,6 +945,7 @@ static void tel_stop(int first, ...)
 
 	/* if get here, everything has stopped */
 	telstatshmp->telstate = TS_STOPPED;
+	telstatshmp->telstateidx++;
 	active_func = NULL;
 	fifoWrite(Tel_Id, 0, "Stop complete");
 	toTTS("The telescope is now stopped.");
@@ -1527,6 +1536,7 @@ static int trackObj(Obj *op, int first)
 			fifoWrite(Tel_Id, 0, "Now tracking");
 			toTTS("The telescope is now tracking.");
 			telstatshmp->telstate = TS_TRACKING;
+			telstatshmp->telstateidx++;
 		}
 		break;
 	case TS_TRACKING:
@@ -1540,6 +1550,7 @@ static int trackObj(Obj *op, int first)
 					mip->axis, delra(mip->cpos - mip->dpos));
 			toTTS("The telescope has lost tracking lock.");
 			telstatshmp->telstate = TS_HUNTING;
+			telstatshmp->telstateidx++;
 		}
 		break;
 
@@ -1793,6 +1804,7 @@ static void stopTel(int fast)
 
 	telstatshmp->jogging_ison = 0;
 	telstatshmp->telstate = TS_STOPPED; /* well, soon anyway */
+	telstatshmp->telstateidx++;
 }
 
 /* return 0 if all axes are within acceptable margin of desired, else -1 if
@@ -2134,6 +2146,7 @@ static void jogSlew(int first, char dircode, int velocity)
 		csi_w(MIPCFD(mip), "mtvel=%d;", CVELStp(mip));
 	}
 	telstatshmp->telstate = TS_SLEWING;
+	telstatshmp->telstateidx++;
 	fifoWrite(Tel_Id, 5, "Paddle command %s", msg);
 	telstatshmp->jogging_ison = 1;
 }

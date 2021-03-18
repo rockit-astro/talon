@@ -152,6 +152,7 @@ typedef struct {
 
     /* various status indicators */
     TelState telstate;		/* telescope state */
+    int telstateidx;
     int jogging_ison;	/* currently jogged/jogging from target */
     DShState shutterstate;	/* shutter state */
     CoverState coverstate;
