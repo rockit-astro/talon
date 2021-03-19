@@ -13,6 +13,7 @@
 
 
 static char* telStateNames[] = {
+    "TS_ABSENT",
     "TS_STOPPED",
     "TS_HUNTING",
     "TS_TRACKING",

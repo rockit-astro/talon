@@ -86,6 +86,7 @@ typedef enum {
 
 /* telescope states */
 typedef enum {
+    TS_ABSENT,                  /* placeholder for teld monitoring */
     TS_STOPPED,			/* telescope motionless; no updates occuring */
     TS_HUNTING,			/* searching for tra/dec, then track */
     TS_TRACKING,		/* tracking object at tra/tdec */
