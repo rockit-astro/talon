@@ -118,6 +118,9 @@ static XrmOptionDescRec options[] = {
 int
 main (int ac, char *av[])
 {
+	int i;
+	char *telescoped = "telescoped";
+
 	progname = basenm(av[0]);
 
 	/* connect to log file */
@@ -149,10 +152,9 @@ main (int ac, char *av[])
 	signal (SIGHUP, onsig);
 
 	/* init stuff */
-    char *telescoped = "telescoped";
-    for (int i = 1; i < ac; i++)
-        if (strcmp(av[i], "-v") == 0)
-            telescoped = "telescoped -v";
+	for (i = 1; i < ac; i++)
+	    if (strcmp(av[i], "-v") == 0)
+	        telescoped = "telescoped -v";
 
 	chkDaemon (telescoped, "Tel", 1, 60);	/*long for csimcd stale socket*/
 	initCfg();
