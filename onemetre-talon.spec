@@ -1,5 +1,5 @@
 Name:      onemetre-talon
-Version:   20210318
+Version:   20210616
 Release:   0
 Summary:   Stripped down Talon installation for the W1m telescope
 License:   proprietary
@@ -21,13 +21,14 @@ rm -rf %{buildroot}/usr/local/telescope/archive/superwasp_config
 
 %files
 %defattr(0644,root,root,-)
-/usr/local/telescope
 /etc/profile.d/talon.sh
 
 %defattr(0755,root,root,-)
-/usr/local/telescope/bin
+/usr/local/telescope
 
 %defattr(0777,root,root,-)
 /usr/local/telescope/archive/config
+/usr/local/telescope/archive/logs
+/usr/local/telescope/comm
 
 %changelog
