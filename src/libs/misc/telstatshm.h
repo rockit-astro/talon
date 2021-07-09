@@ -126,6 +126,8 @@ typedef enum {
  * D refers to the telescope axis of "latitude", be it Dec or Alt.
  */
 typedef struct {
+    pid_t telescoped_pid;
+
     /* time info */
     Now now;			/* current time and location info */
     int dt;			/* update period, ms */
@@ -163,10 +165,6 @@ typedef struct {
      */
 
     CoverState coverstate;
-
-    /* telescoped pid */
-    pid_t teld_pid;
-    long heartbeat;
 } TelStatShm;
 
 /* handy shortcuts that check things for being ready for normal observing */

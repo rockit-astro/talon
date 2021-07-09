@@ -304,7 +304,7 @@ init_shm()
     telstatshmp = (TelStatShm *) addr;
 
     /* store the PID of this process */
-    telstatshmp->teld_pid=getpid();
+    telstatshmp->telescoped_pid = getpid();
 }
 
 static void
