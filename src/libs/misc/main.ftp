@@ -1,4 +1,0 @@
-ftp clearsky << xXx
-cd telescope/libmisc
-put csimc.h
-xXx

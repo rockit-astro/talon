@@ -270,7 +270,3 @@ static void periodic_check()
     updateStatus(0);
     XtAppAddTimeOut(app, SHMPOLL_PERIOD, (XtTimerCallbackProc)periodic_check, 0);
 }
-
-/* For RCS Only -- Do Not Edit */
-static char *rcsid[2] = {(char *)rcsid,
-                         "@(#) $RCSfile: xobs.c,v $ $Date: 2006/05/28 01:07:18 $ $Revision: 1.2 $ $Name:  $"};

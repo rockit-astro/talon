@@ -875,7 +875,3 @@ static void cmdSerial(char cmd[])
     csi_close(sfd);
     kickPrompt();
 }
-
-/* For RCS Only -- Do Not Edit */
-static char *rcsid[2] = {(char *)rcsid,
-                         "@(#) $RCSfile: csimc.c,v $ $Date: 2001/04/19 21:11:57 $ $Revision: 1.1.1.1 $ $Name:  $"};

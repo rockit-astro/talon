@@ -56,7 +56,3 @@ typedef struct
 #define PC39_STAT_IBF_S 0x20
 #define PC39_STAT_TBE_S 0x40
 #define PC39_STAT_IRQ_S 0x80
-
-/* For RCS Only -- Do Not Edit
- * @(#) $RCSfile: pc39.h,v $ $Date: 2001/04/19 21:12:14 $ $Revision: 1.1.1.1 $ $Name:  $
- */

@@ -411,7 +411,3 @@ static int setupAsSlave()
         daemonLog("Connected to %s\n", master);
     return (cli_fd);
 }
-
-/* For RCS Only -- Do Not Edit */
-static char *rcsid[2] = {(char *)rcsid,
-                         "@(#) $RCSfile: shmd.c,v $ $Date: 2002/04/08 21:37:28 $ $Revision: 1.2 $ $Name:  $"};

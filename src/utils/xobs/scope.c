@@ -493,7 +493,3 @@ static void findAA(double ra, double dec, double e, double *hap, double *altp, d
     *altp = o.s_alt;
     *azp = o.s_az;
 }
-
-/* For RCS Only -- Do Not Edit */
-static char *rcsid[2] = {(char *)rcsid,
-                         "@(#) $RCSfile: scope.c,v $ $Date: 2002/10/23 20:45:18 $ $Revision: 1.2 $ $Name:  $"};

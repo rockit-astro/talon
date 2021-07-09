@@ -22,6 +22,3 @@ define report()
 	printf("%9d %8d %8d %8d %d %d %d\n", clock, mpos, mvel, epos,
 			!!(ilev&plimbit), !!(ilev&nlimbit), !!(ilev&homebit));
 }
-
-# For RCS Only -- Do Not Edit
-# @(#) $RCSfile: basic.cmc,v $ $Date: 2001/06/26 03:48:01 $ $Revision: 1.1 $ $Name:  $

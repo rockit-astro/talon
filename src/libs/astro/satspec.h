@@ -1,8 +1,6 @@
 #ifndef __SATSPEC_H
 #define __SATSPEC_H
 
-/* $Id: satspec.h,v 1.1.1.1 2001/04/19 21:12:13 ocaas Exp $ */
-
 #include "satlib.h"
 #include "sattypes.h"
 
@@ -33,7 +31,3 @@ void dpsec(SatData *sat, double *XLL, double *OMGASM, double *XNODES, double *EM
 void dpper(SatData *sat, double *EM, double *XINC, double *OMGASM, double *XNODES, double *XLL, double T);
 
 #endif /* __SATSPEC_H */
-
-/* For RCS Only -- Do Not Edit
- * @(#) $RCSfile: satspec.h,v $ $Date: 2001/04/19 21:12:13 $ $Revision: 1.1.1.1 $ $Name:  $
- */

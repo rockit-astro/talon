@@ -220,7 +220,3 @@ static void set_shmtime()
     gettimeofday(&tv, NULL);
     telstatshmp->heartbeat = tv.tv_sec * 1000000 + tv.tv_usec;
 }
-
-/* For RCS Only -- Do Not Edit */
-static char *rcsid[2] = {(char *)rcsid,
-                         "@(#) $RCSfile: fifoio.c,v $ $Date: 2001/04/19 21:12:09 $ $Revision: 1.1.1.1 $ $Name:  $"};

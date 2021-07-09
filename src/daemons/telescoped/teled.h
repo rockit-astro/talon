@@ -84,7 +84,3 @@ extern void die(void);
 
 /* cover.c */
 extern void cover_msg(char *msg);
-
-/* For RCS Only -- Do Not Edit
- * @(#) $RCSfile: teled.h,v $ $Date: 2002/12/04 08:50:32 $ $Revision: 1.5 $ $Name:  $
- */

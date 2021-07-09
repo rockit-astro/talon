@@ -102,7 +102,3 @@ extern void tip_seton(int whether);
 
 /* update.c */
 extern void updateStatus(int force);
-
-/* For RCS Only -- Do Not Edit
- * @(#) $RCSfile: xobs.h,v $ $Date: 2006/05/28 01:07:18 $ $Revision: 1.4 $ $Name:  $
- */

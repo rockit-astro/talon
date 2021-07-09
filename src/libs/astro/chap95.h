@@ -63,7 +63,3 @@ extern chap95_rec chap95_pluto[];
 
 #include "P_.h"
 extern int chap95 P_((double mjd, int obj, double prec, double *ret));
-
-/* For RCS Only -- Do Not Edit
- * @(#) $RCSfile: chap95.h,v $ $Date: 2001/04/19 21:12:13 $ $Revision: 1.1.1.1 $ $Name:  $
- */

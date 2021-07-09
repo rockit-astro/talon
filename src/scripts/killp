@@ -66,6 +66,3 @@ end
 
 if ($badkill) exit 2
 exit 0
-
-# For RCS Only -- Do Not Edit
-# @(#) $RCSfile: killp,v $ $Date: 2001/04/19 21:12:21 $ $Revision: 1.1.1.1 $ $Name:  $

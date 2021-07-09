@@ -349,7 +349,3 @@ int open_telshm(TelStatShm **tpp)
     *tpp = (TelStatShm *)addr;
     return (0);
 }
-
-/* For RCS Only -- Do Not Edit */
-static char *rcsid[2] = {(char *)rcsid,
-                         "@(#) $RCSfile: cliserv.c,v $ $Date: 2001/04/19 21:12:14 $ $Revision: 1.1.1.1 $ $Name:  $"};

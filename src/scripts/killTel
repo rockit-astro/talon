@@ -19,6 +19,3 @@ echo -n "."
 echo "OK"
 
 echo ""
-
-# For RCS Only -- Do Not Edit
-# @(#) $RCSfile: killTel,v $ $Date: 2007/08/26 04:29:40 $ $Revision: 1.4 $ $Name:  $

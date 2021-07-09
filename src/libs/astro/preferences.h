@@ -70,7 +70,3 @@ extern int pref_get P_((Preferences p));
 extern int pref_set P_((Preferences p, int new));
 
 #endif /* _PREFERENCES_H */
-
-/* For RCS Only -- Do Not Edit
- * @(#) $RCSfile: preferences.h,v $ $Date: 2001/04/19 21:12:13 $ $Revision: 1.1.1.1 $ $Name:  $
- */

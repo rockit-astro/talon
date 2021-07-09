@@ -1,7 +1,7 @@
 #ifndef __SATLIB_H
 #define __SATLIB_H
 
-/* $Id: satlib.h,v 1.1.1.1 2001/04/19 21:12:13 ocaas Exp $ */
+#include "sattypes.h"
 
 typedef struct _SatElem
 {
@@ -207,7 +207,3 @@ void sgp4(SatData *sat, Vec3 *pos, Vec3 *dpos, double t);
 void sdp4(SatData *sat, Vec3 *pos, Vec3 *dpos, double TSINCE);
 
 #endif /* __SATLIB_H */
-
-/* For RCS Only -- Do Not Edit
- * @(#) $RCSfile: satlib.h,v $ $Date: 2001/04/19 21:12:13 $ $Revision: 1.1.1.1 $ $Name:  $
- */

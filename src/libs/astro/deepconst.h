@@ -1,8 +1,6 @@
 #ifndef _CONST_H
 #define _CONST_H
 
-/* $Id: deepconst.h,v 1.1.1.1 2001/04/19 21:12:13 ocaas Exp $ */
-
 #define GE (3.986005E14)
 
 #define PI (3.1415926535897932385)
@@ -27,7 +25,3 @@
 #define RHO (0.15696590235)
 
 #endif /* _CONST_H */
-
-/* For RCS Only -- Do Not Edit
- * @(#) $RCSfile: deepconst.h,v $ $Date: 2001/04/19 21:12:13 $ $Revision: 1.1.1.1 $ $Name:  $
- */

@@ -328,7 +328,3 @@ static void on_sig(int signo)
     tdlog("Received signal %d", signo);
     die();
 }
-
-/* For RCS Only -- Do Not Edit */
-static char *rcsid[2] = {(char *)rcsid,
-                         "@(#) $RCSfile: telescoped.c,v $ $Date: 2002/10/23 21:44:13 $ $Revision: 1.2 $ $Name:  $"};

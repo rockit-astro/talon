@@ -61,6 +61,8 @@ reports to:                    E-mail     : comments@bdl.fr
   implemented for C: stern
 */
 
+#include "P_.h"
+
 #define VSOP_ASCALE 1e8 /* amplitude factor as stored */
 
 /* coding flags */
@@ -86,7 +88,3 @@ extern double vx_neptune[][3];
 extern int vn_neptune[][3];
 
 extern int vsop87 P_((double mjd, int obj, double prec, double *ret));
-
-/* For RCS Only -- Do Not Edit
- * @(#) $RCSfile: vsop87.h,v $ $Date: 2001/04/19 21:12:14 $ $Revision: 1.1.1.1 $ $Name:  $
- */

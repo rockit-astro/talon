@@ -1,8 +1,6 @@
 #ifndef __SATVECTOR_H
 #define __SATVECTOR_H
 
-/* $Id: vector.h,v 1.1.1.1 2001/04/19 21:12:14 ocaas Exp $ */
-
 #define dotp(A, B) ((A).x * (B).x + (A).y * (B).y + (A).z * (B).z)
 
 #define crossp(A, B, C)                                                                                                \
@@ -28,7 +26,3 @@
     }
 
 #endif /* __SATVECTOR_H */
-
-/* For RCS Only -- Do Not Edit
- * @(#) $RCSfile: vector.h,v $ $Date: 2001/04/19 21:12:14 $ $Revision: 1.1.1.1 $ $Name:  $
- */

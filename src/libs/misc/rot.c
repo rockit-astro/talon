@@ -45,7 +45,3 @@ void rotz(double p[3], double a)
     p[1] = x * sa + y * ca;
     p[2] = z;
 }
-
-/* For RCS Only -- Do Not Edit */
-static char *rcsid[2] = {(char *)rcsid,
-                         "@(#) $RCSfile: rot.c,v $ $Date: 2001/04/19 21:12:14 $ $Revision: 1.1.1.1 $ $Name:  $"};

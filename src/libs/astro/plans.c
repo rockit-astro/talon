@@ -240,7 +240,3 @@ double *lpd0, *psi0, *rp0, *rho0, *lam, *bet, *dia, *mag;
     *dia = vis_elements[p][0];
     *mag = vis_elements[p][1];
 }
-
-/* For RCS Only -- Do Not Edit */
-static char *rcsid[2] = {(char *)rcsid,
-                         "@(#) $RCSfile: plans.c,v $ $Date: 2001/04/19 21:12:13 $ $Revision: 1.1.1.1 $ $Name:  $"};

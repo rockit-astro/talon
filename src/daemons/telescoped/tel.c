@@ -2543,7 +2543,3 @@ static void readStats(void)
         }
     }
 }
-
-/* For RCS Only -- Do Not Edit */
-static char *rcsid[2] = {(char *)rcsid,
-                         "@(#) $RCSfile: tel.c,v $ $Date: 2006/05/28 01:07:18 $ $Revision: 1.15 $ $Name:  $"};

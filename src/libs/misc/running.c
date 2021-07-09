@@ -119,7 +119,3 @@ static int read_lockpid(char *fn)
     pid = atoi(buf);
     return (pid > 1 ? pid : -1);
 }
-
-/* For RCS Only -- Do Not Edit */
-static char *rcsid[2] = {(char *)rcsid,
-                         "@(#) $RCSfile: running.c,v $ $Date: 2001/04/19 21:12:14 $ $Revision: 1.1.1.1 $ $Name:  $"};

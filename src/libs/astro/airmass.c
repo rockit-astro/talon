@@ -20,7 +20,3 @@ double *Xp;                     /* airmasses */
     sm1 = 1.0 / sin(aa) - 1.0;
     *Xp = 1.0 + sm1 * (0.9981833 - sm1 * (0.002875 + 0.0008083 * sm1));
 }
-
-/* For RCS Only -- Do Not Edit */
-static char *rcsid[2] = {(char *)rcsid,
-                         "@(#) $RCSfile: airmass.c,v $ $Date: 2001/04/19 21:12:13 $ $Revision: 1.1.1.1 $ $Name:  $"};
