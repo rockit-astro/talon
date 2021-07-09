@@ -34,7 +34,6 @@
 
 static void tel_rd_cb (XtPointer client, int *fdp, XtInputId *idp);
 static void focus_rd_cb (XtPointer client, int *fdp, XtInputId *idp);
-static void dome_rd_cb (XtPointer client, int *fdp, XtInputId *idp);
 static void cover_rd_cb(XtPointer client, int *fdp, XtInputId *idp);
 
 /* this is used to describe the several FIFOs used to communicate with
@@ -50,7 +49,6 @@ typedef struct {
 static FifoCallback fifocb[] = {
     {Tel_Id,	tel_rd_cb},
     {Focus_Id,	focus_rd_cb},
-    {Dome_Id,	dome_rd_cb},
     {Cover_Id,	cover_rd_cb},
 };
 
@@ -116,22 +114,6 @@ XtInputId *idp;         /* pointer to input id */
 
 	s = fifoRead (Focus_Id, buf, sizeof(buf));
 	msg ("Focus: %s", buf);
-	updateStatus(1);
-}
-
-/* called whenever we get input from the Dome fifo */
-/* ARGSUSED */
-static void
-dome_rd_cb (client, fdp, idp)
-XtPointer client;       /* file name */
-int *fdp;               /* pointer to file descriptor */
-XtInputId *idp;         /* pointer to input id */
-{
-	char buf[1024];
-
-	fifoRead (Dome_Id, buf, sizeof(buf));
-	msg ("Dome: %s", buf);
-
 	updateStatus(1);
 }
 

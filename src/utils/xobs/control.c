@@ -53,7 +53,6 @@ static HLInfo hl_info[N_AX] = {
     {"Scope Dec/Alt", Tel_Id,    'D'},
     {"Rotator",       Tel_Id,    'R'},
     {"Focus",         Focus_Id},
-    {"Dome",          Dome_Id},
     {"Cover",		  Cover_Id},
 };
 

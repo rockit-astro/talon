@@ -156,12 +156,13 @@ typedef struct {
     TelState telstate;		/* telescope state */
     int telstateidx;
     int jogging_ison;	/* currently jogged/jogging from target */
-    DShState shutterstate;	/* shutter state */
-    CoverState coverstate;
-    int domealarm;
 
-    DHeartbeatState domeheartbeatstate;
-    int domeheartbeatremaining;
+    /*
+     * everything above should be kept in sync with the SuperWASP talon code
+     * W1m specific state is below
+     */
+
+    CoverState coverstate;
 
     /* telescoped pid */
     pid_t teld_pid;

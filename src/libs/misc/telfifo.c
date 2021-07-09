@@ -20,10 +20,11 @@
 static TelStatShm *telstatshmp; /* to shared memory segment */
 
 
-FifoInfo fifos[] = { {"Tel",     Tel_Id},
-                     {"Focus",   Focus_Id},
-                     {"Dome",    Dome_Id},
-                     {"Cover", Cover_Id}	};
+FifoInfo fifos[] = {
+    {"Tel",     Tel_Id},
+    {"Focus",   Focus_Id},
+    {"Cover", Cover_Id}
+};
 
 FifoInfo getFIFO(int id)
 {
@@ -148,8 +149,6 @@ stopAllDevices()
     }
     
     fifoMsg (Tel_Id, "Stop");
-    if (telstatshmp->shutterstate != SH_ABSENT)
-        fifoMsg (Dome_Id, "Stop");
     if (OMOT->have)
         fifoMsg (Focus_Id, "Stop");
 }

@@ -1,4 +1,4 @@
-/* This process listens to several FIFO pairs for generic telescope, dome,
+/* This process listens to several FIFO pairs for generic telescope
  * and focus commands and manipulates CSIMCs accordingly.
  * The fifo names all end with ".in" and ".out" which are with respect to us,
  * the server. Several config files establish several options and parameters.
@@ -14,7 +14,6 @@
  * FIFO pairs:
  *   Tel	telescope axes, field rotator
  *   Focus	desired focus motion, microns as per focus.cfg
- *   Dome	dome and shutter controls
  *
  * v0.1	10/28/93 First draft: Elwood C. Downey
  */
@@ -54,7 +53,6 @@ char tscfn[] = "archive/config/telsched.cfg";
 char tdcfn[] = "archive/config/telescoped.cfg";
 char hcfn[] = "archive/config/home.cfg";
 char ocfn[] = "archive/config/focus.cfg";
-char dcfn[] = "archive/config/dome.cfg";
 char ccfn[] = "archive/config/cover.cfg";
 
 static void usage (void);
@@ -169,7 +167,6 @@ allstop()
 {
     tel_msg ("Stop");
     focus_msg ("Stop");
-    dome_msg ("Stop");
 }
 
 /* read the config files for variables we use here */
@@ -221,7 +218,6 @@ allreset()
 {
     tel_msg ("Reset");
     focus_msg ("Reset");
-    dome_msg ("Reset");
     cover_msg("Reset");
     init_cfg();	/* even us */
 }

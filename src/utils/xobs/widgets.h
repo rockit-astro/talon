@@ -39,12 +39,6 @@ typedef enum {
     SLLT_W,
     SCLT_W,
 
-    /* dome and shutter */
-    DOLT_W,
-    DCLT_W,
-    DOPEN_W,
-    DCLOSE_W,
-
     /* mirror covers */
     COLT_W,
     CVLT_W,

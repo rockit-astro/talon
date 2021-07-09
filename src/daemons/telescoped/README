@@ -5,7 +5,6 @@ Uses the following fifo pairs (.in and .out suffix are wrt us):
 
 	Tel.{in,out}
 	Focus.{in,out}
-	Dome.{in,out}
 
 Uses the csimcd daemon to control the stepper motors:
 
@@ -33,7 +32,6 @@ Reads parameters from:
 	telescoped.cfg
 	focus.cfg
 	telsched.cfg
-	dome.cfg
 
 Reads parameters from and makes updates to:
 
@@ -47,7 +45,6 @@ are called "raw" directions. The canonical conventions are as follows:
     Dec(Alt):	+moving towards scope's pole (like Dec)
     Field:	+cw rotation, looking "through" the camera
     Focus:	+moving to shorten the optical path from primary to camera
-    Dome:	+cw looking down from above
 
 ! For RCS Only -- Do Not Edit
 ! @(#) $RCSfile: README,v $ $Date: 2001/04/19 21:12:09 $ $Revision: 1.1.1.1 $ $Name:  $

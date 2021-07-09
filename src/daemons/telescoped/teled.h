@@ -3,7 +3,7 @@
  * N.B. see fifos[] in telescoped.c
  */
 typedef enum {
-    Tel_Id, Focus_Id, Dome_Id, Cover_Id
+    Tel_Id, Focus_Id, Cover_Id
 } FifoId;
 
 /* CSIMC info */
@@ -34,15 +34,6 @@ extern int csiOpen (int addr);
 extern int csiClose (int addr);
 extern int csiIsReady (int fd);
 
-/* dome.c */
-extern void dome_msg (char *msg);
-
-/* csi_dome.c */
-extern void csi_dome_msg (char *msg);
-
-/* commhub_dome.c */
-extern void commhub_dome_msg (char *msg);
-
 /* fifoio.c */
 extern void fifoWrite (FifoId f, int code, char *fmt, ...);
 extern void init_fifos(void);
@@ -68,9 +59,6 @@ extern char tdcfn[];
 extern char hcfn[];
 extern char ocfn[];
 extern char icfn[];
-extern char dcfn[];
-extern char csidcfn[]; /* CSIDomeCFN */
-extern char chdcfn[]; /* CommHubDomeCFN */
 extern char ccfn[];
 extern void init_cfg(void);
 extern void allstop(void);
