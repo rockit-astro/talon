@@ -33,11 +33,11 @@ Contents:
 (End)                                          Patricia Bauer [CDS] 03-Oct-1994
 */
 
-#define CHAP_SCALE	1e10
+#define CHAP_SCALE 1e10
 
 /* JDs of validity period */
-#define CHAP_BEGIN	(2338032.5 - MJD0)	/* 1689/3/19 */
-#define CHAP_END	(2542032.5 - MJD0)	/* 2247/10/1 */
+#define CHAP_BEGIN (2338032.5 - MJD0) /* 1689/3/19 */
+#define CHAP_END (2542032.5 - MJD0)   /* 2247/10/1 */
 
 /* coding flags */
 /* calculating rates increases time by about 10%
@@ -45,13 +45,14 @@ Contents:
  * On an HP715/75, for pluto the times per step are 0.00049 s and 0.00057 s
  * This method is quite fast.
  */
-#define CHAP_GETRATE    1
+#define CHAP_GETRATE 1
 
-typedef struct {
-	short n;	/* order of time; "-1" marks end of list */
-	double amp[6];	/* amplitudes of cosine and sine terms for x,y,z */
-			/* in original order [CX,SX,CY,SY,CZ,SZ] */
-	double Nu;	/* Frequency Nu_k; given only at n=0 */
+typedef struct
+{
+    short n;       /* order of time; "-1" marks end of list */
+    double amp[6]; /* amplitudes of cosine and sine terms for x,y,z */
+                   /* in original order [CX,SX,CY,SY,CZ,SZ] */
+    double Nu;     /* Frequency Nu_k; given only at n=0 */
 } chap95_rec;
 
 extern chap95_rec chap95_jupiter[];
@@ -62,7 +63,6 @@ extern chap95_rec chap95_pluto[];
 
 #include "P_.h"
 extern int chap95 P_((double mjd, int obj, double prec, double *ret));
-
 
 /* For RCS Only -- Do Not Edit
  * @(#) $RCSfile: chap95.h,v $ $Date: 2001/04/19 21:12:13 $ $Revision: 1.1.1.1 $ $Name:  $

@@ -7,10 +7,10 @@ extern XtAppContext app;
 extern char myclass[];
 extern Obj sunobj, moonobj;
 extern int xobs_alone;
-extern void die (void);
+extern void die(void);
 
 /* config.c */
-extern void initCfg (void);
+extern void initCfg(void);
 extern char icfn[];
 extern double SUNDOWN;
 extern double DOMETOL;
@@ -27,72 +27,76 @@ extern int BeepPeriod;
 extern char BANNER[80];
 
 /* control.c */
-extern void g_stop (Widget w, XtPointer client, XtPointer call);
-extern void g_exit (Widget w, XtPointer client, XtPointer call);
-extern void g_home (Widget w, XtPointer client, XtPointer call);
-extern void g_limit (Widget w, XtPointer client, XtPointer call);
-extern void g_focus (Widget w, XtPointer client, XtPointer call);
-extern void g_paddle (Widget w, XtPointer client, XtPointer call);
-extern void g_confirm (Widget w, XtPointer client, XtPointer call);
+extern void g_stop(Widget w, XtPointer client, XtPointer call);
+extern void g_exit(Widget w, XtPointer client, XtPointer call);
+extern void g_home(Widget w, XtPointer client, XtPointer call);
+extern void g_limit(Widget w, XtPointer client, XtPointer call);
+extern void g_focus(Widget w, XtPointer client, XtPointer call);
+extern void g_paddle(Widget w, XtPointer client, XtPointer call);
+extern void g_confirm(Widget w, XtPointer client, XtPointer call);
 
 /* dome.c */
-extern void domeOpenCB (Widget w, XtPointer client, XtPointer call);
-extern void domeCloseCB (Widget w, XtPointer client, XtPointer call);
+extern void domeOpenCB(Widget w, XtPointer client, XtPointer call);
+extern void domeCloseCB(Widget w, XtPointer client, XtPointer call);
 
 /* cover.c */
-extern void coverOpenCB (Widget w, XtPointer client, XtPointer call);
-extern void coverCloseCB (Widget w, XtPointer client, XtPointer call);
+extern void coverOpenCB(Widget w, XtPointer client, XtPointer call);
+extern void coverCloseCB(Widget w, XtPointer client, XtPointer call);
 
 /* fifo_cb.c */
 void initPipesAndCallbacks(void);
 void closePipesAndCallbacks(void);
 
 /* gui.c */
-typedef enum {
-    LTIDLE, LTOK, LTACTIVE, LTWARN,
+typedef enum
+{
+    LTIDLE,
+    LTOK,
+    LTACTIVE,
+    LTWARN,
     LTN
 } LtState;
 extern Pixel ltcolors[LTN];
 extern Pixel editableColor;
 extern Pixel uneditableColor;
-extern void mkGUI (char *version);
-extern int setColor (Widget w, char *resource, Pixel newp);
+extern void mkGUI(char *version);
+extern int setColor(Widget w, char *resource, Pixel newp);
 extern String fallbacks[];
-extern void setLt (Widget w, LtState s);
-extern Widget mkLight (Widget p_w);
-extern void msg (char *fmt, ...);
-extern void rmsg (char *line);
-extern void guiSensitive (int whether);
+extern void setLt(Widget w, LtState s);
+extern Widget mkLight(Widget p_w);
+extern void msg(char *fmt, ...);
+extern void rmsg(char *line);
+extern void guiSensitive(int whether);
 
 /* paddle.c */
-extern void pad_manage (void);
-extern void pad_reset (void);
+extern void pad_manage(void);
+extern void pad_reset(void);
 
 /* query.c */
-extern void query (Widget tw, char *msg, char *label0, char *label1, char
-    *label2, void (*func0)(), void (*func1)(), void (*func2)());
-extern int rusure (Widget tw, char *msg);
-extern int rusure_geton (void);
-extern void rusure_seton (int whether);
+extern void query(Widget tw, char *msg, char *label0, char *label1, char *label2, void (*func0)(), void (*func1)(),
+                  void (*func2)());
+extern int rusure(Widget tw, char *msg);
+extern int rusure_geton(void);
+extern void rusure_seton(int whether);
 
 /* scope.c */
-extern void s_stow (Widget w, XtPointer client, XtPointer call);
-extern void s_service (Widget w, XtPointer client, XtPointer call);
-extern void s_here (Widget w, XtPointer client, XtPointer call);
-extern void s_track (Widget w, XtPointer client, XtPointer call);
-extern void s_goto (Widget w, XtPointer client, XtPointer call);
-extern void s_edit (Widget w, XtPointer client, XtPointer call);
+extern void s_stow(Widget w, XtPointer client, XtPointer call);
+extern void s_service(Widget w, XtPointer client, XtPointer call);
+extern void s_here(Widget w, XtPointer client, XtPointer call);
+extern void s_track(Widget w, XtPointer client, XtPointer call);
+extern void s_goto(Widget w, XtPointer client, XtPointer call);
+extern void s_edit(Widget w, XtPointer client, XtPointer call);
 
 /* sound.c */
-extern int soundIsOn (void);
-extern void soundCB (Widget w, XtPointer client, XtPointer call);
+extern int soundIsOn(void);
+extern void soundCB(Widget w, XtPointer client, XtPointer call);
 
 /* skymap.c */
-extern Widget mkSky (Widget p_w);
-extern void showSkyMap (void);
+extern Widget mkSky(Widget p_w);
+extern void showSkyMap(void);
 
 /* tips.c */
-extern void wtip (Widget w, char *tip);
+extern void wtip(Widget w, char *tip);
 extern int tip_geton(void);
 extern void tip_seton(int whether);
 

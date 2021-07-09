@@ -8,23 +8,21 @@
  *
  * IAU expression (see e.g. Astron. Almanac 1984); stern
  */
-void
-obliquity (mjd, eps)
-double mjd;
+void obliquity(mjd, eps) double mjd;
 double *eps;
 {
-	static double lastmjd = -16347, lasteps;
+    static double lastmjd = -16347, lasteps;
 
-	if (mjd != lastmjd) {
-	    double t = (mjd - J2000)/36525.;	/* centuries from J2000 */
-	    lasteps = degrad(23.4392911 +	/* 23^ 26' 21".448 */
-			    t * (-46.8150 +
-			    t * ( -0.00059 +
-			    t * (  0.001813 )))/3600.0);
-	    lastmjd = mjd;
-	}
-	*eps = lasteps;
+    if (mjd != lastmjd)
+    {
+        double t = (mjd - J2000) / 36525.; /* centuries from J2000 */
+        lasteps = degrad(23.4392911 +      /* 23^ 26' 21".448 */
+                         t * (-46.8150 + t * (-0.00059 + t * (0.001813))) / 3600.0);
+        lastmjd = mjd;
+    }
+    *eps = lasteps;
 }
 
 /* For RCS Only -- Do Not Edit */
-static char *rcsid[2] = {(char *)rcsid, "@(#) $RCSfile: obliq.c,v $ $Date: 2001/04/19 21:12:13 $ $Revision: 1.1.1.1 $ $Name:  $"};
+static char *rcsid[2] = {(char *)rcsid,
+                         "@(#) $RCSfile: obliq.c,v $ $Date: 2001/04/19 21:12:13 $ $Revision: 1.1.1.1 $ $Name:  $"};

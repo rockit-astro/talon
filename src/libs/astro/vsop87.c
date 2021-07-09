@@ -33,13 +33,13 @@
  *	1e-3	139	1.0	0.9
  */
 
-#include <math.h>
+#include "vsop87.h"
 #include "P_.h"
 #include "astro.h"
-#include "vsop87.h"
+#include <math.h>
 
-#define VSOP_A1000	365250.0	/* days per millenium */
-#define VSOP_MAXALPHA	5		/* max degree of time */
+#define VSOP_A1000 365250.0 /* days per millenium */
+#define VSOP_MAXALPHA 5     /* max degree of time */
 
 /******************************************************************
  * adapted from BdL FORTRAN Code; stern
@@ -96,113 +96,122 @@
  *		   2: object out of range [MERCURY .. NEPTUNE, SUN]
  *		   3: precision out of range [0.0 .. 1e-3]
  ******************************************************************/
-int
-vsop87 (mjd, obj, prec, ret)
-double mjd;
+int vsop87(mjd, obj, prec, ret) double mjd;
 int obj;
 double prec;
 double *ret;
 {
-    static double (*vx_map[])[3] = {		/* data tables */
-		vx_mercury, vx_venus, vx_mars, vx_jupiter,
-		vx_saturn, vx_uranus, vx_neptune, 0, vx_earth,
-	};
-    static int (*vn_map[])[3] = {		/* indexes */
-		vn_mercury, vn_venus, vn_mars, vn_jupiter,
-		vn_saturn, vn_uranus, vn_neptune, 0, vn_earth,
-	};
-    static double a0[] = {	/* semimajor axes; for precision ctrl only */
-	    0.39, 0.72, 1.5, 5.2, 9.6, 19.2, 30.1, 39.5, 1.0,
-	};
-    double (*vx_obj)[3] = vx_map[obj];		/* VSOP87 data and indexes */
-    int (*vn_obj)[3] = vn_map[obj];
+    static double(*vx_map[])[3] = {
+        /* data tables */
+        vx_mercury, vx_venus, vx_mars, vx_jupiter, vx_saturn, vx_uranus, vx_neptune, 0, vx_earth,
+    };
+    static int(*vn_map[])[3] = {
+        /* indexes */
+        vn_mercury, vn_venus, vn_mars, vn_jupiter, vn_saturn, vn_uranus, vn_neptune, 0, vn_earth,
+    };
+    static double a0[] = {
+        /* semimajor axes; for precision ctrl only */
+        0.39, 0.72, 1.5, 5.2, 9.6, 19.2, 30.1, 39.5, 1.0,
+    };
+    double(*vx_obj)[3] = vx_map[obj]; /* VSOP87 data and indexes */
+    int(*vn_obj)[3] = vn_map[obj];
 
-    double t[VSOP_MAXALPHA+1];			/* powers of time */
-    double t_abs[VSOP_MAXALPHA+1];		/* powers of abs(time) */
-    double q;					/* aux for precision control */
-    int i, cooidx, alpha;			/* misc indexes */
+    double t[VSOP_MAXALPHA + 1];     /* powers of time */
+    double t_abs[VSOP_MAXALPHA + 1]; /* powers of abs(time) */
+    double q;                        /* aux for precision control */
+    int i, cooidx, alpha;            /* misc indexes */
 
     if (obj == PLUTO || obj > SUN)
-	return (2);
+        return (2);
 
     if (prec < 0.0 || prec > 1e-3)
-	return(3);
+        return (3);
 
     /* zero result array */
-    for (i = 0; i < 6; ++i) ret[i] = 0.0;
+    for (i = 0; i < 6; ++i)
+        ret[i] = 0.0;
 
     /* time and its powers */
     t[0] = 1.0;
-    t[1] = (mjd - J2000)/VSOP_A1000;
-    for (i = 2; i <= VSOP_MAXALPHA; ++i) t[i] = t[i-1] * t[1];
+    t[1] = (mjd - J2000) / VSOP_A1000;
+    for (i = 2; i <= VSOP_MAXALPHA; ++i)
+        t[i] = t[i - 1] * t[1];
     t_abs[0] = 1.0;
-    for (i = 1; i <= VSOP_MAXALPHA; ++i) t_abs[i] = fabs(t[i]);
+    for (i = 1; i <= VSOP_MAXALPHA; ++i)
+        t_abs[i] = fabs(t[i]);
 
     /* precision control */
-    q = -log10(prec + 1e-35) - 2;	/* decades below 1e-2 */
-    q = VSOP_ASCALE * prec / 10.0 / q;	/* reduce threshold progressively
-					 * for higher precision */
+    q = -log10(prec + 1e-35) - 2;      /* decades below 1e-2 */
+    q = VSOP_ASCALE * prec / 10.0 / q; /* reduce threshold progressively
+                                        * for higher precision */
 
     /* do the term summation; first the spatial dimensions */
-    for (cooidx = 0; cooidx < 3; ++cooidx) {
+    for (cooidx = 0; cooidx < 3; ++cooidx)
+    {
 
-	/* then the powers of time */
-	for (alpha = 0; vn_obj[alpha+1][cooidx] ; ++alpha) {
-	    double p, term, termdot;
+        /* then the powers of time */
+        for (alpha = 0; vn_obj[alpha + 1][cooidx]; ++alpha)
+        {
+            double p, term, termdot;
 
-	    /* precision threshold */
-	    p = q/(t_abs[alpha] + alpha * t_abs[alpha-1] * 1e-4 + 1e-35);
+            /* precision threshold */
+            p = q / (t_abs[alpha] + alpha * t_abs[alpha - 1] * 1e-4 + 1e-35);
 #if VSOP_SPHERICAL
-	    if (cooidx == 2)	/* scale by semimajor axis for radius */
+            if (cooidx == 2) /* scale by semimajor axis for radius */
 #endif
-		p *= a0[obj];
+                p *= a0[obj];
 
-	    term = termdot = 0.0;
-	    for (i = vn_obj[alpha][cooidx]; i < vn_obj[alpha+1][cooidx]; ++i) {
-		double a, b, c, arg;
+            term = termdot = 0.0;
+            for (i = vn_obj[alpha][cooidx]; i < vn_obj[alpha + 1][cooidx]; ++i)
+            {
+                double a, b, c, arg;
 
-		a = vx_obj[i][0];
-		if (a < p) continue;	/* ignore small terms */
+                a = vx_obj[i][0];
+                if (a < p)
+                    continue; /* ignore small terms */
 
-		b = vx_obj[i][1];
-		c = vx_obj[i][2];
+                b = vx_obj[i][1];
+                c = vx_obj[i][2];
 
-		arg = b + c * t[1];
-		term += a * cos(arg);
+                arg = b + c * t[1];
+                term += a * cos(arg);
 #if VSOP_GETRATE
-		termdot += -c * a * sin(arg);
+                termdot += -c * a * sin(arg);
 #endif
-	    }
+            }
 
-	    ret[cooidx] += t[alpha] * term;
+            ret[cooidx] += t[alpha] * term;
 #if VSOP_GETRATE
-	    ret[cooidx + 3] += t[alpha] * termdot +
-		    ((alpha > 0) ? alpha * t[alpha - 1] * term : 0.0);
+            ret[cooidx + 3] += t[alpha] * termdot + ((alpha > 0) ? alpha * t[alpha - 1] * term : 0.0);
 #endif
-	} /* alpha */
-    } /* cooidx */
+        } /* alpha */
+    }     /* cooidx */
 
-    for (i = 0; i < 6; ++i) ret[i] /= VSOP_ASCALE;
+    for (i = 0; i < 6; ++i)
+        ret[i] /= VSOP_ASCALE;
 
 #if VSOP_SPHERICAL
     /* reduce longitude to 0..2pi */
-    ret[0] -= floor(ret[0]/(2.*PI)) * (2.*PI);
+    ret[0] -= floor(ret[0] / (2. * PI)) * (2. * PI);
 #endif
 
 #if VSOP_GETRATE
     /* convert millenium rate to day rate */
-    for (i = 3; i < 6; ++i) ret[i] /= VSOP_A1000;
+    for (i = 3; i < 6; ++i)
+        ret[i] /= VSOP_A1000;
 #endif
 
 #if VSOP_SPHERICAL
     /* reduction from dynamical equinox of VSOP87 to FK5;
      */
-    if (prec < 5e-7) {		/* 5e-7 rad = 0.1 arc seconds */
-	double L1, c1, s1;
-	L1 = ret[0] - degrad(13.97 * t[1] - 0.031 * t[2]);
-	c1 = cos(L1); s1 = sin(L1);
-	ret[0] += degrad(-0.09033 + 0.03916 * (c1 + s1) * tan(ret[1]))/3600.0;
-	ret[1] += degrad(0.03916 * (c1 - s1))/3600.0;
+    if (prec < 5e-7)
+    { /* 5e-7 rad = 0.1 arc seconds */
+        double L1, c1, s1;
+        L1 = ret[0] - degrad(13.97 * t[1] - 0.031 * t[2]);
+        c1 = cos(L1);
+        s1 = sin(L1);
+        ret[0] += degrad(-0.09033 + 0.03916 * (c1 + s1) * tan(ret[1])) / 3600.0;
+        ret[1] += degrad(0.03916 * (c1 - s1)) / 3600.0;
     }
 #endif
 
@@ -210,4 +219,5 @@ double *ret;
 }
 
 /* For RCS Only -- Do Not Edit */
-static char *rcsid[2] = {(char *)rcsid, "@(#) $RCSfile: vsop87.c,v $ $Date: 2001/04/19 21:12:14 $ $Revision: 1.1.1.1 $ $Name:  $"};
+static char *rcsid[2] = {(char *)rcsid,
+                         "@(#) $RCSfile: vsop87.c,v $ $Date: 2001/04/19 21:12:14 $ $Revision: 1.1.1.1 $ $Name:  $"};

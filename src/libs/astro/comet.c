@@ -12,11 +12,11 @@
  *   qp:   perihelion distance,
  *   om:   longitude of ascending node;
  * find:
- *   lpd:  heliocentric longitude, 
+ *   lpd:  heliocentric longitude,
  *   psi:  heliocentric latitude,
- *   rp:   distance from the sun to the planet, 
+ *   rp:   distance from the sun to the planet,
  *   rho:  distance from the Earth to the planet,
- *   lam:  geocentric ecliptic longitude, 
+ *   lam:  geocentric ecliptic longitude,
  *   bet:  geocentric ecliptic latitude,
  *         none are corrected for light time, ie, they are the true values for
  *	   the given instant.
@@ -28,59 +28,60 @@
  * then the apparent geocentric coordinates. Further corrections can be made,
  * if required, for atmospheric refraction and geocentric parallax.
  */
-void
-comet (mjd, ep, inc, ap, qp, om, lpd, psi, rp, rho, lam, bet)
-double mjd;
+void comet(mjd, ep, inc, ap, qp, om, lpd, psi, rp, rho, lam, bet) double mjd;
 double ep, inc, ap, qp, om;
 double *lpd, *psi, *rp, *rho, *lam, *bet;
 {
-	double w, s, s2;
-	double l, sl, cl, y;
-	double spsi, cpsi;
-	double rd, lsn, rsn;
-	double lg, re, ll;
-	double cll, sll;
-	double nu;
+    double w, s, s2;
+    double l, sl, cl, y;
+    double spsi, cpsi;
+    double rd, lsn, rsn;
+    double lg, re, ll;
+    double cll, sll;
+    double nu;
 
-#define	ERRLMT	0.0001
-        w = ((mjd-ep)*3.649116e-02)/(qp*sqrt(qp));
-        s = w/3;
-	for (;;) {
-	    double d;
-	    s2 = s*s;
-	    d = (s2+3)*s-w;
-	    if (fabs(d) <= ERRLMT)
-		break;
-	    s = ((2*s*s2)+w)/(3*(s2+1));
-	}
+#define ERRLMT 0.0001
+    w = ((mjd - ep) * 3.649116e-02) / (qp * sqrt(qp));
+    s = w / 3;
+    for (;;)
+    {
+        double d;
+        s2 = s * s;
+        d = (s2 + 3) * s - w;
+        if (fabs(d) <= ERRLMT)
+            break;
+        s = ((2 * s * s2) + w) / (3 * (s2 + 1));
+    }
 
-        nu = 2*atan(s);
-	*rp = qp*(1+s2);
-	l = nu+ap;
-        sl = sin(l);
-	cl = cos(l);
-	spsi = sl*sin(inc);
-        *psi = asin(spsi);
-	y = sl*cos(inc);
-        *lpd = atan(y/cl)+om;
-	cpsi = cos(*psi);
-        if (cl<0) *lpd += PI;
-	range (lpd, 2*PI);
-        rd = *rp * cpsi;
-	sunpos (mjd, &lsn, &rsn, 0);
-	lg = lsn+PI;
-        re = rsn;
-	ll = *lpd - lg;
-        cll = cos(ll);
-	sll = sin(ll);
-        *rho = sqrt((re * re)+(*rp * *rp)-(2*re*rd*cll));
-        if (rd<re) 
-            *lam = atan((-1*rd*sll)/(re-(rd*cll)))+lg+PI;
-	else
-	    *lam = atan((re*sll)/(rd-(re*cll)))+*lpd;
-	range (lam, 2*PI);
-        *bet = atan((rd*spsi*sin(*lam-*lpd))/(cpsi*re*sll));
+    nu = 2 * atan(s);
+    *rp = qp * (1 + s2);
+    l = nu + ap;
+    sl = sin(l);
+    cl = cos(l);
+    spsi = sl * sin(inc);
+    *psi = asin(spsi);
+    y = sl * cos(inc);
+    *lpd = atan(y / cl) + om;
+    cpsi = cos(*psi);
+    if (cl < 0)
+        *lpd += PI;
+    range(lpd, 2 * PI);
+    rd = *rp * cpsi;
+    sunpos(mjd, &lsn, &rsn, 0);
+    lg = lsn + PI;
+    re = rsn;
+    ll = *lpd - lg;
+    cll = cos(ll);
+    sll = sin(ll);
+    *rho = sqrt((re * re) + (*rp * *rp) - (2 * re * rd * cll));
+    if (rd < re)
+        *lam = atan((-1 * rd * sll) / (re - (rd * cll))) + lg + PI;
+    else
+        *lam = atan((re * sll) / (rd - (re * cll))) + *lpd;
+    range(lam, 2 * PI);
+    *bet = atan((rd * spsi * sin(*lam - *lpd)) / (cpsi * re * sll));
 }
 
 /* For RCS Only -- Do Not Edit */
-static char *rcsid[2] = {(char *)rcsid, "@(#) $RCSfile: comet.c,v $ $Date: 2001/04/19 21:12:13 $ $Revision: 1.1.1.1 $ $Name:  $"};
+static char *rcsid[2] = {(char *)rcsid,
+                         "@(#) $RCSfile: comet.c,v $ $Date: 2001/04/19 21:12:13 $ $Revision: 1.1.1.1 $ $Name:  $"};

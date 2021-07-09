@@ -17,14 +17,14 @@
  *	no drop	2256	4.5	3.9	(code without test criterion)
  */
 
-#include <math.h>
+#include "chap95.h"
 #include "P_.h"
 #include "astro.h"
-#include "chap95.h"
+#include <math.h>
 
 extern void zero_mem P_((void *loc, unsigned len));
 
-#define CHAP_MAXTPOW	2	/* NB: valid for all 5 outer planets */
+#define CHAP_MAXTPOW 2 /* NB: valid for all 5 outer planets */
 
 /* chap95()
  *
@@ -48,133 +48,146 @@ extern void zero_mem P_((void *loc, unsigned len));
  *	2	object out of range [JUPITER .. PLUTO]
  *	3	precision out of range [0.0 .. 1e-3]
  */
-int
-chap95 (mjd, obj, prec, ret)
-double mjd;
+int chap95(mjd, obj, prec, ret) double mjd;
 int obj;
 double prec;
 double *ret;
 {
-	static double a0[] = {		/* semimajor axes for precision ctrl */
-	    0.39, 0.72, 1.5, 5.2, 9.6, 19.2, 30.1, 39.5, 1.0
-	};
-	double sum[CHAP_MAXTPOW+1][6];	/* [T^0, ..][X,Y,Z,X',Y',Z'] */
-	double T, t;			/* time in centuries and years */
-	double ca, sa, Nu;		/* aux vars for terms */
-	double precT[CHAP_MAXTPOW+1];	/* T-augmented precision threshold */
-	chap95_rec *rec;		/* term coeffs */
-	int cooidx;
+    static double a0[] = {/* semimajor axes for precision ctrl */
+                          0.39, 0.72, 1.5, 5.2, 9.6, 19.2, 30.1, 39.5, 1.0};
+    double sum[CHAP_MAXTPOW + 1][6]; /* [T^0, ..][X,Y,Z,X',Y',Z'] */
+    double T, t;                     /* time in centuries and years */
+    double ca, sa, Nu;               /* aux vars for terms */
+    double precT[CHAP_MAXTPOW + 1];  /* T-augmented precision threshold */
+    chap95_rec *rec;                 /* term coeffs */
+    int cooidx;
 
-	/* check parameters */
-	if (mjd < CHAP_BEGIN || mjd > CHAP_END)
-		return (1);
+    /* check parameters */
+    if (mjd < CHAP_BEGIN || mjd > CHAP_END)
+        return (1);
 
-	if (obj < JUPITER || obj > PLUTO)
-		return (2);
+    if (obj < JUPITER || obj > PLUTO)
+        return (2);
 
-	if (prec < 0.0 || prec > 1e-3)
-		return (3);
+    if (prec < 0.0 || prec > 1e-3)
+        return (3);
 
-	/* init the sums */
-	zero_mem ((void *)sum, sizeof(sum));
+    /* init the sums */
+    zero_mem((void *)sum, sizeof(sum));
 
-	T = (mjd - J2000)/36525.0;	/* centuries since J2000.0 */
+    T = (mjd - J2000) / 36525.0; /* centuries since J2000.0 */
 
-	/* modify precision treshold for
-	 * a) term storing scale
-	 * b) convert radians to au
-	 * c) account for skipped terms (more terms needed for better prec)
-	 *    threshold empirically established similar to VSOP; stern
-	 * d) augment for secular terms
-	 */
-	precT[0] = prec * CHAP_SCALE				/* a) */
-			* a0[obj]				/* b) */
-			/ (10. * (-log10(prec + 1e-35) - 2));	/* c) */
-	t = 1./(fabs(T) + 1e-35);				/* d) */
-	precT[1] = precT[0]*t;
-	precT[2] = precT[1]*t;
+    /* modify precision treshold for
+     * a) term storing scale
+     * b) convert radians to au
+     * c) account for skipped terms (more terms needed for better prec)
+     *    threshold empirically established similar to VSOP; stern
+     * d) augment for secular terms
+     */
+    precT[0] = prec * CHAP_SCALE                     /* a) */
+               * a0[obj]                             /* b) */
+               / (10. * (-log10(prec + 1e-35) - 2)); /* c) */
+    t = 1. / (fabs(T) + 1e-35);                      /* d) */
+    precT[1] = precT[0] * t;
+    precT[2] = precT[1] * t;
 
-	t = T * 100.0;		/* YEARS since J2000.0 */
+    t = T * 100.0; /* YEARS since J2000.0 */
 
-	ca = sa = Nu = 0.;	/* shut up compiler warning 'uninitialised' */
+    ca = sa = Nu = 0.; /* shut up compiler warning 'uninitialised' */
 
-	switch (obj) {		/* set initial term record pointer */
-	    case JUPITER:	rec = chap95_jupiter;	break;
-	    case SATURN:	rec = chap95_saturn;	break;
-	    case URANUS:	rec = chap95_uranus;	break;
-	    case NEPTUNE:	rec = chap95_neptune;	break;
-	    case PLUTO:		rec = chap95_pluto;	break;
-	    default:
-		return (2);	/* wrong object: severe internal trouble */
-	}
+    switch (obj)
+    { /* set initial term record pointer */
+    case JUPITER:
+        rec = chap95_jupiter;
+        break;
+    case SATURN:
+        rec = chap95_saturn;
+        break;
+    case URANUS:
+        rec = chap95_uranus;
+        break;
+    case NEPTUNE:
+        rec = chap95_neptune;
+        break;
+    case PLUTO:
+        rec = chap95_pluto;
+        break;
+    default:
+        return (2); /* wrong object: severe internal trouble */
+    }
 
-	/* do the term summation into sum[T^n] slots */
-	for (; rec->n >= 0; ++rec) {
-	    double *amp;
+    /* do the term summation into sum[T^n] slots */
+    for (; rec->n >= 0; ++rec)
+    {
+        double *amp;
 
-	    /* NOTE:  The formula
-	     * X = SUM[i=1,Records] T**n_i*(CX_i*cos(Nu_k*t)+SX_i*sin(Nu_k*t))
-	     * could be rewritten as  SUM( ... A sin (B + C*t) )
-	     * "saving" trigonometric calls.  However, e.g. for Pluto,
-	     * there are only 65 distinct angles NU_k (130 trig calls).
-	     * With that manipulation, EVERY arg_i would be different for X,
-	     * Y and Z, which is 3*96 terms.  Hence, the formulation as
-	     * given is good (optimal?).
-	     */
+        /* NOTE:  The formula
+         * X = SUM[i=1,Records] T**n_i*(CX_i*cos(Nu_k*t)+SX_i*sin(Nu_k*t))
+         * could be rewritten as  SUM( ... A sin (B + C*t) )
+         * "saving" trigonometric calls.  However, e.g. for Pluto,
+         * there are only 65 distinct angles NU_k (130 trig calls).
+         * With that manipulation, EVERY arg_i would be different for X,
+         * Y and Z, which is 3*96 terms.  Hence, the formulation as
+         * given is good (optimal?).
+         */
 
-	    for (cooidx = 0, amp = rec->amp; cooidx < 3; ++cooidx) {
-		double C, S, term, termdot;
-		short n;		/* fast access */
+        for (cooidx = 0, amp = rec->amp; cooidx < 3; ++cooidx)
+        {
+            double C, S, term, termdot;
+            short n; /* fast access */
 
-		C = *amp++;
-		S = *amp++;
-		n = rec->n;
+            C = *amp++;
+            S = *amp++;
+            n = rec->n;
 
-		/* drop term if too small
-		 * this is quite expensive:  17% of loop time
-		 */
-		if (fabs(C) + fabs(S) < precT[n])
-			continue;
+            /* drop term if too small
+             * this is quite expensive:  17% of loop time
+             */
+            if (fabs(C) + fabs(S) < precT[n])
+                continue;
 
-		if (n == 0 && cooidx == 0) {	/* new Nu only here */
-		    double arg;
+            if (n == 0 && cooidx == 0)
+            { /* new Nu only here */
+                double arg;
 
-		    Nu = rec->Nu;
-		    arg = Nu * t;
-		    arg -= floor(arg/(2.*PI))*(2.*PI);
-		    ca = cos(arg);	/* blast it - even for Nu = 0.0 */
-		    sa = sin(arg);
-		}
+                Nu = rec->Nu;
+                arg = Nu * t;
+                arg -= floor(arg / (2. * PI)) * (2. * PI);
+                ca = cos(arg); /* blast it - even for Nu = 0.0 */
+                sa = sin(arg);
+            }
 
-		term = C * ca + S * sa;
-		sum[n][cooidx] += term;
+            term = C * ca + S * sa;
+            sum[n][cooidx] += term;
 #if CHAP_GETRATE
-		termdot = (-C * sa + S * ca) * Nu;
-		sum[n][cooidx+3] += termdot;
-		if (n > 0) sum[n - 1][cooidx+3] += n/100.0 * term;
+            termdot = (-C * sa + S * ca) * Nu;
+            sum[n][cooidx + 3] += termdot;
+            if (n > 0)
+                sum[n - 1][cooidx + 3] += n / 100.0 * term;
 #endif
-	    } /* cooidx */
-	} /* records */
+        } /* cooidx */
+    }     /* records */
 
-	/* apply powers of time and sum up */
-	for (cooidx = 0; cooidx < 6; ++cooidx) {
-	    ret[cooidx] = (sum[0][cooidx] +
-			T * (sum[1][cooidx] +
-			T * (sum[2][cooidx] )) )/CHAP_SCALE;
-	}
+    /* apply powers of time and sum up */
+    for (cooidx = 0; cooidx < 6; ++cooidx)
+    {
+        ret[cooidx] = (sum[0][cooidx] + T * (sum[1][cooidx] + T * (sum[2][cooidx]))) / CHAP_SCALE;
+    }
 
-	/* TEST: if the MAIN terms are dropped, get angular residue
-	ret[0] = sqrt(ret[0]*ret[0] + ret[1]*ret[1] + ret[2]*ret[2])/a0[obj];
-	*/
+    /* TEST: if the MAIN terms are dropped, get angular residue
+    ret[0] = sqrt(ret[0]*ret[0] + ret[1]*ret[1] + ret[2]*ret[2])/a0[obj];
+    */
 
 #if CHAP_GETRATE
-	for (cooidx = 3; cooidx < 6; ++cooidx) {
-	    ret[cooidx] /= 365.25;	/* yearly to daily rate */
-	}
+    for (cooidx = 3; cooidx < 6; ++cooidx)
+    {
+        ret[cooidx] /= 365.25; /* yearly to daily rate */
+    }
 #endif
 
     return (0);
 }
 
 /* For RCS Only -- Do Not Edit */
-static char *rcsid[2] = {(char *)rcsid, "@(#) $RCSfile: chap95.c,v $ $Date: 2001/04/19 21:12:13 $ $Revision: 1.1.1.1 $ $Name:  $"};
+static char *rcsid[2] = {(char *)rcsid,
+                         "@(#) $RCSfile: chap95.c,v $ $Date: 2001/04/19 21:12:13 $ $Revision: 1.1.1.1 $ $Name:  $"};

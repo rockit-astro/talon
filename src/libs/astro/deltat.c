@@ -160,148 +160,157 @@ static short dt[TABSIZ] = {
 /* calculate  DeltaT = ET - UT1 in seconds.  Describes the irregularities
  * of the Earth rotation rate in the ET time scale.
  */
-double deltat(mjd)
-double mjd;
+double deltat(mjd) double mjd;
 {
-	double Y;
-	double p, B;
-	int d[6];
-	int i, iy, k;
-	double floor();
-	static double ans;
-	static double lastmjd = -10000;
+    double Y;
+    double p, B;
+    int d[6];
+    int i, iy, k;
+    double floor();
+    static double ans;
+    static double lastmjd = -10000;
 
-	if (mjd == lastmjd) {
-	    return(ans);
-	}
-	lastmjd = mjd;
+    if (mjd == lastmjd)
+    {
+        return (ans);
+    }
+    lastmjd = mjd;
 
-	Y = 2000.0 + (mjd - J2000)/365.25;
+    Y = 2000.0 + (mjd - J2000) / 365.25;
 
-	if( Y > TABEND  &&  Y < 2130.0 ) {
-	    /* linear interpolation from table end; stern */
-	    B = Y - TABEND;
-	    ans = dt[TABSIZ-1] + B * (dt[TABSIZ-1]  - dt[TABSIZ-2]);
-	    ans *= 0.01;
-	    return(ans);
-	}
+    if (Y > TABEND && Y < 2130.0)
+    {
+        /* linear interpolation from table end; stern */
+        B = Y - TABEND;
+        ans = dt[TABSIZ - 1] + B * (dt[TABSIZ - 1] - dt[TABSIZ - 2]);
+        ans *= 0.01;
+        return (ans);
+    }
 
-	if( Y < TABSTART  ||  Y >= 2130.0 ) {
-	    if( (Y >= 948.0 - 15.0  &&  Y < TABSTART) ||  Y >= 2130.0 ) {
-		/* Stephenson and Morrison, stated domain is 948 to 1600:
-		 * 25.5(centuries from 1800)^2 - 1.9159(centuries from 1955)^2
-		 * Here we offset by -15 y to minimize the discontinuity,
-		 * thus we use it from 933.0 to 1620.0,
-		 * and from the end of the table to 2130.0.
-		 * f(1620.0) = 60.955200, slope -0.079 s/y
-		 * f(2004.0) = 105.649728, slope 1.02 s/y
-		 * f(2048.0) = 155.176, slope 1.23 s/y
-		 * f(2084.0) = 202.49, slope 1.4 s/y
-		 * f(2130.0) = 272, slope .1616
-	         * f(2150.0) = 305, slope .17
-		 */
-		B = 0.01*(Y - 2000.0);
-		ans = (23.58 * B + 100.3)*B + 101.6;
-	    } else {
-		/* Borkowski */
-	        /* f(2004.0) = 542.7435, slope 2.65 s/y */
-		B = 0.01*(Y - 2000.0)  +  3.75;
-		ans = 35.0 * B * B  +  40.;
-	    }
-	    return(ans);
-	}
+    if (Y < TABSTART || Y >= 2130.0)
+    {
+        if ((Y >= 948.0 - 15.0 && Y < TABSTART) || Y >= 2130.0)
+        {
+            /* Stephenson and Morrison, stated domain is 948 to 1600:
+             * 25.5(centuries from 1800)^2 - 1.9159(centuries from 1955)^2
+             * Here we offset by -15 y to minimize the discontinuity,
+             * thus we use it from 933.0 to 1620.0,
+             * and from the end of the table to 2130.0.
+             * f(1620.0) = 60.955200, slope -0.079 s/y
+             * f(2004.0) = 105.649728, slope 1.02 s/y
+             * f(2048.0) = 155.176, slope 1.23 s/y
+             * f(2084.0) = 202.49, slope 1.4 s/y
+             * f(2130.0) = 272, slope .1616
+             * f(2150.0) = 305, slope .17
+             */
+            B = 0.01 * (Y - 2000.0);
+            ans = (23.58 * B + 100.3) * B + 101.6;
+        }
+        else
+        {
+            /* Borkowski */
+            /* f(2004.0) = 542.7435, slope 2.65 s/y */
+            B = 0.01 * (Y - 2000.0) + 3.75;
+            ans = 35.0 * B * B + 40.;
+        }
+        return (ans);
+    }
 
-	/* Besselian interpolation from tabulated values.
-	 * See AA page K11.
-	 */
+    /* Besselian interpolation from tabulated values.
+     * See AA page K11.
+     */
 
-	/* value for 1620.1 is 121.96 or so, not 124.0 */
+    /* value for 1620.1 is 121.96 or so, not 124.0 */
 
-	/* Index into the table.
-	 */
-	p = floor(Y);
-	iy = (int)(p - TABSTART);
-	/* Zeroth order estimate is value at start of year
-	 */
-	ans = dt[iy];
-	k = iy + 1;
-	if( k >= TABSIZ )
-	    goto done; /* No data, can't go on. */
+    /* Index into the table.
+     */
+    p = floor(Y);
+    iy = (int)(p - TABSTART);
+    /* Zeroth order estimate is value at start of year
+     */
+    ans = dt[iy];
+    k = iy + 1;
+    if (k >= TABSIZ)
+        goto done; /* No data, can't go on. */
 
-	/* The fraction of tabulation interval
-	 */
-	p = Y - p;
+    /* The fraction of tabulation interval
+     */
+    p = Y - p;
 
-	/* First order interpolated value
-	 */
-	ans += p*(dt[k] - dt[iy]);
-	if( (iy-1 < 0) || (iy+2 >= TABSIZ) )
-	    goto done; /* can't do second differences */
+    /* First order interpolated value
+     */
+    ans += p * (dt[k] - dt[iy]);
+    if ((iy - 1 < 0) || (iy + 2 >= TABSIZ))
+        goto done; /* can't do second differences */
 
-	/* Make table of first differences
-	 */
-	k = iy - 2;
-	for( i=0; i<5; i++ ) {
-	    if( (k < 0) || (k+1 >= TABSIZ) )
-		d[i] = 0;
-	    else d[i] = dt[k+1] - dt[k];
-		k += 1;
-	}
+    /* Make table of first differences
+     */
+    k = iy - 2;
+    for (i = 0; i < 5; i++)
+    {
+        if ((k < 0) || (k + 1 >= TABSIZ))
+            d[i] = 0;
+        else
+            d[i] = dt[k + 1] - dt[k];
+        k += 1;
+    }
 
-	/* Compute second differences
-	 */
-	for( i=0; i<4; i++ )
-	    d[i] = d[i+1] - d[i];
-	B = 0.25*p*(p-1.0);
-	ans += B*(d[1] + d[2]);
-	if( iy+2 >= TABSIZ )
-	    goto done;
+    /* Compute second differences
+     */
+    for (i = 0; i < 4; i++)
+        d[i] = d[i + 1] - d[i];
+    B = 0.25 * p * (p - 1.0);
+    ans += B * (d[1] + d[2]);
+    if (iy + 2 >= TABSIZ)
+        goto done;
 
-	/* Compute third differences
-	 */
-	for( i=0; i<3; i++ )
-	    d[i] = d[i+1] - d[i];
-	B = 2.0*B/3.0;
-	ans += (p-0.5)*B*d[1];
-	if( (iy-2 < 0) || (iy+3 > TABSIZ) )
-	    goto done;
+    /* Compute third differences
+     */
+    for (i = 0; i < 3; i++)
+        d[i] = d[i + 1] - d[i];
+    B = 2.0 * B / 3.0;
+    ans += (p - 0.5) * B * d[1];
+    if ((iy - 2 < 0) || (iy + 3 > TABSIZ))
+        goto done;
 
-	/* Compute fourth differences
-	 */
-	for( i=0; i<2; i++ )
-	    d[i] = d[i+1] - d[i];
-	B = 0.125*B*(p+1.0)*(p-2.0);
-	ans += B*(d[0] + d[1]);
+    /* Compute fourth differences
+     */
+    for (i = 0; i < 2; i++)
+        d[i] = d[i + 1] - d[i];
+    B = 0.125 * B * (p + 1.0) * (p - 2.0);
+    ans += B * (d[0] + d[1]);
 
-	done:
-	/* Astronomical Almanac table is corrected by adding the expression
-	 *     -0.000091 (ndot + 26)(year-1955)^2  seconds
-	 * to entries prior to 1955 (AA page K8), where ndot is the secular
-	 * tidal term in the mean motion of the Moon.
-	 *
-	 * Entries after 1955 are referred to atomic time standards and
-	 * are not affected by errors in Lunar or planetary theory.
-	 */
-	ans *= 0.01;
-	if( Y < 1955.0 ) {
-	    B = (Y - 1955.0);
-	    ans += -0.000091 * (-25.8 + 26.0) * B * B;
-	}
-	return( ans );
+done:
+    /* Astronomical Almanac table is corrected by adding the expression
+     *     -0.000091 (ndot + 26)(year-1955)^2  seconds
+     * to entries prior to 1955 (AA page K8), where ndot is the secular
+     * tidal term in the mean motion of the Moon.
+     *
+     * Entries after 1955 are referred to atomic time standards and
+     * are not affected by errors in Lunar or planetary theory.
+     */
+    ans *= 0.01;
+    if (Y < 1955.0)
+    {
+        B = (Y - 1955.0);
+        ans += -0.000091 * (-25.8 + 26.0) * B * B;
+    }
+    return (ans);
 }
-
 
 #ifdef TEST_DT
 main()
 {
-	double ans, y;
+    double ans, y;
 
-	while (scanf("%lf", &y) == 1) {
-		ans = deltat((y - 2000.0)*365.25 + J2000);
-		printf("%.4lf %.4lf\n", y, ans);
-	}
+    while (scanf("%lf", &y) == 1)
+    {
+        ans = deltat((y - 2000.0) * 365.25 + J2000);
+        printf("%.4lf %.4lf\n", y, ans);
+    }
 }
 #endif
 
 /* For RCS Only -- Do Not Edit */
-static char *rcsid[2] = {(char *)rcsid, "@(#) $RCSfile: deltat.c,v $ $Date: 2001/04/19 21:12:13 $ $Revision: 1.1.1.1 $ $Name:  $"};
+static char *rcsid[2] = {(char *)rcsid,
+                         "@(#) $RCSfile: deltat.c,v $ $Date: 2001/04/19 21:12:13 $ $Revision: 1.1.1.1 $ $Name:  $"};

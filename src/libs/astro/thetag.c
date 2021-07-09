@@ -4,7 +4,6 @@
 
 /* @(#) $Id: thetag.c,v 1.1.1.1 2001/04/19 21:12:14 ocaas Exp $ */
 
-
 /*
  *      FUNCTION THETAG(EP)
  *      COMMON /E1/XMO,XNODEO,OMEGAO,EO,XINCL,XNO,XNDT2O,XNDD6O,BSTAR,
@@ -30,37 +29,36 @@
  */
 
 /*       FUNCTION THETAG(EP) */
-double
-thetag(double EP, double *DS50)
+double thetag(double EP, double *DS50)
 {
     int JY, N, I;
     double YR, D, THETA, TEMP, THETAG;
 
     YR = (EP + 2.0E-7) * 1.0E-3;
 
-    JY = (int) YR;
+    JY = (int)YR;
 
     YR = JY;
 
     D = EP - YR * 1.0E3;
 
-    if(JY < 10)
-	JY += 80;
+    if (JY < 10)
+        JY += 80;
 
     N = (JY - 69) / 4;
 
-    if(JY < 70)
-	N = (JY - 72) / 4;
+    if (JY < 70)
+        N = (JY - 72) / 4;
 
-/*    printf("N = %d\n", N); */
+    /*    printf("N = %d\n", N); */
 
-    *DS50 = 7305.0 + 365.0 * (JY-70) + N + D;
+    *DS50 = 7305.0 + 365.0 * (JY - 70) + N + D;
 
-/*    printf("DS50 = %f\n", *DS50); */
+    /*    printf("DS50 = %f\n", *DS50); */
 
     THETA = 1.72944494 + 6.3003880987 * *DS50;
 
-/*    printf("THETA = %f\n", THETA); */
+    /*    printf("THETA = %f\n", THETA); */
 
     TEMP = THETA / TWOPI;
 
@@ -69,8 +67,8 @@ thetag(double EP, double *DS50)
 
     THETAG = THETA - TEMP * TWOPI;
 
-    if(THETAG < 0.0)
-	THETAG += TWOPI;
+    if (THETAG < 0.0)
+        THETAG += TWOPI;
 
     return THETAG;
 }
@@ -87,4 +85,5 @@ void main(int argc, char **argv) {
 #endif
 
 /* For RCS Only -- Do Not Edit */
-static char *rcsid[2] = {(char *)rcsid, "@(#) $RCSfile: thetag.c,v $ $Date: 2001/04/19 21:12:14 $ $Revision: 1.1.1.1 $ $Name:  $"};
+static char *rcsid[2] = {(char *)rcsid,
+                         "@(#) $RCSfile: thetag.c,v $ $Date: 2001/04/19 21:12:14 $ $Revision: 1.1.1.1 $ $Name:  $"};

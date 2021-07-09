@@ -1,4 +1,5 @@
-typedef enum {
+typedef enum
+{
     /* so none are referenced by default */
     GUI_NONE = 0,
 

@@ -12,18 +12,24 @@
         so that these values match up as indices!!!
  */
 
-typedef enum {
-    Tel_Id=0, Focus_Id, Dome_Id, Cover_Id, numFifos
+typedef enum
+{
+    Tel_Id = 0,
+    Focus_Id,
+    Dome_Id,
+    Cover_Id,
+    numFifos
 } FifoId;
 
 /* this is used to describe the several FIFOs used to communicate with
  * the telescoped.
  */
-typedef struct {
-    char *name;         /* fifo name */
-    FifoId fid;     /* cross-check */
-    int fd[2];          /* file descriptor to/from the daemon, once opened */
-    int fdopen;     /* set when fd[] is in use */
+typedef struct
+{
+    char *name; /* fifo name */
+    FifoId fid; /* cross-check */
+    int fd[2];  /* file descriptor to/from the daemon, once opened */
+    int fdopen; /* set when fd[] is in use */
 } FifoInfo;
 
 /* telfifo.c */

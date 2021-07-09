@@ -3,10 +3,10 @@
 
 /* $Id: satspec.h,v 1.1.1.1 2001/04/19 21:12:13 ocaas Exp $ */
 
-#include "sattypes.h"
 #include "satlib.h"
+#include "sattypes.h"
 
-#define SGP4_SIMPLE	0x00000001
+#define SGP4_SIMPLE 0x00000001
 
 extern void init_deep(struct deep_data *deep);
 void init_sdp4(struct sdp4_data *sdp);
@@ -25,16 +25,12 @@ double actan(double sinx, double cosx);
 
 double thetag(double EP, double *DS50);
 
-void dpinit(SatData *sat, double EQSQ, double SINIQ, double COSIQ,
-	    double RTEQSQ, double AO, double COSQ2, double SINOMO,
-	    double COSOMO, double BSQ, double XLLDOT, double OMGDT,
-	    double XNODOT, double XNODP);
+void dpinit(SatData *sat, double EQSQ, double SINIQ, double COSIQ, double RTEQSQ, double AO, double COSQ2,
+            double SINOMO, double COSOMO, double BSQ, double XLLDOT, double OMGDT, double XNODOT, double XNODP);
 
-void dpsec(SatData *sat, double *XLL, double *OMGASM, double *XNODES,
-	   double *EM, double *XINC, double *XN, double T);
+void dpsec(SatData *sat, double *XLL, double *OMGASM, double *XNODES, double *EM, double *XINC, double *XN, double T);
 
-void dpper(SatData *sat, double *EM, double *XINC, double *OMGASM,
-	   double *XNODES, double *XLL, double T);
+void dpper(SatData *sat, double *EM, double *XINC, double *OMGASM, double *XNODES, double *XLL, double T);
 
 #endif /* __SATSPEC_H */
 
