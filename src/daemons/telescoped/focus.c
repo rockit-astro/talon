@@ -49,6 +49,7 @@ void readFocus (void);
 
 static double OJOGF;
 static int OSHAREDNODE;
+static double ONOMINALF;
 
 static int last_rawgoal;
 static int focusInPlace;
@@ -190,12 +191,13 @@ focus_home(int first, ...)
     case  0:
         active_func = NULL;
 
-        fifoWrite (Focus_Id,0,"Homing complete.");
+        fifoWrite (Focus_Id,1,"Homing complete. Now going to %.1fum", ONOMINALF);
         toTTS ("The focus motor has found home and is now going to the initial position.");
         readFocus();
         unow = mip->cpos*mip->step/(2*PI*mip->focscale);
         mip->cvel = 0;
         mip->homing = 0;
+        focus_offset (1, ONOMINALF - unow);
         break;
     }
 }
@@ -473,6 +475,7 @@ initCfg()
         {"OSLIMACC",	CFG_DBL, &OSLIMACC},
         {"OSCALE",		CFG_DBL, &OSCALE},
         {"OJOGF",		CFG_DBL, &OJOGF},
+        {"ONOMINALF",		CFG_DBL, &ONOMINALF},
     };
 
     static CfgEntry ocfg3[] = {

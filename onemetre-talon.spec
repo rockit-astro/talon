@@ -1,5 +1,5 @@
 Name:      onemetre-talon
-Version:   20210709
+Version:   20210913
 Release:   0
 Summary:   Stripped down Talon installation for the W1m telescope
 License:   proprietary
