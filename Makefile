@@ -10,7 +10,7 @@ all: onemetre
 
 onemetre:
 	mkdir -p build
-	${RPMBUILD} -ba onemetre-talon.spec
+	${RPMBUILD} --define "_version $$(date --utc +%Y%m%d%H%M%S)" -ba rockit-talon.spec
 	mv build/x86_64/*.rpm .
 	rm -rf build
 

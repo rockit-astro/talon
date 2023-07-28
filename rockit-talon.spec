@@ -1,6 +1,6 @@
-Name:      onemetre-talon
-Version:   20210913
-Release:   0
+Name:      rockit-talon
+Version:   %{_version}
+Release:   1
 Summary:   Stripped down Talon installation for the W1m telescope
 License:   proprietary
 Group:     Unspecified
