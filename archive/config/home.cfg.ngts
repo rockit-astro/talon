@@ -1,0 +1,674 @@
+! For RCS Only -- Do Not Edit
+! @(#) $RCSfile: home.cfg,v $ $Date: 2001/06/26 03:48:01 $ $Revision: 1.1 $ $Name: Version-2_0_16 $
+
+! Fill in the rough initial values for the telescope orientation, limit
+! switch positions and directions, and motor steps per rev once. They are
+! updated as we learn better values.
+
+! "H" refers to the longitudinal axis, ie, ha or az.
+! "D" refers to the latitudinal axis, ie, dec or alt.
+! "R" refers to the field rotator -- must be present but ignored if don't have.
+! "O" refers to focus motor -- must be present but ignored if don't have.
+! "I" refers to filter wheel -- must be present but ignored if don't have.
+
+! initial guesses -- fill these in once by hand for a new installation
+
+
+DSTEP           5603703 
+HSTEP           6399768
+HSIGN		1
+DSIGN		1
+HT		2.55     	! HA of scope pole, rads
+DT		1.5707963	! Dec of scope pole, rads
+XP		0.6		! angle from home to beneath celestial pole,
+                		! rads ccw as seen from tel pole
+YC		0.01		! angle from scope's equator to home, rads +N
+NP		0.0		! nonperpendicularity of axes, rads
+R0		0.0		! field rotator offset, if applicable
+
+
+HPOSLIM		20		! angle from home to positive limit, rads
+HNEGLIM		-20		! angle from home to positive limit, rads
+DPOSLIM		19.8		! angle from home to positive limit, rads
+DNEGLIM		-19.80		! angle from home to negative limit, rads
+RNEGLIM		-1		! angle from home to negative limit, rads
+RPOSLIM		1		! angle from home to positive limit, rads
+ONEGLIM		-50		! angle from home to negative limit, rads
+OPOSLIM		50		! angle from home to positive limit, rads
+INEGLIM		-1		! angle from home to negative limit, rads
+IPOSLIM		1		! angle from home to positive limit, rads
+
+HHOMEDIR	1		! 1 if start positive to find home, 0 if neg
+DHOMEDIR	0		! 1 if start positive to find home, 0 if neg
+RHOMEDIR	1		! 1 if start positive to find home, 0 if neg
+OHOMEDIR	1		! 1 if start positive to find home, 0 if neg
+IHOMEDIR	1		! 1 if start positive to find home, 0 if neg
+
+
+ISTEP		80000		! motor steps per rev
+ISIGN		1		! cw or ccw
+
+! end of initial manual guesses -- following are added automatically
+
+
+! soltion for hesign=-1 and design=-1
+
+!HT              -0.1139907      ! Updated UTC Thu Jul 24 05:38:46 2014
+!DT               0.6591322      ! Updated UTC Thu Jul 24 05:38:46 2014
+!XP               3.2189228      ! Updated UTC Thu Jul 24 05:38:46 2014
+!YC              -0.0803063      ! Updated UTC Thu Jul 24 05:38:46 2014
+!NP              -0.1254753      ! Updated UTC Thu Jul 24 05:38:46 2014
+
+
+
+
+!HT               0      ! Updated UTC Thu Jul 24 05:38:46 2014
+!DT               0.7853981633974483     ! Updated UTC Thu Jul 24 05:38:46 2014
+!XP               3.141592653589793      ! Updated UTC Thu Jul 24 05:38:46 2014
+!YC               0      ! Updated UTC Thu Jul 24 05:38:46 2014
+!NP               0      ! Updated UTC Thu Jul 24 05:38:46 2014
+
+
+
+!HPOSLIM         2.722342        ! Updated UTC Thu Jul 24 06:03:02 2014
+!DPOSLIM         3.989685        ! Updated UTC Thu Jul 24 06:03:30 2014
+!HNEGLIM         -2.993230       ! Updated UTC Thu Jul 24 06:05:09 2014
+!HSTEP           6403596         ! Updated UTC Thu Jul 24 06:05:09 2014
+!HSIGN           1               ! Updated UTC Thu Jul 24 06:05:09 2014
+!DNEGLIM         -0.737525       ! Updated UTC Thu Jul 24 06:05:15 2014
+!DSTEP           5599150         ! Updated UTC Thu Jul 24 06:05:15 2014
+!DSIGN           -1              ! Updated UTC Thu Jul 24 06:05:15 2014
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+! solution for design=1 hesign=-1
+
+
+DPOSLIM         0.733332        ! Updated UTC Thu Jul 24 06:36:35 2014
+HPOSLIM         2.714159        ! Updated UTC Thu Jul 24 06:37:20 2014
+DNEGLIM         -3.986690       ! Updated UTC Thu Jul 24 06:38:21 2014
+DSTEP           5599903         ! Updated UTC Thu Jul 24 06:38:21 2014
+DSIGN           1               ! Updated UTC Thu Jul 24 06:38:21 2014
+HNEGLIM         -2.995032       ! Updated UTC Thu Jul 24 06:39:27 2014
+HSTEP           6407820         ! Updated UTC Thu Jul 24 06:39:27 2014
+HSIGN           1               ! Updated UTC Thu Jul 24 06:39:27 2014
+HT              -1.0237604      ! Updated UTC Thu Jul 24 06:51:45 2014
+DT               1.4545222      ! Updated UTC Thu Jul 24 06:51:45 2014
+XP               4.1536698      ! Updated UTC Thu Jul 24 06:51:45 2014
+YC               0.0627897      ! Updated UTC Thu Jul 24 06:51:45 2014
+NP              -0.0345855      ! Updated UTC Thu Jul 24 06:51:45 2014
+
+HT              -1.5707963267948966      
+DT               1.5707963267948966      
+XP               4.71238898038469      
+YC               0      
+NP               0      
+
+!specifique monture 5
+DPOSLIM         0.830512        ! Updated UTC Thu Jul 24 08:51:33 2014
+HPOSLIM         2.672523        ! Updated UTC Thu Jul 24 08:52:13 2014
+DNEGLIM         -1.687296       ! Updated UTC Thu Jul 24 08:52:29 2014
+DSTEP           5602922         ! Updated UTC Thu Jul 24 08:52:29 2014
+DSIGN           1               ! Updated UTC Thu Jul 24 08:52:29 2014
+HNEGLIM         -3.058310       ! Updated UTC Thu Jul 24 08:54:21 2014
+HSTEP           6395504         ! Updated UTC Thu Jul 24 08:54:21 2014
+HSIGN           1               ! Updated UTC Thu Jul 24 08:54:21 2014
+
+!HT               0.7032721      ! Updated UTC Thu Jul 24 09:12:40 2014
+!DT               1.5694387      ! Updated UTC Thu Jul 24 09:12:40 2014
+!XP               2.4189298      ! Updated UTC Thu Jul 24 09:12:40 2014
+!YC              -0.0094534      ! Updated UTC Thu Jul 24 09:12:40 2014
+!NP              -0.0019934      ! Updated UTC Thu Jul 24 09:12:40 2014
+
+! new after attempt of polar alignment by xobs
+
+HT               0.6657428      ! Updated UTC Fri Jul 25 03:44:29 2014
+DT               1.5707963      ! Updated UTC Fri Jul 25 03:44:29 2014
+XP               2.4564342      ! Updated UTC Fri Jul 25 03:44:29 2014
+YC              -0.0098204      ! Updated UTC Fri Jul 25 03:44:29 2014
+NP              -0.0019278      ! Updated UTC Fri Jul 25 03:44:29 2014
+DPOSLIM         0.732503        ! Updated UTC Fri Jul 25 05:37:57 2014
+HPOSLIM         2.718309        ! Updated UTC Fri Jul 25 05:38:41 2014
+DNEGLIM         -3.992878       ! Updated UTC Fri Jul 25 05:39:42 2014
+DSTEP           5602109         ! Updated UTC Fri Jul 25 05:39:42 2014
+DSIGN           1               ! Updated UTC Fri Jul 25 05:39:42 2014
+HNEGLIM         -2.995231       ! Updated UTC Fri Jul 25 05:40:48 2014
+HSTEP           6406816         ! Updated UTC Fri Jul 25 05:40:48 2014
+HSIGN           1               ! Updated UTC Fri Jul 25 05:40:48 2014
+HPOSLIM         2.718196        ! Updated UTC Sun Aug 31 22:12:18 2014
+HNEGLIM         -2.996115       ! Updated UTC Sun Aug 31 22:14:26 2014
+HSTEP           6405713         ! Updated UTC Sun Aug 31 22:14:26 2014
+HSIGN           1               ! Updated UTC Sun Aug 31 22:14:26 2014
+DPOSLIM         0.738208        ! Updated UTC Sun Aug 31 22:19:10 2014
+HPOSLIM         2.715840        ! Updated UTC Sun Aug 31 22:19:54 2014
+DNEGLIM         -3.987728       ! Updated UTC Sun Aug 31 22:20:55 2014
+DSTEP           5600758         ! Updated UTC Sun Aug 31 22:20:55 2014
+DSIGN           1               ! Updated UTC Sun Aug 31 22:20:55 2014
+HNEGLIM         -2.996012       ! Updated UTC Sun Aug 31 22:22:01 2014
+HSTEP           6406141         ! Updated UTC Sun Aug 31 22:22:01 2014
+HSIGN           1               ! Updated UTC Sun Aug 31 22:22:01 2014
+HPOSLIM         1.549183        ! Updated UTC Wed Oct 15 13:47:29 2014
+HNEGLIM         -1.521668       ! Updated UTC Wed Oct 15 13:48:37 2014
+HSTEP           6403419         ! Updated UTC Wed Oct 15 13:48:37 2014
+HSIGN           1               ! Updated UTC Wed Oct 15 13:48:37 2014
+DPOSLIM         0.733312        ! Updated UTC Wed Oct 15 13:50:15 2014
+DNEGLIM         -1.709007       ! Updated UTC Wed Oct 15 13:51:09 2014
+DSTEP           5600566         ! Updated UTC Wed Oct 15 13:51:09 2014
+DSIGN           1               ! Updated UTC Wed Oct 15 13:51:09 2014
+HPOSLIM         1.546408        ! Updated UTC Wed Oct 15 13:54:00 2014
+HNEGLIM         -1.522704       ! Updated UTC Wed Oct 15 13:55:09 2014
+HSTEP           6402653         ! Updated UTC Wed Oct 15 13:55:09 2014
+HSIGN           1               ! Updated UTC Wed Oct 15 13:55:09 2014
+HPOSLIM         1.546686        ! Updated UTC Wed Oct 15 20:19:37 2014
+HNEGLIM         -1.523405       ! Updated UTC Wed Oct 15 20:20:46 2014
+HSTEP           6403072         ! Updated UTC Wed Oct 15 20:20:46 2014
+HSIGN           1               ! Updated UTC Wed Oct 15 20:20:46 2014
+DPOSLIM         0.733881        ! Updated UTC Wed Oct 15 20:21:12 2014
+DNEGLIM         -1.708403       ! Updated UTC Wed Oct 15 20:22:06 2014
+DSTEP           5601636         ! Updated UTC Wed Oct 15 20:22:06 2014
+DSIGN           1               ! Updated UTC Wed Oct 15 20:22:06 2014
+DPOSLIM         0.733380        ! Updated UTC Mon Oct 20 18:31:29 2014
+HPOSLIM         1.547830        ! Updated UTC Mon Oct 20 18:31:47 2014
+DNEGLIM         -1.708389       ! Updated UTC Mon Oct 20 18:32:24 2014
+DSTEP           5601373         ! Updated UTC Mon Oct 20 18:32:24 2014
+DSIGN           1               ! Updated UTC Mon Oct 20 18:32:24 2014
+HNEGLIM         -1.525031       ! Updated UTC Mon Oct 20 18:32:56 2014
+HSTEP           6403233         ! Updated UTC Mon Oct 20 18:32:56 2014
+HSIGN           1               ! Updated UTC Mon Oct 20 18:32:56 2014
+HT              -0.4029974      ! Updated UTC Tue Oct 21 01:52:08 2014
+DT               1.5707843      ! Updated UTC Tue Oct 21 01:52:08 2014
+XP               3.5273197      ! Updated UTC Tue Oct 21 01:52:08 2014
+YC               0.0061169      ! Updated UTC Tue Oct 21 01:52:08 2014
+NP               0.0010697      ! Updated UTC Tue Oct 21 01:52:08 2014
+HT               0.0025474      ! Updated UTC Tue Oct 21 02:08:31 2014
+DT               1.5707963      ! Updated UTC Tue Oct 21 02:08:31 2014
+XP               3.1217788      ! Updated UTC Tue Oct 21 02:08:31 2014
+YC               0.0061208      ! Updated UTC Tue Oct 21 02:08:31 2014
+NP               0.0010667      ! Updated UTC Tue Oct 21 02:08:31 2014
+DPOSLIM         0.735962        ! Updated UTC Sun Nov  2 21:40:27 2014
+HPOSLIM         1.549853        ! Updated UTC Sun Nov  2 21:40:45 2014
+DNEGLIM         -1.709366       ! Updated UTC Sun Nov  2 21:41:22 2014
+DSTEP           5602059         ! Updated UTC Sun Nov  2 21:41:22 2014
+DSIGN           1               ! Updated UTC Sun Nov  2 21:41:22 2014
+HNEGLIM         -1.522284       ! Updated UTC Sun Nov  2 21:41:54 2014
+HSTEP           6400954         ! Updated UTC Sun Nov  2 21:41:54 2014
+HSIGN           1               ! Updated UTC Sun Nov  2 21:41:54 2014
+DPOSLIM         0.734283        ! Updated UTC Wed Apr 22 19:28:34 2015
+HPOSLIM         1.550099        ! Updated UTC Wed Apr 22 19:28:53 2015
+DNEGLIM         -1.707519       ! Updated UTC Wed Apr 22 19:29:29 2015
+DSTEP           5605163         ! Updated UTC Wed Apr 22 19:29:29 2015
+DSIGN           1               ! Updated UTC Wed Apr 22 19:29:29 2015
+HNEGLIM         -1.525435       ! Updated UTC Wed Apr 22 19:30:02 2015
+HSTEP           6403013         ! Updated UTC Wed Apr 22 19:30:02 2015
+HSIGN           1               ! Updated UTC Wed Apr 22 19:30:02 2015
+HT              -0.1497582      ! Updated UTC Thu Apr 23 00:52:19 2015
+DT               1.5707960      ! Updated UTC Thu Apr 23 00:52:19 2015
+XP               3.2725592      ! Updated UTC Thu Apr 23 00:52:19 2015
+YC               0.0086856      ! Updated UTC Thu Apr 23 00:52:19 2015
+NP              -0.0008432      ! Updated UTC Thu Apr 23 00:52:19 2015
+DPOSLIM         0.734304        ! Updated UTC Tue May  5 20:49:27 2015
+HPOSLIM         1.552488        ! Updated UTC Tue May  5 20:49:45 2015
+DNEGLIM         -1.709563       ! Updated UTC Tue May  5 20:50:21 2015
+DSTEP           5605278         ! Updated UTC Tue May  5 20:50:21 2015
+DSIGN           1               ! Updated UTC Tue May  5 20:50:21 2015
+HNEGLIM         -1.526200       ! Updated UTC Tue May  5 20:50:54 2015
+HSTEP           6403935         ! Updated UTC Tue May  5 20:50:54 2015
+HSIGN           1               ! Updated UTC Tue May  5 20:50:54 2015
+DPOSLIM         0.734966        ! Updated UTC Sun May 10 15:31:36 2015
+HPOSLIM         1.551316        ! Updated UTC Sun May 10 15:31:54 2015
+DNEGLIM         -2.308118       ! Updated UTC Sun May 10 15:32:44 2015
+DSTEP           5601855         ! Updated UTC Sun May 10 15:32:44 2015
+DSIGN           1               ! Updated UTC Sun May 10 15:32:44 2015
+HNEGLIM         -1.526512       ! Updated UTC Sun May 10 15:33:03 2015
+HSTEP           6403292         ! Updated UTC Sun May 10 15:33:03 2015
+HSIGN           1               ! Updated UTC Sun May 10 15:33:03 2015
+HPOSLIM         1.550062        ! Updated UTC Sat Jun  6 14:41:56 2015
+HNEGLIM         -1.529757       ! Updated UTC Sat Jun  6 14:43:05 2015
+HSTEP           6398848         ! Updated UTC Sat Jun  6 14:43:05 2015
+HSIGN           1               ! Updated UTC Sat Jun  6 14:43:05 2015
+DPOSLIM         0.734623        ! Updated UTC Tue Sep 15 06:07:58 2015
+HPOSLIM         1.549194        ! Updated UTC Tue Sep 15 06:08:16 2015
+DNEGLIM         -2.307829       ! Updated UTC Tue Sep 15 06:09:06 2015
+DSTEP           5601175         ! Updated UTC Tue Sep 15 06:09:06 2015
+DSIGN           1               ! Updated UTC Tue Sep 15 06:09:06 2015
+HNEGLIM         -1.527680       ! Updated UTC Tue Sep 15 06:09:25 2015
+HSTEP           6396792         ! Updated UTC Tue Sep 15 06:09:25 2015
+HSIGN           1               ! Updated UTC Tue Sep 15 06:09:25 2015
+DPOSLIM         0.733648        ! Updated UTC Fri Oct 30 21:26:17 2015
+HPOSLIM         1.551560        ! Updated UTC Fri Oct 30 21:27:18 2015
+DNEGLIM         -2.312046       ! Updated UTC Fri Oct 30 21:27:25 2015
+DSTEP           5599589         ! Updated UTC Fri Oct 30 21:27:25 2015
+DSIGN           1               ! Updated UTC Fri Oct 30 21:27:25 2015
+HNEGLIM         -1.527764       ! Updated UTC Fri Oct 30 21:29:53 2015
+HSTEP           6397016         ! Updated UTC Fri Oct 30 21:29:53 2015
+HSIGN           1               ! Updated UTC Fri Oct 30 21:29:53 2015
+DPOSLIM         0.733233        ! Updated UTC Thu Nov 19 12:30:37 2015
+HPOSLIM         1.554429        ! Updated UTC Thu Nov 19 12:30:55 2015
+DNEGLIM         -2.307437       ! Updated UTC Thu Nov 19 12:31:46 2015
+DSTEP           5601532         ! Updated UTC Thu Nov 19 12:31:46 2015
+DSIGN           1               ! Updated UTC Thu Nov 19 12:31:46 2015
+HNEGLIM         -1.523550       ! Updated UTC Thu Nov 19 12:32:04 2015
+HSTEP           6395567         ! Updated UTC Thu Nov 19 12:32:04 2015
+HSIGN           1               ! Updated UTC Thu Nov 19 12:32:04 2015
+DPOSLIM         0.734546        ! Updated UTC Mon Feb  1 11:37:40 2016
+HPOSLIM         1.548539        ! Updated UTC Mon Feb  1 11:37:58 2016
+DNEGLIM         -2.307284       ! Updated UTC Mon Feb  1 11:38:48 2016
+DSTEP           5600952         ! Updated UTC Mon Feb  1 11:38:48 2016
+DSIGN           1               ! Updated UTC Mon Feb  1 11:38:48 2016
+HNEGLIM         -1.525449       ! Updated UTC Mon Feb  1 11:39:07 2016
+HSTEP           6398706         ! Updated UTC Mon Feb  1 11:39:07 2016
+HSIGN           1               ! Updated UTC Mon Feb  1 11:39:07 2016
+DPOSLIM         0.733422        ! Updated UTC Tue Feb  9 13:55:13 2016
+HPOSLIM         1.548632        ! Updated UTC Tue Feb  9 13:55:31 2016
+DNEGLIM         -2.307901       ! Updated UTC Tue Feb  9 13:56:21 2016
+DSTEP           5601315         ! Updated UTC Tue Feb  9 13:56:21 2016
+DSIGN           1               ! Updated UTC Tue Feb  9 13:56:21 2016
+HNEGLIM         -1.527119       ! Updated UTC Tue Feb  9 13:56:40 2016
+HSTEP           6399006         ! Updated UTC Tue Feb  9 13:56:40 2016
+HSIGN           1               ! Updated UTC Tue Feb  9 13:56:40 2016
+DPOSLIM         0.619465        ! Updated UTC Mon Feb 22 19:27:23 2016
+HPOSLIM         1.552604        ! Updated UTC Mon Feb 22 19:27:44 2016
+DNEGLIM         -2.307148       ! Updated UTC Mon Feb 22 19:28:28 2016
+DSTEP           5601030         ! Updated UTC Mon Feb 22 19:28:28 2016
+DSIGN           1               ! Updated UTC Mon Feb 22 19:28:28 2016
+HNEGLIM         -1.525814       ! Updated UTC Mon Feb 22 19:28:52 2016
+HSTEP           6399737         ! Updated UTC Mon Feb 22 19:28:52 2016
+HSIGN           1               ! Updated UTC Mon Feb 22 19:28:52 2016
+DPOSLIM         0.619670        ! Updated UTC Tue Apr 19 15:02:09 2016
+HPOSLIM         1.548614        ! Updated UTC Tue Apr 19 15:02:30 2016
+DNEGLIM         -2.307217       ! Updated UTC Tue Apr 19 15:03:15 2016
+DSTEP           5601170         ! Updated UTC Tue Apr 19 15:03:15 2016
+DSIGN           1               ! Updated UTC Tue Apr 19 15:03:15 2016
+HNEGLIM         -1.526692       ! Updated UTC Tue Apr 19 15:03:39 2016
+HSTEP           6399189         ! Updated UTC Tue Apr 19 15:03:39 2016
+HSIGN           1               ! Updated UTC Tue Apr 19 15:03:39 2016
+DPOSLIM         0.619443        ! Updated UTC Wed Jun  8 21:14:50 2016
+HPOSLIM         1.555333        ! Updated UTC Wed Jun  8 21:15:10 2016
+DNEGLIM         -2.308665       ! Updated UTC Wed Jun  8 21:15:55 2016
+DSTEP           5600719         ! Updated UTC Wed Jun  8 21:15:56 2016
+DSIGN           1               ! Updated UTC Wed Jun  8 21:15:56 2016
+HNEGLIM         -1.531227       ! Updated UTC Wed Jun  8 21:16:19 2016
+HSTEP           6396704         ! Updated UTC Wed Jun  8 21:16:19 2016
+HSIGN           1               ! Updated UTC Wed Jun  8 21:16:19 2016
+DPOSLIM         0.623302        ! Updated UTC Thu Jul  7 12:40:29 2016
+HPOSLIM         1.549035        ! Updated UTC Thu Jul  7 12:40:50 2016
+DNEGLIM         -2.307920       ! Updated UTC Thu Jul  7 12:41:34 2016
+DSTEP           5600406         ! Updated UTC Thu Jul  7 12:41:34 2016
+DSIGN           1               ! Updated UTC Thu Jul  7 12:41:34 2016
+HNEGLIM         -1.525929       ! Updated UTC Thu Jul  7 12:41:58 2016
+HSTEP           6398426         ! Updated UTC Thu Jul  7 12:41:58 2016
+HSIGN           1               ! Updated UTC Thu Jul  7 12:41:58 2016
+DPOSLIM         0.619071        ! Updated UTC Thu Aug  4 21:04:43 2016
+HPOSLIM         1.550793        ! Updated UTC Thu Aug  4 21:05:03 2016
+DNEGLIM         -2.308425       ! Updated UTC Thu Aug  4 21:05:48 2016
+DSTEP           5600978         ! Updated UTC Thu Aug  4 21:05:48 2016
+DSIGN           1               ! Updated UTC Thu Aug  4 21:05:48 2016
+HNEGLIM         -1.527271       ! Updated UTC Thu Aug  4 21:06:12 2016
+HSTEP           6398149         ! Updated UTC Thu Aug  4 21:06:12 2016
+HSIGN           1               ! Updated UTC Thu Aug  4 21:06:12 2016
+DPOSLIM         0.619447        ! Updated UTC Thu Aug 11 21:36:24 2016
+HPOSLIM         1.551827        ! Updated UTC Thu Aug 11 21:36:45 2016
+DNEGLIM         -2.309151       ! Updated UTC Thu Aug 11 21:37:30 2016
+DSTEP           5606109         ! Updated UTC Thu Aug 11 21:37:30 2016
+DSIGN           1               ! Updated UTC Thu Aug 11 21:37:30 2016
+HNEGLIM         -1.531685       ! Updated UTC Thu Aug 11 21:37:53 2016
+HSTEP           6397504         ! Updated UTC Thu Aug 11 21:37:53 2016
+HSIGN           1               ! Updated UTC Thu Aug 11 21:37:53 2016
+DPOSLIM         0.619774        ! Updated UTC Mon Nov 21 16:53:39 2016
+HPOSLIM         1.556783        ! Updated UTC Mon Nov 21 16:53:59 2016
+DNEGLIM         -2.309036       ! Updated UTC Mon Nov 21 16:54:44 2016
+DSTEP           5606376         ! Updated UTC Mon Nov 21 16:54:44 2016
+DSIGN           1               ! Updated UTC Mon Nov 21 16:54:44 2016
+HNEGLIM         -1.532093       ! Updated UTC Mon Nov 21 16:55:08 2016
+HSTEP           6397748         ! Updated UTC Mon Nov 21 16:55:08 2016
+HSIGN           1               ! Updated UTC Mon Nov 21 16:55:08 2016
+DPOSLIM         0.617745        ! Updated UTC Sat Feb  4 20:30:22 2017
+HPOSLIM         1.552212        ! Updated UTC Sat Feb  4 20:30:43 2017
+DNEGLIM         -2.309217       ! Updated UTC Sat Feb  4 20:31:28 2017
+DSTEP           5605768         ! Updated UTC Sat Feb  4 20:31:28 2017
+DSIGN           1               ! Updated UTC Sat Feb  4 20:31:28 2017
+HNEGLIM         -1.526618       ! Updated UTC Sat Feb  4 20:31:52 2017
+HSTEP           6399996         ! Updated UTC Sat Feb  4 20:31:52 2017
+HSIGN           1               ! Updated UTC Sat Feb  4 20:31:52 2017
+DPOSLIM         0.619746        ! Updated UTC Sat Apr  1 19:57:48 2017
+HPOSLIM         1.551409        ! Updated UTC Sat Apr  1 19:58:09 2017
+DNEGLIM         -2.308242       ! Updated UTC Sat Apr  1 19:58:54 2017
+DSTEP           5606202         ! Updated UTC Sat Apr  1 19:58:54 2017
+DSIGN           1               ! Updated UTC Sat Apr  1 19:58:54 2017
+HNEGLIM         -1.527513       ! Updated UTC Sat Apr  1 19:59:18 2017
+HSTEP           6400263         ! Updated UTC Sat Apr  1 19:59:18 2017
+HSIGN           1               ! Updated UTC Sat Apr  1 19:59:18 2017
+DPOSLIM         0.618197        ! Updated UTC Wed Apr 12 15:10:43 2017
+HPOSLIM         1.550681        ! Updated UTC Wed Apr 12 15:11:04 2017
+DNEGLIM         -2.306790       ! Updated UTC Wed Apr 12 15:11:48 2017
+DSTEP           5605725         ! Updated UTC Wed Apr 12 15:11:48 2017
+DSIGN           1               ! Updated UTC Wed Apr 12 15:11:48 2017
+HNEGLIM         -1.524503       ! Updated UTC Wed Apr 12 15:12:13 2017
+HSTEP           6400250         ! Updated UTC Wed Apr 12 15:12:13 2017
+HSIGN           1               ! Updated UTC Wed Apr 12 15:12:13 2017
+DPOSLIM         0.618068        ! Updated UTC Thu Apr 20 21:25:50 2017
+HPOSLIM         1.553655        ! Updated UTC Thu Apr 20 21:26:11 2017
+DNEGLIM         -2.308985       ! Updated UTC Thu Apr 20 21:26:55 2017
+DSTEP           5605989         ! Updated UTC Thu Apr 20 21:26:55 2017
+DSIGN           1               ! Updated UTC Thu Apr 20 21:26:55 2017
+HNEGLIM         -1.525109       ! Updated UTC Thu Apr 20 21:27:19 2017
+HSTEP           6400949         ! Updated UTC Thu Apr 20 21:27:19 2017
+HSIGN           1               ! Updated UTC Thu Apr 20 21:27:19 2017
+DPOSLIM         0.617722        ! Updated UTC Fri Apr 28 15:20:00 2017
+HPOSLIM         1.552566        ! Updated UTC Fri Apr 28 15:20:21 2017
+DNEGLIM         -2.306399       ! Updated UTC Fri Apr 28 15:21:05 2017
+DSTEP           5605412         ! Updated UTC Fri Apr 28 15:21:05 2017
+DSIGN           1               ! Updated UTC Fri Apr 28 15:21:05 2017
+HNEGLIM         -1.526088       ! Updated UTC Fri Apr 28 15:21:29 2017
+HSTEP           6399889         ! Updated UTC Fri Apr 28 15:21:29 2017
+HSIGN           1               ! Updated UTC Fri Apr 28 15:21:29 2017
+DPOSLIM         0.619769        ! Updated UTC Sun May  7 18:55:01 2017
+HPOSLIM         1.551708        ! Updated UTC Sun May  7 18:55:22 2017
+DNEGLIM         -2.306956       ! Updated UTC Sun May  7 18:56:06 2017
+DSTEP           5605882         ! Updated UTC Sun May  7 18:56:06 2017
+DSIGN           1               ! Updated UTC Sun May  7 18:56:06 2017
+HNEGLIM         -1.528435       ! Updated UTC Sun May  7 18:56:30 2017
+HSTEP           6400196         ! Updated UTC Sun May  7 18:56:30 2017
+HSIGN           1               ! Updated UTC Sun May  7 18:56:30 2017
+DPOSLIM         0.620238        ! Updated UTC Tue May 16 20:37:10 2017
+HPOSLIM         1.552007        ! Updated UTC Tue May 16 20:37:31 2017
+DNEGLIM         -2.306859       ! Updated UTC Tue May 16 20:38:15 2017
+DSTEP           5605926         ! Updated UTC Tue May 16 20:38:15 2017
+DSIGN           1               ! Updated UTC Tue May 16 20:38:15 2017
+HNEGLIM         -1.526101       ! Updated UTC Tue May 16 20:38:40 2017
+HSTEP           6400043         ! Updated UTC Tue May 16 20:38:40 2017
+HSIGN           1               ! Updated UTC Tue May 16 20:38:40 2017
+DPOSLIM         0.619843        ! Updated UTC Fri May 26 21:24:38 2017
+HPOSLIM         1.552374        ! Updated UTC Fri May 26 21:24:59 2017
+DNEGLIM         -2.307533       ! Updated UTC Fri May 26 21:25:44 2017
+DSTEP           5605668         ! Updated UTC Fri May 26 21:25:44 2017
+DSIGN           1               ! Updated UTC Fri May 26 21:25:44 2017
+HNEGLIM         -1.524787       ! Updated UTC Fri May 26 21:26:08 2017
+HSTEP           6400098         ! Updated UTC Fri May 26 21:26:08 2017
+HSIGN           1               ! Updated UTC Fri May 26 21:26:08 2017
+DPOSLIM         0.620194        ! Updated UTC Thu Jun 22 14:59:04 2017
+HPOSLIM         1.552363        ! Updated UTC Thu Jun 22 14:59:25 2017
+DNEGLIM         -2.306838       ! Updated UTC Thu Jun 22 15:00:10 2017
+DSTEP           5605913         ! Updated UTC Thu Jun 22 15:00:10 2017
+DSIGN           1               ! Updated UTC Thu Jun 22 15:00:10 2017
+HNEGLIM         -1.526052       ! Updated UTC Thu Jun 22 15:00:34 2017
+HSTEP           6400108         ! Updated UTC Thu Jun 22 15:00:34 2017
+HSIGN           1               ! Updated UTC Thu Jun 22 15:00:34 2017
+DPOSLIM         0.619755        ! Updated UTC Fri Jul  7 19:23:58 2017
+HPOSLIM         1.556370        ! Updated UTC Fri Jul  7 19:24:18 2017
+DNEGLIM         -2.307957       ! Updated UTC Fri Jul  7 19:25:03 2017
+DSTEP           5605679         ! Updated UTC Fri Jul  7 19:25:03 2017
+DSIGN           1               ! Updated UTC Fri Jul  7 19:25:03 2017
+HNEGLIM         -1.524404       ! Updated UTC Fri Jul  7 19:25:28 2017
+HSTEP           6399054         ! Updated UTC Fri Jul  7 19:25:28 2017
+HSIGN           1               ! Updated UTC Fri Jul  7 19:25:28 2017
+DPOSLIM         0.618157        ! Updated UTC Sun Aug 13 10:53:32 2017
+HPOSLIM         1.549935        ! Updated UTC Sun Aug 13 10:53:53 2017
+DNEGLIM         -2.311966       ! Updated UTC Sun Aug 13 10:54:37 2017
+DSTEP           5605009         ! Updated UTC Sun Aug 13 10:54:37 2017
+DSIGN           1               ! Updated UTC Sun Aug 13 10:54:37 2017
+HNEGLIM         -1.524590       ! Updated UTC Sun Aug 13 10:55:01 2017
+HSTEP           6399045         ! Updated UTC Sun Aug 13 10:55:01 2017
+HSIGN           1               ! Updated UTC Sun Aug 13 10:55:01 2017
+DPOSLIM         0.619588        ! Updated UTC Wed Aug 23 19:50:30 2017
+HPOSLIM         1.552551        ! Updated UTC Wed Aug 23 19:50:51 2017
+DNEGLIM         -2.307932       ! Updated UTC Wed Aug 23 19:51:35 2017
+DSTEP           5601575         ! Updated UTC Wed Aug 23 19:51:35 2017
+DSIGN           1               ! Updated UTC Wed Aug 23 19:51:35 2017
+HNEGLIM         -1.527540       ! Updated UTC Wed Aug 23 19:52:00 2017
+HSTEP           6400460         ! Updated UTC Wed Aug 23 19:52:00 2017
+HSIGN           1               ! Updated UTC Wed Aug 23 19:52:00 2017
+DPOSLIM         0.619729        ! Updated UTC Mon Sep 25 20:42:39 2017
+HPOSLIM         1.553150        ! Updated UTC Mon Sep 25 20:43:00 2017
+DNEGLIM         -2.311745       ! Updated UTC Mon Sep 25 20:43:44 2017
+DSTEP           5600638         ! Updated UTC Mon Sep 25 20:43:44 2017
+DSIGN           1               ! Updated UTC Mon Sep 25 20:43:44 2017
+HNEGLIM         -1.533235       ! Updated UTC Mon Sep 25 20:44:08 2017
+HSTEP           6399085         ! Updated UTC Mon Sep 25 20:44:08 2017
+HSIGN           1               ! Updated UTC Mon Sep 25 20:44:08 2017
+DPOSLIM         0.620338        ! Updated UTC Tue Oct 10 19:46:09 2017
+HPOSLIM         1.558051        ! Updated UTC Tue Oct 10 19:46:30 2017
+DNEGLIM         -2.307840       ! Updated UTC Tue Oct 10 19:47:15 2017
+DSTEP           5600231         ! Updated UTC Tue Oct 10 19:47:15 2017
+DSIGN           1               ! Updated UTC Tue Oct 10 19:47:15 2017
+HNEGLIM         -1.533208       ! Updated UTC Tue Oct 10 19:47:39 2017
+HSTEP           6398553         ! Updated UTC Tue Oct 10 19:47:39 2017
+HSIGN           1               ! Updated UTC Tue Oct 10 19:47:39 2017
+DPOSLIM         0.623407        ! Updated UTC Thu Nov  2 10:58:24 2017
+HPOSLIM         1.552993        ! Updated UTC Thu Nov  2 10:58:45 2017
+DNEGLIM         -2.309045       ! Updated UTC Thu Nov  2 10:59:30 2017
+DSTEP           5599559         ! Updated UTC Thu Nov  2 10:59:30 2017
+DSIGN           1               ! Updated UTC Thu Nov  2 10:59:30 2017
+HNEGLIM         -1.525687       ! Updated UTC Thu Nov  2 10:59:54 2017
+HSTEP           6400508         ! Updated UTC Thu Nov  2 10:59:54 2017
+HSIGN           1               ! Updated UTC Thu Nov  2 10:59:54 2017
+DPOSLIM         0.620774        ! Updated UTC Wed Nov 22 15:24:45 2017
+HPOSLIM         1.552065        ! Updated UTC Wed Nov 22 15:25:06 2017
+DNEGLIM         -2.309084       ! Updated UTC Wed Nov 22 15:25:51 2017
+DSTEP           5600547         ! Updated UTC Wed Nov 22 15:25:51 2017
+DSIGN           1               ! Updated UTC Wed Nov 22 15:25:51 2017
+HNEGLIM         -1.527339       ! Updated UTC Wed Nov 22 15:26:15 2017
+HSTEP           6400714         ! Updated UTC Wed Nov 22 15:26:15 2017
+HSIGN           1               ! Updated UTC Wed Nov 22 15:26:15 2017
+DPOSLIM         0.619203        ! Updated UTC Fri Dec  8 20:55:28 2017
+HPOSLIM         1.551682        ! Updated UTC Fri Dec  8 20:55:49 2017
+DNEGLIM         -2.308095       ! Updated UTC Fri Dec  8 20:56:34 2017
+DSTEP           5600441         ! Updated UTC Fri Dec  8 20:56:34 2017
+DSIGN           1               ! Updated UTC Fri Dec  8 20:56:34 2017
+HNEGLIM         -1.528011       ! Updated UTC Fri Dec  8 20:56:58 2017
+HSTEP           6399720         ! Updated UTC Fri Dec  8 20:56:58 2017
+HSIGN           1               ! Updated UTC Fri Dec  8 20:56:58 2017
+DPOSLIM         0.619796        ! Updated UTC Tue Jan 16 23:23:26 2018
+HPOSLIM         1.551321        ! Updated UTC Tue Jan 16 23:23:47 2018
+DNEGLIM         -2.306896       ! Updated UTC Tue Jan 16 23:24:31 2018
+DSTEP           5600835         ! Updated UTC Tue Jan 16 23:24:31 2018
+DSIGN           1               ! Updated UTC Tue Jan 16 23:24:31 2018
+HNEGLIM         -1.527950       ! Updated UTC Tue Jan 16 23:24:55 2018
+HSTEP           6400415         ! Updated UTC Tue Jan 16 23:24:55 2018
+HSIGN           1               ! Updated UTC Tue Jan 16 23:24:55 2018
+DPOSLIM         0.619579        ! Updated UTC Mon Jan 22 23:13:01 2018
+HPOSLIM         1.550763        ! Updated UTC Mon Jan 22 23:13:22 2018
+DNEGLIM         -2.307514       ! Updated UTC Mon Jan 22 23:14:07 2018
+DSTEP           5602635         ! Updated UTC Mon Jan 22 23:14:07 2018
+DSIGN           1               ! Updated UTC Mon Jan 22 23:14:07 2018
+HNEGLIM         -1.528976       ! Updated UTC Mon Jan 22 23:14:31 2018
+HSTEP           6400635         ! Updated UTC Mon Jan 22 23:14:31 2018
+HSIGN           1               ! Updated UTC Mon Jan 22 23:14:31 2018
+DPOSLIM         0.618360        ! Updated UTC Fri Feb 16 20:58:38 2018
+HPOSLIM         1.552200        ! Updated UTC Fri Feb 16 20:58:59 2018
+DNEGLIM         -2.308770       ! Updated UTC Fri Feb 16 20:59:43 2018
+DSTEP           5603722         ! Updated UTC Fri Feb 16 20:59:43 2018
+DSIGN           1               ! Updated UTC Fri Feb 16 20:59:43 2018
+HNEGLIM         -1.530209       ! Updated UTC Fri Feb 16 21:00:08 2018
+HSTEP           6401265         ! Updated UTC Fri Feb 16 21:00:08 2018
+HSIGN           1               ! Updated UTC Fri Feb 16 21:00:08 2018
+DPOSLIM         0.618466        ! Updated UTC Sun Mar 18 21:33:53 2018
+HPOSLIM         1.553867        ! Updated UTC Sun Mar 18 21:34:13 2018
+DNEGLIM         -2.308275       ! Updated UTC Sun Mar 18 21:34:58 2018
+DSTEP           5603730         ! Updated UTC Sun Mar 18 21:34:58 2018
+DSIGN           1               ! Updated UTC Sun Mar 18 21:34:58 2018
+HNEGLIM         -1.526673       ! Updated UTC Sun Mar 18 21:35:22 2018
+HSTEP           6401087         ! Updated UTC Sun Mar 18 21:35:22 2018
+HSIGN           1               ! Updated UTC Sun Mar 18 21:35:22 2018
+DPOSLIM         0.622543        ! Updated UTC Wed Apr 11 09:50:30 2018
+HPOSLIM         1.550433        ! Updated UTC Wed Apr 11 09:50:51 2018
+DNEGLIM         -2.306324       ! Updated UTC Wed Apr 11 09:51:35 2018
+DSTEP           5603197         ! Updated UTC Wed Apr 11 09:51:35 2018
+DSIGN           1               ! Updated UTC Wed Apr 11 09:51:35 2018
+HNEGLIM         -1.528074       ! Updated UTC Wed Apr 11 09:51:59 2018
+HSTEP           6401419         ! Updated UTC Wed Apr 11 09:52:00 2018
+HSIGN           1               ! Updated UTC Wed Apr 11 09:52:00 2018
+DPOSLIM         0.622501        ! Updated UTC Fri May 11 17:25:25 2018
+HPOSLIM         1.554756        ! Updated UTC Fri May 11 17:25:46 2018
+DNEGLIM         -2.306373       ! Updated UTC Fri May 11 17:26:31 2018
+DSTEP           5602941         ! Updated UTC Fri May 11 17:26:31 2018
+DSIGN           1               ! Updated UTC Fri May 11 17:26:31 2018
+HNEGLIM         -1.526212       ! Updated UTC Fri May 11 17:26:55 2018
+HSTEP           6401600         ! Updated UTC Fri May 11 17:26:55 2018
+HSIGN           1               ! Updated UTC Fri May 11 17:26:55 2018
+DPOSLIM         0.619511        ! Updated UTC Sun Jun 10 20:32:46 2018
+HPOSLIM         1.551788        ! Updated UTC Sun Jun 10 20:33:07 2018
+DNEGLIM         -2.307024       ! Updated UTC Sun Jun 10 20:33:52 2018
+DSTEP           5603191         ! Updated UTC Sun Jun 10 20:33:52 2018
+DSIGN           1               ! Updated UTC Sun Jun 10 20:33:52 2018
+HNEGLIM         -1.526272       ! Updated UTC Sun Jun 10 20:34:16 2018
+HSTEP           6401211         ! Updated UTC Sun Jun 10 20:34:16 2018
+HSIGN           1               ! Updated UTC Sun Jun 10 20:34:16 2018
+DPOSLIM         0.619278        ! Updated UTC Mon Jun 25 19:41:34 2018
+HPOSLIM         1.552979        ! Updated UTC Mon Jun 25 19:41:54 2018
+DNEGLIM         -2.307221       ! Updated UTC Mon Jun 25 19:42:39 2018
+DSTEP           5604805         ! Updated UTC Mon Jun 25 19:42:39 2018
+DSIGN           1               ! Updated UTC Mon Jun 25 19:42:39 2018
+HNEGLIM         -1.527002       ! Updated UTC Mon Jun 25 19:43:03 2018
+HSTEP           6400984         ! Updated UTC Mon Jun 25 19:43:03 2018
+HSIGN           1               ! Updated UTC Mon Jun 25 19:43:03 2018
+DPOSLIM         0.619377        ! Updated UTC Thu Jul 26 15:05:20 2018
+HPOSLIM         1.550960        ! Updated UTC Thu Jul 26 15:05:41 2018
+DNEGLIM         -2.306914       ! Updated UTC Thu Jul 26 15:06:26 2018
+DSTEP           5602699         ! Updated UTC Thu Jul 26 15:06:26 2018
+DSIGN           1               ! Updated UTC Thu Jul 26 15:06:26 2018
+HNEGLIM         -1.526215       ! Updated UTC Thu Jul 26 15:06:50 2018
+HSTEP           6401146         ! Updated UTC Thu Jul 26 15:06:50 2018
+HSIGN           1               ! Updated UTC Thu Jul 26 15:06:50 2018
+DPOSLIM         0.619383        ! Updated UTC Wed Aug 29 20:03:39 2018
+HPOSLIM         1.551163        ! Updated UTC Wed Aug 29 20:04:00 2018
+DNEGLIM         -2.307419       ! Updated UTC Wed Aug 29 20:04:45 2018
+DSTEP           5602198         ! Updated UTC Wed Aug 29 20:04:45 2018
+DSIGN           1               ! Updated UTC Wed Aug 29 20:04:45 2018
+HNEGLIM         -1.528490       ! Updated UTC Wed Aug 29 20:05:09 2018
+HSTEP           6401436         ! Updated UTC Wed Aug 29 20:05:09 2018
+HSIGN           1               ! Updated UTC Wed Aug 29 20:05:09 2018
+DPOSLIM         0.619526        ! Updated UTC Tue Oct  2 20:23:35 2018
+HPOSLIM         1.553853        ! Updated UTC Tue Oct  2 20:23:55 2018
+DNEGLIM         -2.307600       ! Updated UTC Tue Oct  2 20:24:40 2018
+DSTEP           5600731         ! Updated UTC Tue Oct  2 20:24:40 2018
+DSIGN           1               ! Updated UTC Tue Oct  2 20:24:40 2018
+HNEGLIM         -1.526734       ! Updated UTC Tue Oct  2 20:25:04 2018
+HSTEP           6401590         ! Updated UTC Tue Oct  2 20:25:04 2018
+HSIGN           1               ! Updated UTC Tue Oct  2 20:25:04 2018
+DPOSLIM         0.619394        ! Updated UTC Wed Nov  7 18:50:00 2018
+HPOSLIM         1.553015        ! Updated UTC Wed Nov  7 18:50:20 2018
+DNEGLIM         -2.306500       ! Updated UTC Wed Nov  7 18:51:05 2018
+DSTEP           5600602         ! Updated UTC Wed Nov  7 18:51:05 2018
+DSIGN           1               ! Updated UTC Wed Nov  7 18:51:05 2018
+HNEGLIM         -1.532945       ! Updated UTC Wed Nov  7 18:51:29 2018
+HSTEP           6400505         ! Updated UTC Wed Nov  7 18:51:29 2018
+HSIGN           1               ! Updated UTC Wed Nov  7 18:51:29 2018
+DPOSLIM         0.622667        ! Updated UTC Thu Apr  4 23:42:13 2019
+HPOSLIM         1.550821        ! Updated UTC Thu Apr  4 23:42:34 2019
+DNEGLIM         -2.307873       ! Updated UTC Thu Apr  4 23:43:18 2019
+DSTEP           5601647         ! Updated UTC Thu Apr  4 23:43:18 2019
+DSIGN           1               ! Updated UTC Thu Apr  4 23:43:18 2019
+HNEGLIM         -1.531124       ! Updated UTC Thu Apr  4 23:43:42 2019
+HSTEP           6399123         ! Updated UTC Thu Apr  4 23:43:42 2019
+HSIGN           1               ! Updated UTC Thu Apr  4 23:43:42 2019
+DPOSLIM         0.618308        ! Updated UTC Fri Apr  5 16:58:57 2019
+HPOSLIM         1.551238        ! Updated UTC Fri Apr  5 16:59:17 2019
+DNEGLIM         -2.307465       ! Updated UTC Fri Apr  5 17:00:02 2019
+DSTEP           5601656         ! Updated UTC Fri Apr  5 17:00:02 2019
+DSIGN           1               ! Updated UTC Fri Apr  5 17:00:02 2019
+HNEGLIM         -1.530134       ! Updated UTC Fri Apr  5 17:00:26 2019
+HSTEP           6399813         ! Updated UTC Fri Apr  5 17:00:26 2019
+HSIGN           1               ! Updated UTC Fri Apr  5 17:00:26 2019
+DPOSLIM         0.619779        ! Updated UTC Wed May 22 20:19:29 2019
+HPOSLIM         1.551396        ! Updated UTC Wed May 22 20:19:50 2019
+DNEGLIM         -2.307979       ! Updated UTC Wed May 22 20:20:34 2019
+DSTEP           5600524         ! Updated UTC Wed May 22 20:20:35 2019
+DSIGN           1               ! Updated UTC Wed May 22 20:20:35 2019
+HNEGLIM         -1.526734       ! Updated UTC Wed May 22 20:20:59 2019
+HSTEP           6400324         ! Updated UTC Wed May 22 20:20:59 2019
+HSIGN           1               ! Updated UTC Wed May 22 20:20:59 2019
+DPOSLIM         0.619506        ! Updated UTC Thu Jun 20 16:50:26 2019
+HPOSLIM         1.555336        ! Updated UTC Thu Jun 20 16:50:47 2019
+DNEGLIM         -2.306454       ! Updated UTC Thu Jun 20 16:51:32 2019
+DSTEP           5599665         ! Updated UTC Thu Jun 20 16:51:32 2019
+DSIGN           1               ! Updated UTC Thu Jun 20 16:51:32 2019
+HNEGLIM         -1.532271       ! Updated UTC Thu Jun 20 16:51:56 2019
+HSTEP           6398451         ! Updated UTC Thu Jun 20 16:51:56 2019
+HSIGN           1               ! Updated UTC Thu Jun 20 16:51:56 2019
+DPOSLIM         0.619569        ! Updated UTC Sat Aug 24 17:35:31 2019
+HPOSLIM         1.556784        ! Updated UTC Sat Aug 24 17:35:52 2019
+DNEGLIM         -2.306868       ! Updated UTC Sat Aug 24 17:36:37 2019
+DSTEP           5598742         ! Updated UTC Sat Aug 24 17:36:37 2019
+DSIGN           1               ! Updated UTC Sat Aug 24 17:36:37 2019
+HNEGLIM         -1.528394       ! Updated UTC Sat Aug 24 17:37:01 2019
+HSTEP           6399244         ! Updated UTC Sat Aug 24 17:37:01 2019
+HSIGN           1               ! Updated UTC Sat Aug 24 17:37:01 2019
+DPOSLIM         0.623391        ! Updated UTC Wed Sep 11 21:51:15 2019
+HPOSLIM         1.557347        ! Updated UTC Wed Sep 11 21:51:36 2019
+DNEGLIM         -2.307346       ! Updated UTC Wed Sep 11 21:52:21 2019
+DSTEP           5598283         ! Updated UTC Wed Sep 11 21:52:21 2019
+DSIGN           1               ! Updated UTC Wed Sep 11 21:52:21 2019
+HNEGLIM         -1.528153       ! Updated UTC Wed Sep 11 21:52:45 2019
+HSTEP           6399246         ! Updated UTC Wed Sep 11 21:52:45 2019
+HSIGN           1               ! Updated UTC Wed Sep 11 21:52:45 2019
+DPOSLIM         0.619814        ! Updated UTC Tue Oct 15 11:05:54 2019
+HPOSLIM         1.555887        ! Updated UTC Tue Oct 15 11:06:15 2019
+DNEGLIM         -2.309163       ! Updated UTC Tue Oct 15 11:07:00 2019
+DSTEP           5599114         ! Updated UTC Tue Oct 15 11:07:00 2019
+DSIGN           1               ! Updated UTC Tue Oct 15 11:07:00 2019
+HNEGLIM         -1.527763       ! Updated UTC Tue Oct 15 11:07:24 2019
+HSTEP           6399317         ! Updated UTC Tue Oct 15 11:07:24 2019
+HSIGN           1               ! Updated UTC Tue Oct 15 11:07:24 2019
+DPOSLIM         0.619820        ! Updated UTC Tue Oct 15 14:44:49 2019
+HPOSLIM         1.553923        ! Updated UTC Tue Oct 15 14:45:10 2019
+DNEGLIM         -2.308805       ! Updated UTC Tue Oct 15 14:45:54 2019
+DSTEP           5598846         ! Updated UTC Tue Oct 15 14:45:54 2019
+DSIGN           1               ! Updated UTC Tue Oct 15 14:45:54 2019
+HNEGLIM         -1.528480       ! Updated UTC Tue Oct 15 14:46:18 2019
+HSTEP           6400073         ! Updated UTC Tue Oct 15 14:46:18 2019
+HSIGN           1               ! Updated UTC Tue Oct 15 14:46:18 2019
+DPOSLIM         0.619794        ! Updated UTC Tue Nov 26 19:09:32 2019
+HPOSLIM         1.554185        ! Updated UTC Tue Nov 26 19:09:53 2019
+DNEGLIM         -2.306937       ! Updated UTC Tue Nov 26 19:10:37 2019
+DSTEP           5598851         ! Updated UTC Tue Nov 26 19:10:37 2019
+DSIGN           1               ! Updated UTC Tue Nov 26 19:10:37 2019
+HNEGLIM         -1.533056       ! Updated UTC Tue Nov 26 19:11:01 2019
+HSTEP           6400087         ! Updated UTC Tue Nov 26 19:11:01 2019
+HSIGN           1               ! Updated UTC Tue Nov 26 19:11:01 2019
+DPOSLIM         0.623830        ! Updated UTC Sat Dec 14 22:08:56 2019
+HPOSLIM         1.550668        ! Updated UTC Sat Dec 14 22:09:17 2019
+DNEGLIM         -2.307886       ! Updated UTC Sat Dec 14 22:10:01 2019
+DSTEP           5599749         ! Updated UTC Sat Dec 14 22:10:01 2019
+DSIGN           1               ! Updated UTC Sat Dec 14 22:10:01 2019
+HNEGLIM         -1.527770       ! Updated UTC Sat Dec 14 22:10:25 2019
+HSTEP           6400310         ! Updated UTC Sat Dec 14 22:10:25 2019
+HSIGN           1               ! Updated UTC Sat Dec 14 22:10:25 2019
+HPOSLIM         1.553528        ! Updated UTC Tue Jan 21 16:28:46 2020
+DPOSLIM         0.620827        ! Updated UTC Tue Jan 21 16:29:10 2020
+HNEGLIM         -1.530601       ! Updated UTC Tue Jan 21 16:29:55 2020
+HSTEP           6400831         ! Updated UTC Tue Jan 21 16:29:55 2020
+HSIGN           1               ! Updated UTC Tue Jan 21 16:29:55 2020
+DNEGLIM         -2.307240       ! Updated UTC Tue Jan 21 16:30:15 2020
+DSTEP           5600253         ! Updated UTC Tue Jan 21 16:30:15 2020
+DSIGN           1               ! Updated UTC Tue Jan 21 16:30:15 2020
+DPOSLIM         0.618417        ! Updated UTC Tue Jan 21 16:31:27 2020
+DPOSLIM         0.618971        ! Updated UTC Tue Jan 21 16:33:36 2020
+DPOSLIM         0.620038        ! Updated UTC Tue Jan 21 16:35:47 2020
+DPOSLIM         0.620652        ! Updated UTC Tue Jan 21 16:37:57 2020
+DNEGLIM         -2.307684       ! Updated UTC Tue Jan 21 16:39:02 2020
+DSTEP           5600469         ! Updated UTC Tue Jan 21 16:39:02 2020
+DSIGN           1               ! Updated UTC Tue Jan 21 16:39:02 2020
+DPOSLIM         0.619639        ! Updated UTC Tue Jan 21 22:36:59 2020
+HPOSLIM         1.554033        ! Updated UTC Tue Jan 21 22:37:20 2020
+DNEGLIM         -2.309127       ! Updated UTC Tue Jan 21 22:38:05 2020
+DSTEP           5601531         ! Updated UTC Tue Jan 21 22:38:05 2020
+DSIGN           1               ! Updated UTC Tue Jan 21 22:38:05 2020
+HNEGLIM         -1.527972       ! Updated UTC Tue Jan 21 22:38:29 2020
+HSTEP           6400717         ! Updated UTC Tue Jan 21 22:38:29 2020
+HSIGN           1               ! Updated UTC Tue Jan 21 22:38:29 2020
+DPOSLIM         0.619640        ! Updated UTC Fri Feb  7 15:48:46 2020
+HPOSLIM         1.550903        ! Updated UTC Fri Feb  7 15:49:07 2020
+DNEGLIM         -2.307928       ! Updated UTC Fri Feb  7 15:49:52 2020
+DSTEP           5600780         ! Updated UTC Fri Feb  7 15:49:52 2020
+DSIGN           1               ! Updated UTC Fri Feb  7 15:49:52 2020
+HNEGLIM         -1.528729       ! Updated UTC Fri Feb  7 15:50:16 2020
+HSTEP           6399443         ! Updated UTC Fri Feb  7 15:50:16 2020
+HSIGN           1               ! Updated UTC Fri Feb  7 15:50:16 2020
+DPOSLIM         0.619369        ! Updated UTC Mon Mar  2 16:29:38 2020
+HPOSLIM         1.554815        ! Updated UTC Mon Mar  2 16:29:59 2020
+DNEGLIM         -2.306879       ! Updated UTC Mon Mar  2 16:30:44 2020
+DSTEP           5601304         ! Updated UTC Mon Mar  2 16:30:44 2020
+DSIGN           1               ! Updated UTC Mon Mar  2 16:30:44 2020
+HNEGLIM         -1.528209       ! Updated UTC Mon Mar  2 16:31:08 2020
+HSTEP           6400174         ! Updated UTC Mon Mar  2 16:31:08 2020
+HSIGN           1               ! Updated UTC Mon Mar  2 16:31:08 2020

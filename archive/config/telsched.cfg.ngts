@@ -1,0 +1,58 @@
+! defaults for schedule requests 
+COMPRESS = 	1	! default compression factor
+DEFBIN =	1	! default camera binning, pixels
+DEFIMW =	1024	! default camera width, pixels (before binning)
+DEFIMH =	1024	! default camera height, pixels (before binning)
+LSTDELTADEF = 	300;	! default for LSTDELTA keyword, mins
+
+! Scheduling and equipment constraints
+MINALT = 0.26		! minimum allowable altitude for imaging, rads
+MAXALT = 1.57079	! max altitude, rads (generally only useful alt-az)
+!MAXHA = 3.14		! max abs ha limit for imaging, rads
+! 3/25/05 - Found that +/- limits in HA were about 3.08ish, so keep away from these
+MAXHA = 3.00   		! max abs ha limit for imaging, rads
+MAXDEC = 1.5707		! max +dec for imaging rads
+SUNDOWN = .2094395	! rads sun is below horizon we consider dark
+SETUP_TO = 120          ! max secs to wait for devices to set up before a run
+IGSUN = 1		! 1 to ignore whether the sun is up, else 0
+STOWALT =  1.570796     !.625		! stow altitude, rads
+STOWAZ =  0!4.71238898    !3.1415926	! stow azimuth, rads E of N
+STOWFILTER = U		! Filter code to use when stowing
+SERVICEALT = 1.6	! service altitude, rads
+SERVICEAZ = 3.1415926	! service azimuth, rads E of N
+BANNER = 'TEST'
+
+! Make telrun automatically home the telescope if necessary
+AUTOHOME = 1
+HOMEWAIT = 180
+
+! Settings for the all-sky pointing mesh
+MESHEXPTIME	10	! mesh exposure time, secs
+MESHFILTER	C	! mesh filter code
+MESHCOMP	10	! mesh images compression scale factor
+PTGRAD	 	0.2	! pointing mesh interpolation radius, rads
+
+! Settings for the photometric scans
+PHOTBDUR        20      ! default duration for blue filter, secs
+PHOTVDUR        20      ! default duration for visible (yellow) filter, secs
+PHOTRDUR        20      ! default duration for red filter, secs
+PHOTIDUR        20      ! default duration for IR filter, secs
+
+! how the progress beeps are to sound
+OffTargPitch = 1500	! bell pitch while off target
+OffTargDuration	= 100	! bell duration while off target, ms
+OffTargPercent = 10	! bell volume (%) while off target
+OnTargPitch = 2000	! same, when acquire target
+OnTargDuration = 200	! same, when acquire target
+OnTargPercent = 20	! same, when acquire target
+BeepPeriod = 500	! overall interval, milliseconds
+
+! Local conditions -- updated dynamically is have gpsd/wxd installed
+LONGITUDE	1.2285688334850	! site longitude, +W rads
+LATITUDE	-0.42962434945805	! site latitude, +N rads
+ELEVATION	2433	! elevation above sea level, m
+TEMPERATURE	19.1	! air temperature, degrees C
+PRESSURE 	700	! air pressure, mB
+
+! For RCS Only -- Do Not Edit
+! @(#) $RCSfile: telsched.cfg,v $ $Date: 2002/01/20 06:08:56 $ $Revision: 1.3 $ $Name:  $

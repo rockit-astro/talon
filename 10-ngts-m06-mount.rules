@@ -1,0 +1,1 @@
+SUBSYSTEM=="tty", ATTRS{idVendor}=="05ad", ATTRS{idProduct}=="0fba", SYMLINK="mount", MODE="0666"

@@ -1,0 +1,9 @@
+! connections
+TTY = /dev/mount		! serial port of CSIMC network
+HOST = "127.0.0.1"		! host for csimcd
+PORT = 7623			! port on host to contact csimcd
+
+! one line per node, listing its config files
+INIT0 = "basic.cmc find.cmc nodeHA.cmc"
+INIT1 = "basic.cmc find.cmc nodeDec.cmc"
+

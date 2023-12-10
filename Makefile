@@ -6,11 +6,9 @@ RPMBUILD = rpmbuild --define "_topdir %(pwd)/build/../build/../build/../build/" 
         --define "_sourcedir %(pwd)" \
         --undefine=_disable_source_fetch
 
-all: onemetre
-
-onemetre:
+all:
 	mkdir -p build
 	${RPMBUILD} --define "_version $$(date --utc +%Y%m%d%H%M%S)" -ba rockit-talon.spec
-	mv build/x86_64/*.rpm .
+	mv build/*/*.rpm .
 	rm -rf build
 
