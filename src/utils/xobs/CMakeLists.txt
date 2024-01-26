@@ -12,7 +12,6 @@ set(XOBS_SRC
         scope.c 
         skymap.c 
         sound.c 
-        tips.c 
         update.c 
 ) 
 

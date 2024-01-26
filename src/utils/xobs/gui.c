@@ -497,23 +497,15 @@ mkControl(Widget main_w)
 	    int tb;		/* 1 for TB, 0 for PB */
 	    void (*cb)();	/* callback, nor NULL */
 	    Widget *wp;		/* widget, or NULL */
-	    char *tip;		/* tip */
 	} Ctrl;
 	static Ctrl ctrls[] = {
-	    {"Stop",        0, g_stop,   &g_w[CSTOP_W],
-	    	"Stop all equipment"},
-	    {"Quit",        0, g_exit,   &g_w[CEXIT_W],
-	    	"Quit this program"},
-	    {"Find Homes",  0, g_home,   &g_w[CFHOME_W],
-	    	"Start telescope seeking all home switches, if any"},
-	    {"Find Limits", 0, g_limit,  &g_w[CFLIM_W],
-	    	"Start telescope seeking all limit switches, if any"},
-	    {"No Confirm",  1, g_confirm,   &g_w[CCNFOFF_W],
-	    	"Toggle whether to confirm actions first"},
-	    {"Paddle",      0, g_paddle, &g_w[CPADDLE_W],
-	    	"Toggle a tool to directly command telescope motions"}, 
-	    {"Sounds",      1, soundCB,  &g_w[CSOUND_W],
-	    	"Toggle whether to make sounds while equipment is setting up"},
+	    {"Stop",        0, g_stop,   &g_w[CSTOP_W]},
+	    {"Quit",        0, g_exit,   &g_w[CEXIT_W]},
+	    {"Find Homes",  0, g_home,   &g_w[CFHOME_W]},
+	    {"Find Limits", 0, g_limit,  &g_w[CFLIM_W]},
+	    {"No Confirm",  1, g_confirm,   &g_w[CCNFOFF_W]},
+	    {"Paddle",      0, g_paddle, &g_w[CPADDLE_W]}, 
+	    {"Sounds",      1, soundCB,  &g_w[CSOUND_W]},
 	};
 	Widget fr_w, f_w;
 	Widget tbl_w;
@@ -568,9 +560,7 @@ mkControl(Widget main_w)
 		wltprintf (pbT, w, "%s", cp->lbl);
 		if (cp->wp)
 		    *(cp->wp) = w;
-		if (cp->tip)
-		    wtip (w, cp->tip);
-	    }
+	}
 
 	return (fr_w);
 }
@@ -643,15 +633,14 @@ mkScope(Widget main_w)
 	typedef struct {
 	    char *lbl;
 	    GUIWidgets gw;
-	    char *tip;
 	} Ctrl;
 	static Ctrl ctrls[] = {
-	    {"RA",  TRA_W,    "Target RA, H:M:S"},
-	    {"Dec", TDEC_W,   "Target Declination, D:M:S"},
-	    {"Ep",  TEPOCH_W, "Target Epoch, years"},
-	    {"HA",  THA_W,    "Target Hour angle, H:M:S"},
-	    {"Alt", TALT_W,   "Target altitude above horizon, D:M:S"},
-	    {"Az",  TAZ_W,    "Target azimuth, E of N, D:M:S"},
+	    {"RA",  TRA_W},
+	    {"Dec", TDEC_W},
+	    {"Ep",  TEPOCH_W},
+	    {"HA",  THA_W},
+	    {"Alt", TALT_W},
+	    {"Az",  TAZ_W},
 	};
 	Widget fr_w, f_w;
 	Widget rc_w;
@@ -679,21 +668,18 @@ mkScope(Widget main_w)
 	wltprintf (pbT, l_w[0], "Service");
 	XtAddCallback (l_w[0], XmNactivateCallback, s_service, NULL);
 	g_w[TSERV_W] = l_w[0];
-	wtip (l_w[0], "Slew to service position");
 
 	l_w[1] = XtVaCreateManagedWidget ("SSv", xmPushButtonWidgetClass, rf_w,
 	    NULL);
 	wltprintf (pbT, l_w[1], "Stow");
 	XtAddCallback (l_w[1], XmNactivateCallback, s_stow, NULL);
 	g_w[TSTOW_W] = l_w[1];
-	wtip (l_w[1], "Slew to stow position");
 
 	l_w[2] = XtVaCreateManagedWidget ("SGT", xmPushButtonWidgetClass, rf_w,
 	    NULL);
 	wltprintf (pbT, l_w[2], "Slew");
 	XtAddCallback (l_w[2], XmNactivateCallback, s_goto, NULL);
 	g_w[TGOTO_W] = l_w[2];
-	wtip (l_w[2], "Slew to coordinates and stop");
 
 	mkRow (rf_w, l_w, 3, 8);
 	    
@@ -705,14 +691,12 @@ mkScope(Widget main_w)
 	wltprintf (pbT, l_w[0], "Here");
 	XtAddCallback (l_w[0], XmNactivateCallback, s_here, NULL);
 	g_w[THERE_W] = l_w[0];
-	wtip (l_w[0], "Load all fields with current scope position");
 
 	l_w[2] = XtVaCreateManagedWidget ("SGT", xmPushButtonWidgetClass, rf_w,
 	    NULL);
 	wltprintf (pbT, l_w[2], "Track");
 	XtAddCallback (l_w[2], XmNactivateCallback, s_track, NULL);
 	g_w[TTRACK_W] = l_w[2];
-	wtip (l_w[2], "Slew to coordinates and track");
 
 	mkRow (rf_w, l_w, 3, 8);
 
@@ -730,8 +714,6 @@ mkScope(Widget main_w)
 		XmNpendingDelete, False,
 		XmNmaxLength, 9,
 		NULL);
-	    if (ctrls[i].tip)
-		wtip (tf_w, ctrls[i].tip);
 	    if (ctrls[i].gw)
 		g_w[ctrls[i].gw] = tf_w;
 	    XtAddCallback (tf_w, XmNvalueChangedCallback, s_edit,
@@ -771,7 +753,6 @@ mkMsg(Widget main_w)
 	    NULL);
 	wltprintf (pbT, e_w, "Erase");
 	XtAddCallback (e_w, XmNactivateCallback, msg_erase, NULL);
-	wtip (e_w, "Erase all messages");
 
 	l_w = XtVaCreateManagedWidget ("L", xmPushButtonWidgetClass, f_w,
 	    XmNtopAttachment, XmATTACH_WIDGET,
@@ -783,7 +764,6 @@ mkMsg(Widget main_w)
 	    NULL);
 	wltprintf (pbT, l_w, "Last");
 	XtAddCallback (l_w, XmNactivateCallback, msg_latest, NULL);
-	wtip (l_w, "Scroll to bottom to see most recent message");
 
 	msg_w = XmCreateScrolledText (f_w, "messageST", NULL, 0);
 	sw_w = XtParent(msg_w);
@@ -803,7 +783,6 @@ mkMsg(Widget main_w)
 	    XmNmarginHeight, 1,
 	    XmNmarginWidth, 1,
 	    NULL);
-	wtip (msg_w, "Scrolled list of Status messages");
 
 	/* turn off hor, turn on vert scroll bar */
 	XtVaGetValues (sw_w, XmNhorizontalScrollBar, &sb_w, NULL);
@@ -824,18 +803,17 @@ mkInfo(Widget main_w)
 	typedef struct {
 	    char *lbl;
 	    Widget *wp;
-	    char *tip;
 	} Ctrl;
 	static Ctrl ctrls[] = {
-	    {"Local", &g_w[ILT_W], "Local Civil Time"},
-	    {"UT", &g_w[IUT_W], "Universal Time"},
-	    {"UT Date", &g_w[IUTD_W], "Universal Date"},
-	    {"LST", &g_w[ILST_W], "Local Sidereal Time"},
-	    {"JD", &g_w[IJD_W], "Julian Date"},
-	    {"Moon", &g_w[IMOON_W], "Moon phase, direction and altitude"},
-	    {"Sun", &g_w[ISUN_W], "Sun direction and altitude"},
-	    {"Dusk", &g_w[IDUSK_W], "UT end of twilight"},
-	    {"Dawn", &g_w[IDAWN_W], "UT start of twilight"},
+	    {"Local", &g_w[ILT_W]},
+	    {"UT", &g_w[IUT_W]},
+	    {"UT Date", &g_w[IUTD_W]},
+	    {"LST", &g_w[ILST_W]},
+	    {"JD", &g_w[IJD_W]},
+	    {"Moon", &g_w[IMOON_W]},
+	    {"Sun", &g_w[ISUN_W]},
+	    {"Dusk", &g_w[IDUSK_W]},
+	    {"Dawn", &g_w[IDAWN_W]},
 	};
 	char site[1024];
 	Widget fr_w, f_w;
@@ -876,8 +854,6 @@ mkInfo(Widget main_w)
 		NULL);
 	    if (ctrls[i].wp)
 		*ctrls[i].wp = l_w[i];
-	    if (ctrls[i].tip)
-		wtip (l_w[i], ctrls[i].tip);
 	}
 	mkRow (lf_w, l_w, XtNumber(l_w), 25);
 

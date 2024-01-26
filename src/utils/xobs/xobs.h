@@ -80,11 +80,6 @@ extern void soundCB (Widget w, XtPointer client, XtPointer call);
 extern Widget mkSky (Widget p_w);
 extern void showSkyMap (void);
 
-/* tips.c */
-extern void wtip (Widget w, char *tip);
-extern int tip_geton(void);
-extern void tip_seton(int whether);
-
 /* update.c */
 extern void updateStatus(int force);
 

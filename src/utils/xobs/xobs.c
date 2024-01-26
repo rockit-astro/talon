@@ -136,9 +136,8 @@ main (int ac, char *av[])
 				XmNiconName, myclass,
 				NULL);
 
-	/* secret switch: turn off confirms and tips if silent */
+	/* secret switch: turn off confirms if silent */
 	if (getXRes (toplevel_w, "quiet", NULL)) {
-	    tip_seton(0);
 	    rusure_seton(0);
 	}
 

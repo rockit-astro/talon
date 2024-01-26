@@ -286,12 +286,11 @@ mkButtons (Widget p_w)
 	    char *label;
 	    int pos;
 	    Widget *wp;
-	    char *tip;
 	} ButtonW;
 	static ButtonW buttons[] = {
-	    {"C", "Coarse scope", 10, &coarse_w, "Coarse telescope control"},
-	    {"D", "Fine scope",   30, &fine_w,   "Fine telescope control"},
-	    {"B", "Focus", 50, &oi_w,     "Focus control"},
+	    {"C", "Coarse scope", 10, &coarse_w},
+	    {"D", "Fine scope",   30, &fine_w},
+	    {"B", "Focus", 50, &oi_w},
 	};
 
 	Widget f_w;
@@ -317,7 +316,6 @@ mkButtons (Widget p_w)
 	    wlprintf (w, "%s", bwp->label);
 	    XtAddCallback (w, XmNvalueChangedCallback, buttonCB, NULL);
 	    XtManageChild (w);
-	    wtip (w, bwp->tip);
 	    *(bwp->wp) = w;
 	}
 

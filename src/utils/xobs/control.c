@@ -75,14 +75,11 @@ g_stop (Widget w, XtPointer client, XtPointer call)
 void
 g_exit (Widget w, XtPointer client, XtPointer call)
 {
-	int tonnow = tip_geton();
 	int qonnow = rusure_geton();
 
 	/* always require ack to exit */
-	tip_seton (1);
 	rusure_seton (1);
 	if (!rusure (toplevel_w, "exit this program entirely")) {
-	    tip_seton (tonnow);
 	    rusure_seton (qonnow);
 	    return;
 	}
@@ -97,14 +94,12 @@ g_confirm (Widget w, XtPointer client, XtPointer call)
 	if (!XmToggleButtonGetState(w)) {
 	    setLt (g_w[SCLT_W], LTIDLE);
 	    rusure_seton(1);
-	    tip_seton (1);
 	    return;
 	}
 
-	if (rusure (toplevel_w, "turn off confirmation messages and help tips")) {
+	if (rusure (toplevel_w, "turn off confirmation messages")) {
 	    setLt (g_w[SCLT_W], LTWARN);
 	    rusure_seton(0);
-	    tip_seton (0);
 	} else
 	    XmToggleButtonSetState (w, False, True);
 }
