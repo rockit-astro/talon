@@ -53,7 +53,6 @@ char tscfn[] = "archive/config/telsched.cfg";
 char tdcfn[] = "archive/config/telescoped.cfg";
 char hcfn[] = "archive/config/home.cfg";
 char ocfn[] = "archive/config/focus.cfg";
-char ccfn[] = "archive/config/cover.cfg";
 
 static void usage (void);
 static void init_all(void);
@@ -218,7 +217,6 @@ allreset()
 {
     tel_msg ("Reset");
     focus_msg ("Reset");
-    cover_msg("Reset");
     init_cfg();	/* even us */
 }
 

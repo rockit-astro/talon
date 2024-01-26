@@ -22,15 +22,6 @@ static char* telStateNames[] = {
     "TS_LIMITING"
 };
 
-static char* coverStateNames[] = {
-    "CV_ABSENT",
-    "CV_IDLE",
-    "CV_OPENING",
-    "CV_CLOSING",
-    "CV_OPEN",
-    "CV_CLOSED"
-};
-
 TelStatShm *init_shm()
 {
 	int shmid;
@@ -66,7 +57,6 @@ int main (int argc, char **argv)
     printf("\t\"mjd\": %f,\n", telstatshmp->now.n_mjd);
     printf("\t\"lst\": %f,\n", lst);
     printf("\t\"tel_state\": \"%s\",\n", telStateNames[telstatshmp->telstate]);
-    printf("\t\"cover_state\": \"%s\",\n", coverStateNames[telstatshmp->coverstate]);
     printf("\t\"axes\": [\n");
     for (i = 0; i < 3; i++)
     {

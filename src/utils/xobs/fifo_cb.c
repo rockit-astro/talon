@@ -34,7 +34,6 @@
 
 static void tel_rd_cb (XtPointer client, int *fdp, XtInputId *idp);
 static void focus_rd_cb (XtPointer client, int *fdp, XtInputId *idp);
-static void cover_rd_cb(XtPointer client, int *fdp, XtInputId *idp);
 
 /* this is used to describe the several FIFOs used to communicate with
  * the telescoped.
@@ -49,7 +48,6 @@ typedef struct {
 static FifoCallback fifocb[] = {
     {Tel_Id,	tel_rd_cb},
     {Focus_Id,	focus_rd_cb},
-    {Cover_Id,	cover_rd_cb},
 };
 
 /* make connections to daemons.
@@ -114,20 +112,6 @@ XtInputId *idp;         /* pointer to input id */
 
 	s = fifoRead (Focus_Id, buf, sizeof(buf));
 	msg ("Focus: %s", buf);
-	updateStatus(1);
-}
-
-static void
-cover_rd_cb(client, fdp, idp)
-XtPointer client;	/* file name */
-int *fdp;			/* pointer to file descriptor */
-XtInputId  *idp;		/* pointer to input id */
-{
-	char buf[1024];
-
-	fifoRead(Cover_Id, buf, sizeof(buf));
-	msg("Cover: %s", buf);
-
 	updateStatus(1);
 }
 

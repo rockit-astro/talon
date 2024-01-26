@@ -68,7 +68,6 @@ static void tel_hadec(int first, ...);
 static void tel_stop(int first, ...);
 static void tel_jog(int first, char jog_dir[], int velocity);
 static void offsetTracking(int first, double harcsecs, double darcsecs);
-static void tel_cover(int first, ...);
 static void tel_status(int first, ...); //IEEC
 static void tel_park(int first, ...); // RGW
 
@@ -141,10 +140,6 @@ void tel_msg(msg)
 		tel_stow(1, msg);
 	else if (strncasecmp(msg, "park", 4) == 0)
 		tel_park(1, msg);
-	else if (strncasecmp(msg, "OpenCover", 9) == 0)
-		tel_cover(1, "O");
-	else if (strncasecmp(msg, "CloseCover", 10) == 0)
-		tel_cover(1, "C");
 	else if (strncasecmp(msg, "status", 6) == 0) //IEEC
 		tel_status(1);                           //IEEC
 	else if (sscanf(msg, "RA:%lf Dec:%lf Epoch:%lf", &a, &b, &c) == 3)
@@ -960,89 +955,6 @@ static void tel_jog(int first, char jog_dir[], int velocity)
 		jogTrack(first, jog_dir[0], velocity);
 	else
 		jogSlew(first, jog_dir[0], velocity);
-}
-
-// Support for mirror cover
-static void tel_cover(int first, ...)
-{
-	MotorInfo *mip = HMOT;
-	int cfd = MIPCFD(mip);
-	Now *np = &telstatshmp->now;
-	char buf[1024];
-	int n;
-	// hard code our timeout at 30 seconds -- for the context
-	// at hand that's plenty... some future slow opening cover
-	// might need more.
-	double script_to = 30 + mjd;
-
-	if (virtual_mode)
-		return;
-
-	if (first)
-	{
-		char *msg;
-		int cfd = MIPCFD(mip);
-
-		/* get the whole command */
-		va_list ap;
-		va_start(ap, first);
-		msg = va_arg (ap, char *);
-		va_end(ap);
-
-		active_func = tel_cover;
-		switch (msg[0])
-		{
-		case 'O':
-			csi_w(cfd, "cover(1);");
-			break;
-		case 'C':
-			csi_w(cfd, "cover(0);");
-			break;
-		default:
-			active_func = NULL;
-			break;
-		}
-	}
-
-	if (mjd > script_to)
-	{
-		fifoWrite(Tel_Id, -5, "Cover script has timed out");
-		toTTS("Cover script has timed out.");
-		active_func = NULL;
-		return;
-	}
-
-	/* check progress */
-	if (!csiIsReady(cfd))
-		return;
-	if (csi_r(cfd, buf, sizeof(buf)) <= 0)
-		return;
-	if (!buf[0])
-		return;
-	n = atoi(buf);
-	if (n == 0 && buf[0] != '0')
-	{
-		/* consider no leading number a bug in the script */
-		tdlog("Invalid 'cover' return: '%s'", buf);
-		n = -1;
-	}
-	if (n < 0)
-	{ // error
-		active_func = NULL;
-		fifoWrite(Tel_Id, n, "Cover error: %s", buf + 2); /* skip -n */
-		toTTS("Cover error: %s", buf + 2);
-		return;
-	}
-	if (n > 0)
-	{ // progress messages
-		fifoWrite(Tel_Id, n, "Cover %s", buf + 2);
-		return;
-	}
-
-	/* ok! */
-	active_func = NULL;
-	fifoWrite(Tel_Id, 0, "Mirror cover command complete");
-	toTTS("The mirror cover command is complete.");
 }
 
 static void tel_status(int first, ...)

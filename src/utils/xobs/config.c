@@ -31,7 +31,6 @@ int BeepPeriod;
 char BANNER[80];
 
 static char tscfn[] = "archive/config/telsched.cfg";
-static char dfn[] = "archive/config/dome.cfg";
 static char tcfn[] = "archive/config/telescoped.cfg";
 
 void

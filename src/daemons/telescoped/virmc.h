@@ -72,7 +72,6 @@ extern int vmcSetTrackPath(int node, int num, int startMs, int ivalMs, double *p
 extern void vmcSetHome(int node);
 
 extern int vmc_r(int node, char *buf, int length);
-extern void vmc_w(int node, char *buf);
 extern int vmc_isReady(int node);
 long vmc_rix(int node, char *string);
 

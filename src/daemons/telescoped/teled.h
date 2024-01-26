@@ -3,7 +3,7 @@
  * N.B. see fifos[] in telescoped.c
  */
 typedef enum {
-    Tel_Id, Focus_Id, Cover_Id
+    Tel_Id, Focus_Id
 } FifoId;
 
 /* CSIMC info */
@@ -58,15 +58,10 @@ extern char tscfn[];
 extern char tdcfn[];
 extern char hcfn[];
 extern char ocfn[];
-extern char icfn[];
-extern char ccfn[];
 extern void init_cfg(void);
 extern void allstop(void);
 extern void tdlog (char *fmt, ...);
 extern void die(void);
-
-/* cover.c */
-extern void cover_msg (char *msg);
 
 /* For RCS Only -- Do Not Edit
  * @(#) $RCSfile: teled.h,v $ $Date: 2002/12/04 08:50:32 $ $Revision: 1.5 $ $Name:  $

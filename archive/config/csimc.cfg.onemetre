@@ -5,4 +5,4 @@ PORT = 7623                     	!port  host to contact csimcd
 
 INIT0 = "basic.cmc find.cmc nodeHA.cmc"
 INIT1 = "basic.cmc find.cmc nodeDec.cmc"
-INIT2 = "basic.cmc find.cmc nodeFocus.cmc cover.cmc"
+INIT2 = "basic.cmc find.cmc nodeFocus.cmc"

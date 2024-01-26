@@ -43,11 +43,6 @@ static char *oReadcmd(char *str);
 static long oGetParm(char *str, int num);
 static int oIsCmd(char *str, char *cmd);
 
-// background functions
-static void domeseeker(int node);
-static void roofseeker(int node);
-
-
 // local variables
 static int everBeenInit = 0; // a sanity "been init at least once" flag
 static VCNode vmcNode[NVNODES];
@@ -505,63 +500,6 @@ static int oIsCmd(char *str, char *cmd)
 }
 
 
-// Write a command to the virtual controller
-void vmc_w(int node, char *string)
-{
-    VCNodePtr pvc = &vmcNode[node];
-    long val;
-
-    if (oIsCmd(string,"dome_stop")) {
-        vmcStop(node);
-        return;
-    }
-
-    if (oIsCmd(string,"roofseek")) {
-        pvc->miscVal[0] = oGetParm(string,0);
-        pvc->miscVal[1] = oGetTime(pvc);
-        active_func[node] = roofseeker;
-        vmcResponse[node][0] = 0;
-        return;
-    }
-
-    if (oIsCmd(string,"finddomehome")) {
-        vmcSetHome(node);
-        sprintf(vmcResponse[node],"0: Dome homed\n");
-        active_func[node] = NULL;
-        return;
-    }
-
-    if (oIsCmd(string,"domeseek")) {
-        pvc->miscVal[0] = oGetParm(string, 0);
-        pvc->miscVal[1] = oGetParm(string, 1);
-        pvc->miscVal[2] = pvc->currentPos;
-        pvc->miscVal[3] = 0; //oGetTime(pvc);
-//		TRACE "domeseek(%ld, %ld)\n",pvc->miscVal[0],pvc->miscVal[1]);
-        vmcSetTargetPosition(node, pvc->miscVal[0]);
-        active_func[node] = domeseeker;
-        vmcResponse[node][0] = 0;
-        vmcService(node); // do first iteration
-        return;
-    }
-
-    if (oIsCmd(string,"domejog")) {
-        val = oGetParm(string,0);
-        vmcJog(node, val * pvc->maxVel);
-        return;
-    }
-
-    TRACE "vmc_w (%d) : %s\n",node,string);
-    sprintf(vmcResponse[node],"-1: Untrapped vmc command '%s' on node %d\n", string,node);
-    active_func[node] = NULL;
-                    }
-
-                    int vmc_r(int node, char * buf, int size)
-{
-    strncpy(buf, vmcResponse[node], size);
-    strcpy(vmcResponse[node],"");
-    return(strlen(buf));
-}
-
 int vmc_isReady(int node)
 {
     return (strlen(vmcResponse[node]) > 0);
@@ -569,10 +507,6 @@ int vmc_isReady(int node)
 
 long vmc_rix(int node, char *string)
 {
-    if (0==strcmp(string,"roofestop();")) {
-        return 0; // no emergency stop in effect
-    }
-
     if (0==strcmp(string,"=epos;")){
         return vmcGetPosition(node);
     }
@@ -584,56 +518,3 @@ long vmc_rix(int node, char *string)
     TRACE "vmc_rix (%d) : %s\n",node,string);
     return (0);
        }
-
-
-//-----------------------------------
-// fake script reiterators
-//-----------------------------------
-
-       void domeseeker(int node)
-{
-    VCNodePtr pvc = &vmcNode[node];
-    long val = pvc->miscVal[0];
-    long tol = pvc->miscVal[1];
-    long start = pvc->miscVal[2];
-    long pct,a,b;
-
-    a = mAbs(val - pvc->currentPos);
-    if (a > pvc->countsPerRev/2) a = pvc->countsPerRev - a;
-    b = mAbs(val - start);
-    if (b > pvc->countsPerRev/2) b = pvc->countsPerRev - b;
-    if (!b) pct = 100;
-    else pct = 100 - ((a * 100) / b);
-
-    if ( pct < 100) // && a > tol)
-    {
-        if (oGetTime(pvc) - pvc->miscVal[3] > 2000) {
-            sprintf(vmcResponse[node],"1 %ld%%",pct);
-            pvc->miscVal[3] = oGetTime(pvc);
-            TRACE "%s epos = %ld (a=%ld, b=%ld)\n",vmcResponse[node], pvc->currentPos, a, b);
-        }
-    }
-    else
-    {
-        sprintf(vmcResponse[node],"0: Dome arrived at %ld (+/- %ld)\n",val,tol);
-//		TRACE "%s\n", vmcResponse[node]);
-        active_func[node] = NULL;
-    }
-}
-
-void roofseeker(int node)
-{
-    VCNodePtr pvc = &vmcNode[node];
-    long dir = pvc->miscVal[0];
-    long startTime = pvc->miscVal[1];
-    long now = oGetTime(pvc);
-
-    if (dir == 0 || now - startTime > 5000) // five seconds to open / close our fake door
-    {
-        if (dir == 0) sprintf(vmcResponse[node],"0: Roof stopped\n");
-        if (dir > 0) sprintf(vmcResponse[node],"0: Roof open\n");
-        if (dir < 0) sprintf(vmcResponse[node],"0: Roof closed\n");
-        active_func[node] = NULL;
-    }
-    // no status messages along the way...
-}

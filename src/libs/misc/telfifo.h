@@ -13,7 +13,7 @@
  */
 
 typedef enum {
-    Tel_Id=0, Focus_Id, Cover_Id, numFifos
+    Tel_Id=0, Focus_Id, numFifos
 } FifoId;
 
 /* this is used to describe the several FIFOs used to communicate with

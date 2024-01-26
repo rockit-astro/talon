@@ -95,32 +95,6 @@ typedef enum {
     TS_LIMITING			/* finding limit positions */
 } TelState;
 
-/* dome shutter states */
-typedef enum {
-    SH_ABSENT,			/* no shutter at all */
-    SH_IDLE,			/* shutter not moving -- position unknown */
-    SH_OPENING,			/* shutter is opening */
-    SH_CLOSING,			/* shutter is closing */
-    SH_OPEN,			/* shutter is open */
-    SH_CLOSED			/* shutter is closed */
-} DShState;
-
-typedef enum {
-	H_DISABLED,
-	H_ENABLED,
-	H_TRIPPED
-} DHeartbeatState;
-
-/* cover states */
-typedef enum {
-	CV_ABSENT,
-	CV_IDLE,
-	CV_OPENING,
-	CV_CLOSING,
-	CV_OPEN,
-	CV_CLOSED,
-} CoverState;
-
 /* current state of everything.
  * H refers to the telescope axis of "longitude", be it HA or Az.
  * D refers to the telescope axis of "latitude", be it Dec or Alt.
@@ -158,13 +132,6 @@ typedef struct {
     TelState telstate;		/* telescope state */
     int telstateidx;
     int jogging_ison;	/* currently jogged/jogging from target */
-
-    /*
-     * everything above should be kept in sync with the SuperWASP talon code
-     * W1m specific state is below
-     */
-
-    CoverState coverstate;
 } TelStatShm;
 
 /* handy shortcuts that check things for being ready for normal observing */

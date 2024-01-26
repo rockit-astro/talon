@@ -22,8 +22,7 @@ static TelStatShm *telstatshmp; /* to shared memory segment */
 
 FifoInfo fifos[] = {
     {"Tel",     Tel_Id},
-    {"Focus",   Focus_Id},
-    {"Cover", Cover_Id}
+    {"Focus",   Focus_Id}
 };
 
 FifoInfo getFIFO(int id)

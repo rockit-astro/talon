@@ -100,7 +100,6 @@ static Widget mkStatus(Widget main_w);
 static Widget mkScope(Widget main_w);
 static Widget mkMsg(Widget main_w);
 static Widget mkInfo(Widget main_w);
-static Widget mkCover(Widget main_w);
 
 static Widget mkPrompt (Widget p_w, int tc, Widget *l_wp, Widget *tf_wp,
     Widget *lb_wp);
@@ -129,7 +128,6 @@ mkGUI(char *version)
 	Widget msgf_w;
 	Widget info_w;
 	Widget hf_w;
-	Widget cover_w;
 
 	(void) sprintf (buf, "XObservatory -- Version %s", version);
 	XtVaSetValues (toplevel_w, XmNtitle, buf, NULL);
@@ -185,15 +183,6 @@ mkGUI(char *version)
 		XmNrightAttachment, XmATTACH_FORM,
 		NULL);
 
-	    cover_w = mkCover(hf_w);
-	    XtVaSetValues(cover_w,
-	    XmNtopAttachment, XmATTACH_FORM,
-	    XmNbottomAttachment, XmATTACH_FORM,
-	    XmNrightAttachment, XmATTACH_WIDGET,
-	    XmNrightWidget, scope_w,
-	    XmNrightOffset, 10,
-	    NULL);
-
 	    status_w = mkStatus(hf_w);
 	    XtVaSetValues (status_w,
 		XmNtopAttachment, XmATTACH_FORM,
@@ -202,7 +191,7 @@ mkGUI(char *version)
 		XmNleftWidget, ctrl_w,
 		XmNleftOffset, 10,
 		XmNrightAttachment, XmATTACH_WIDGET,
-		XmNrightWidget, cover_w,
+		XmNrightWidget, scope_w,
 		XmNrightOffset, 10,
 		NULL);
 
@@ -496,51 +485,6 @@ mkCurrent(Widget main_w)
 	g_w[PDHA_W] = l_w[3];
 	g_w[PDALT_W] = l_w[4];
 	g_w[PDAZ_W] = l_w[5];
-
-	return (fr_w);
-}
-
-static Widget
-mkCover(Widget main_w)
-{
-	Widget fr_w, f_w;
-	Widget lf_w;
-	Widget tbl_w;
-	Widget l_w, tf_w;
-	Widget w;
-
-	mkFrame (main_w, "Cover", "Cover", &fr_w, &f_w);
-
-	tbl_w = XtVaCreateManagedWidget ("CVRC", xmRowColumnWidgetClass, f_w,
-		    XmNtopAttachment, XmATTACH_FORM,
-		    XmNbottomAttachment, XmATTACH_FORM,
-		    XmNleftAttachment, XmATTACH_FORM,
-		    XmNrightAttachment, XmATTACH_FORM,
-		    XmNisAligned, False,
-		    XmNadjustMargin, False,
-		    XmNpacking, XmPACK_TIGHT,
-		    XmNspacing, 2,
-		    NULL);
-
-	lf_w = XtVaCreateManagedWidget ("CVOF", xmFormWidgetClass, tbl_w, NULL);
-	g_w[COLT_W] = mkLight(lf_w);
-	mkRow (lf_w, &g_w[COLT_W], 1, 1);
-
-	w = XtVaCreateManagedWidget ("CO", xmPushButtonWidgetClass, tbl_w, NULL);
-	wltprintf (pbT, w, "Open");
-	XtAddCallback (w, XmNactivateCallback, coverOpenCB, NULL);
-	g_w[COPEN_W] = w;
-	wtip (w, "Open the mirror cover");
-
-	w = XtVaCreateManagedWidget ("CC", xmPushButtonWidgetClass, tbl_w, NULL);
-	wltprintf (pbT, w, "Close");
-	XtAddCallback (w, XmNactivateCallback, coverCloseCB, NULL);
-	g_w[CCLOSE_W] = w;
-	wtip (w, "Close the mirror cover");
-
-	lf_w = XtVaCreateManagedWidget ("CVCF", xmFormWidgetClass, tbl_w, NULL);
-	g_w[CVLT_W] = mkLight(lf_w);
-	mkRow (lf_w, &g_w[CVLT_W], 1, 1);
 
 	return (fr_w);
 }

@@ -5,7 +5,6 @@ set(XOBS_SRC
         xobs.c 
         config.c 
         control.c 
-        cover.c 
         fifo_cb.c 
         gui.c 
         paddle.c 

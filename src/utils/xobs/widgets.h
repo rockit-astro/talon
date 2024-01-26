@@ -39,12 +39,6 @@ typedef enum {
     SLLT_W,
     SCLT_W,
 
-    /* mirror covers */
-    COLT_W,
-    CVLT_W,
-    COPEN_W,
-    CCLOSE_W,
-
     /* telescope */
     TSERV_W,
     TSTOW_W,
