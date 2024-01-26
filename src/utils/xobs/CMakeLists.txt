@@ -11,7 +11,6 @@ set(XOBS_SRC
         query.c 
         scope.c 
         skymap.c 
-        sound.c 
         update.c 
 ) 
 

@@ -14,13 +14,6 @@ extern void initCfg (void);
 extern double SUNDOWN;
 extern double STOWALT, STOWAZ;
 extern double SERVICEALT, SERVICEAZ;
-extern int OffTargPitch;
-extern int OffTargDuration;
-extern int OffTargPercent;
-extern int OnTargPitch;
-extern int OnTargDuration;
-extern int OnTargPercent;
-extern int BeepPeriod;
 extern char BANNER[80];
 
 /* control.c */
@@ -71,10 +64,6 @@ extern void s_here (Widget w, XtPointer client, XtPointer call);
 extern void s_track (Widget w, XtPointer client, XtPointer call);
 extern void s_goto (Widget w, XtPointer client, XtPointer call);
 extern void s_edit (Widget w, XtPointer client, XtPointer call);
-
-/* sound.c */
-extern int soundIsOn (void);
-extern void soundCB (Widget w, XtPointer client, XtPointer call);
 
 /* skymap.c */
 extern Widget mkSky (Widget p_w);

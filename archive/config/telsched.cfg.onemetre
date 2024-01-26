@@ -9,26 +9,9 @@ BANNER = 'Warwick one-metre Telescope'
 ! Settings for the all-sky pointing mesh
 PTGRAD	 	.5	! pointing mesh interpolation radius, rads
 
-! how the progress beeps are to sound
-OffTargPitch = 1500	! bell pitch while off target
-OffTargDuration	= 100	! bell duration while off target, ms
-OffTargPercent = 10	! bell volume (%) while off target
-OnTargPitch = 2000	! same, when acquire target
-OnTargDuration = 200	! same, when acquire target
-OnTargPercent = 20	! same, when acquire target
-BeepPeriod = 500	! overall interval, milliseconds
-
 ! Local conditions -- updated dynamically is have gpsd/wxd installed
 LONGITUDE	.3120581821548925 ! site longitude, +W rads
 LATITUDE	.5019621644807741 ! site latitude, +N rads
 ELEVATION	2387	! elevation above sea level, m
 TEMPERATURE	10	! air temperature, degrees C
 PRESSURE 	1010	! air pressure, mB
-
-! For RCS Only -- Do Not Edit
-! @(#) $RCSfile: telsched.cfg,v $ $Date: 2001/06/26 03:48:01 $ $Revision: 1.1 $ $Name: Version-2_0_16 $
-
-
-
-
-

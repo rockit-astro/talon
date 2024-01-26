@@ -365,7 +365,6 @@ guiSensitive (int whether)
 	/* these are only ever sensitive if we are alone */
 	if (!xobs_alone) {
 	    XtSetSensitive (g_w[CSTOP_W], 0);
-	    XtSetSensitive (g_w[CSOUND_W], 0);
 	}
 }
 
@@ -505,7 +504,6 @@ mkControl(Widget main_w)
 	    {"Find Limits", 0, g_limit,  &g_w[CFLIM_W]},
 	    {"No Confirm",  1, g_confirm,   &g_w[CCNFOFF_W]},
 	    {"Paddle",      0, g_paddle, &g_w[CPADDLE_W]}, 
-	    {"Sounds",      1, soundCB,  &g_w[CSOUND_W]},
 	};
 	Widget fr_w, f_w;
 	Widget tbl_w;

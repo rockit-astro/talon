@@ -50,7 +50,6 @@ static char blank[] = " ";
 void
 updateStatus(int force)
 {
-
 	static double last_slow, last_fast;
 	static double last_tbusy, last_dbusy, last_obusy;
 	static double last_wbusy;
@@ -59,9 +58,6 @@ updateStatus(int force)
 	int dofast = force || mjd > last_fast + FAST_DT;
 	TelState ts = telstatshmp->telstate;
 	int busy;
-
-	/* do once per swing through */
-	soundIsOn();
 
 	/* always do these at least occasionally */
 	if (doslow) {

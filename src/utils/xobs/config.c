@@ -18,13 +18,6 @@ double STOWALT;
 double STOWAZ;
 double SERVICEALT;
 double SERVICEAZ;
-int OffTargPitch;
-int OffTargDuration;
-int OffTargPercent;
-int OnTargPitch;
-int OnTargDuration;
-int OnTargPercent;
-int BeepPeriod;
 char BANNER[80];
 
 static char tscfn[] = "archive/config/telsched.cfg";
@@ -41,13 +34,6 @@ initCfg()
 	    {"STOWAZ",		CFG_DBL, &STOWAZ},
 	    {"SERVICEALT",	CFG_DBL, &SERVICEALT},
 	    {"SERVICEAZ",	CFG_DBL, &SERVICEAZ},
-	    {"OffTargPitch",	CFG_INT, &OffTargPitch},
-	    {"OffTargDuration",	CFG_INT, &OffTargDuration},
-	    {"OffTargPercent",	CFG_INT, &OffTargPercent},
-	    {"OnTargPitch",	CFG_INT, &OnTargPitch},
-	    {"OnTargDuration",	CFG_INT, &OnTargDuration},
-	    {"OnTargPercent",	CFG_INT, &OnTargPercent},
-	    {"BeepPeriod",	CFG_INT, &BeepPeriod},
 	    {"BANNER",		CFG_STR, BANNER, sizeof(BANNER)},
 	};
 	char buf[1024];

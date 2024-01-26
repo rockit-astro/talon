@@ -27,7 +27,6 @@ typedef enum {
     CAUTOF_W,
     CPADDLE_W,
     CCNFOFF_W,
-    CSOUND_W,
 
     CFO_W,
 
