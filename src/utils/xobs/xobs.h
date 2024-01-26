@@ -12,10 +12,8 @@ extern void die (void);
 /* config.c */
 extern void initCfg (void);
 extern double SUNDOWN;
-extern double DOMETOL;
 extern double STOWALT, STOWAZ;
 extern double SERVICEALT, SERVICEAZ;
-extern double MAXHA, MINALT, MAXDEC;
 extern int OffTargPitch;
 extern int OffTargDuration;
 extern int OffTargPercent;

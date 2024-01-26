@@ -13,9 +13,6 @@
 #include "xobs.h"
 
 /* variables set from the config files -- see initCfg() */
-double MINALT;
-double MAXHA;
-double MAXDEC;
 double SUNDOWN;
 double STOWALT;
 double STOWAZ;
@@ -39,9 +36,6 @@ initCfg()
 #define NTSCFG   (sizeof(tscfg)/sizeof(tscfg[0]))
 
 	static CfgEntry tscfg[] = {
-	    {"MINALT",		CFG_DBL, &MINALT},
-	    {"MAXHA",		CFG_DBL, &MAXHA},
-	    {"MAXDEC",		CFG_DBL, &MAXDEC},
 	    {"SUNDOWN",		CFG_DBL, &SUNDOWN},
 	    {"STOWALT",		CFG_DBL, &STOWALT},
 	    {"STOWAZ",		CFG_DBL, &STOWAZ},

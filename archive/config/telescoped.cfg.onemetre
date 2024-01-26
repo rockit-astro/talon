@@ -57,6 +57,3 @@ GERMEQ          0               ! 1 if mount is German Equatroial, else 0.
 ZENFLIP         0               ! 1 to change alt/az reference side, else 0.
 FGUIDEVEL       .0004           ! fine guiding velocity, rads/sec
 CGUIDEVEL       .0016           ! coarse jogging velocity, rads/sec
-
-! For RCS Only -- Do Not Edit
-! @(#) $RCSfile: telescoped.cfg,v $ $Date: 2002/01/14 03:22:26 $ $Revision: 1.2 $ $Name: Version-2_0_16 $

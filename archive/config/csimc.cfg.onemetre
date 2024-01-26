@@ -1,4 +1,4 @@
-!connections
+! connections
 TTY = "/dev/ttyS0"                	!serial of CSIMC network
 HOST = 127.0.0.1              		!host for csimcd
 PORT = 7623                     	!port  host to contact csimcd

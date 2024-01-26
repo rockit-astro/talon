@@ -138,6 +138,3 @@ define findlim($way) {
     iedge = $0;				// reset
     printf ("0 Found limit\n");
 }
-
-# For RCS Only -- Do Not Edit
-# @(#) $RCSfile: find.cmc,v $ $Date: 2002/11/25 19:36:25 $ $Revision: 1.3 $ $Name:  $
