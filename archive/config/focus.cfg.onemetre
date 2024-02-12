@@ -13,4 +13,4 @@ OSLIMACC    	40 !80      	! soft limit and urgent acc, rads/sec/sec (3.0)
 OSCALE		157.48 !31.5		! steps per micron
 OJOGF		0.1		! fraction of OMAXVEL when using paddle (0.1)
 OHAVEENC	0		! true if we're using encoder
-ONOMINALF       2600            ! focus value (in um) to move to after homing
+ONOMINALF       0            ! focus value (in um) to move to after homing
