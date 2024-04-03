@@ -1,5 +1,5 @@
 // Focus axis
-homebit = 0x1;
+homebit = 0x2;
 nlimbit = 0x2;
 plimbit = 0x4;
 
