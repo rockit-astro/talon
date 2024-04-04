@@ -13,7 +13,3 @@
 #define vecscale(A,k) {(A).x*=(k);(A).y*=(k);(A).z*=(k);}
 
 #endif /* __SATVECTOR_H */
-
-/* For RCS Only -- Do Not Edit
- * @(#) $RCSfile: vector.h,v $ $Date: 2001/04/19 21:12:14 $ $Revision: 1.1.1.1 $ $Name:  $
- */

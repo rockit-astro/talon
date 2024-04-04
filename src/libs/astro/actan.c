@@ -34,34 +34,3 @@ actan(double sinx, double cosx)
 
     return ret + atan(sinx / cosx);
 }
-
-
-#if 0
-
-#define D(X) (180.0 * (X) / M_PI)
-
-void main() {
-    double a, b;
-
-    a =  0.0; b =  2.0; printf("actan(%f, %f) = %f\n", a, b, D(actan(a, b)));
-    a =  1.0; b =  2.0; printf("actan(%f, %f) = %f\n", a, b, D(actan(a, b)));
-    a =  2.0; b =  2.0; printf("actan(%f, %f) = %f\n", a, b, D(actan(a, b)));
-    a =  2.0; b =  1.0; printf("actan(%f, %f) = %f\n", a, b, D(actan(a, b)));
-    a =  2.0; b =  0.0; printf("actan(%f, %f) = %f\n", a, b, D(actan(a, b)));
-    a =  2.0; b = -1.0; printf("actan(%f, %f) = %f\n", a, b, D(actan(a, b)));
-    a =  2.0; b = -2.0; printf("actan(%f, %f) = %f\n", a, b, D(actan(a, b)));
-    a =  1.0; b = -2.0; printf("actan(%f, %f) = %f\n", a, b, D(actan(a, b)));
-    a =  0.0; b = -2.0; printf("actan(%f, %f) = %f\n", a, b, D(actan(a, b)));
-    a = -1.0; b = -2.0; printf("actan(%f, %f) = %f\n", a, b, D(actan(a, b)));
-    a = -2.0; b = -2.0; printf("actan(%f, %f) = %f\n", a, b, D(actan(a, b)));
-    a = -2.0; b = -1.0; printf("actan(%f, %f) = %f\n", a, b, D(actan(a, b)));
-    a = -2.0; b =  0.0; printf("actan(%f, %f) = %f\n", a, b, D(actan(a, b)));
-    a = -2.0; b =  1.0; printf("actan(%f, %f) = %f\n", a, b, D(actan(a, b)));
-    a = -2.0; b =  2.0; printf("actan(%f, %f) = %f\n", a, b, D(actan(a, b)));
-    a = -1.0; b =  2.0; printf("actan(%f, %f) = %f\n", a, b, D(actan(a, b)));
-}
-
-#endif /* 0 */
-
-/* For RCS Only -- Do Not Edit */
-static char *rcsid[2] = {(char *)rcsid, "@(#) $RCSfile: actan.c,v $ $Date: 2001/04/19 21:12:13 $ $Revision: 1.1.1.1 $ $Name:  $"};

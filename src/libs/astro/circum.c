@@ -752,6 +752,3 @@ double H;
 {
 	return (3600*raddeg(.707*1500*pow(2.51,(18-H)/2)/MAU));
 }
-
-/* For RCS Only -- Do Not Edit */
-static char *rcsid[2] = {(char *)rcsid, "@(#) $RCSfile: circum.c,v $ $Date: 2001/04/19 21:12:13 $ $Revision: 1.1.1.1 $ $Name:  $"};

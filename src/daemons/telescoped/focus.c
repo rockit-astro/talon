@@ -629,6 +629,3 @@ readFocus ()
         }
     }
 }
-
-/* For RCS Only -- Do Not Edit */
-static char *rcsid[2] = {(char *)rcsid, "@(#) $RCSfile: focus.c,v $ $Date: 2007/06/09 10:08:50 $ $Revision: 1.15 $ $Name:  $"};

@@ -439,7 +439,3 @@ extern int is_deepsky P_((Obj *op));
 extern void riset_cir P_((Now *np, Obj *op, double dis, RiseSet *rp));
 extern void twilight_cir P_((Now *np, double dis, double *dawn, double *dusk,
     int *status));
-
-/* For RCS Only -- Do Not Edit
- * @(#) $RCSfile: circum.h,v $ $Date: 2001/06/04 20:11:37 $ $Revision: 1.2 $ $Name:  $
- */

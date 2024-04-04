@@ -71,6 +71,3 @@ double *p, *q;		/* sw==1: p==lng, q==lat. sw==-1: p==ra, q==dec. */
         if (cx<0) *p += PI;		/* account for atan quad ambiguity */
 	range (p, 2*PI);
 }
-
-/* For RCS Only -- Do Not Edit */
-static char *rcsid[2] = {(char *)rcsid, "@(#) $RCSfile: eq_ecl.c,v $ $Date: 2001/04/19 21:12:13 $ $Revision: 1.1.1.1 $ $Name:  $"};

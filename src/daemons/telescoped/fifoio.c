@@ -217,6 +217,3 @@ set_shmtime()
 {
     telstatshmp->now.n_mjd = mjd_now();
 }
-
-/* For RCS Only -- Do Not Edit */
-static char *rcsid[2] = {(char *)rcsid, "@(#) $RCSfile: fifoio.c,v $ $Date: 2001/04/19 21:12:09 $ $Revision: 1.1.1.1 $ $Name:  $"};

@@ -42,6 +42,3 @@ double *lsn, *rsn, *bsn;
 
 	if (bsn) *bsn = last_bsn;	/* assign only if non-NULL pointer */
 }
-
-/* For RCS Only -- Do Not Edit */
-static char *rcsid[2] = {(char *)rcsid, "@(#) $RCSfile: sun.c,v $ $Date: 2001/04/19 21:12:14 $ $Revision: 1.1.1.1 $ $Name:  $"};

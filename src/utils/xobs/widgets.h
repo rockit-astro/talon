@@ -67,7 +67,3 @@ typedef enum {
 } GUIWidgets;
 
 extern Widget g_w[N_W];
-
-/* For RCS Only -- Do Not Edit
- * @(#) $RCSfile: widgets.h,v $ $Date: 2001/04/19 21:12:06 $ $Revision: 1.1.1.1 $ $Name:  $
- */

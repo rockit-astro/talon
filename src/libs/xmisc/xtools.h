@@ -17,7 +17,3 @@ extern void get_xmlabel_font (Widget w, XFontStruct **f);
 extern int stopchk(void);
 extern void stopchk_down(void);
 extern void stopchk_up(Widget shell_w, char *title, char *message);
-
-/* For RCS Only -- Do Not Edit
- * @(#) $RCSfile: xtools.h,v $ $Date: 2001/04/19 21:12:13 $ $Revision: 1.1.1.1 $ $Name:  $
- */

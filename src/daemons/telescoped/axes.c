@@ -524,6 +524,3 @@ recordStep (MotorInfo *mip, int motdiff, int encdiff)
     /* set new maxvel from new step */
     csiSetup (mip);
 }
-
-/* For RCS Only -- Do Not Edit */
-static char *rcsid[2] = {(char *)rcsid, "@(#) $RCSfile: axes.c,v $ $Date: 2002/12/09 01:28:15 $ $Revision: 1.8 $ $Name:  $"};

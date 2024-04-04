@@ -1320,10 +1320,6 @@ static int trackObj(Obj *op, int first)
 	{
 		clocknow = vmcGetClock(mip->axis);
 	}
-//	else if (mip->xtrack)
-//	{
-//		clocknow = (int) (xgetvar(MIPSFD(mip), 4) * 1000.0);
-//	}
 	else
 	{
 		clocknow = csi_rix(MIPSFD(mip), "=clock;");
@@ -1392,7 +1388,6 @@ static int trackObj(Obj *op, int first)
 	case TS_TRACKING:
 		if (!telstatshmp->jogging_ison && onTarget(&mip) < 0)
 		{
-			//			fifoWrite(Tel_Id, 4, "Axis %d lost tracking lock", mip->axis);
 			fifoWrite(
 					Tel_Id,
 					4,
@@ -2375,11 +2370,3 @@ static void readStats(void)
     }
   }
 }
-
-
-/* For RCS Only -- Do Not Edit */
-static char
-		*rcsid[2] =
-				{
-						(char *) rcsid,
-						"@(#) $RCSfile: tel.c,v $ $Date: 2006/05/28 01:07:18 $ $Revision: 1.15 $ $Name:  $" };

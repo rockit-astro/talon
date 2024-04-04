@@ -471,6 +471,3 @@ Obj *op;
 
 	return (deepsky);
 }
-
-/* For RCS Only -- Do Not Edit */
-static char *rcsid[2] = {(char *)rcsid, "@(#) $RCSfile: misc.c,v $ $Date: 2007/03/11 05:31:24 $ $Revision: 1.2 $ $Name:  $"};

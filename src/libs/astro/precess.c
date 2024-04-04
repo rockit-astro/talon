@@ -126,23 +126,3 @@ double *ra, *dec;	/* ra/dec for mjd1 in, for mjd2 out */
 	*ra = degrad(alpha);
 	*dec = degrad(delta);
 }
-
-#if 0
-static void
-precess_fast (mjd1, mjd2, ra, dec)
-double mjd1, mjd2;	/* initial and final epoch modified JDs */
-double *ra, *dec;	/* ra/dec for mjd1 in, for mjd2 out */
-{
-#define	N	degrad (20.0468/3600.0)
-#define	M	hrrad (3.07234/3600.0)
-	double nyrs;
-
-	nyrs = (mjd2 - mjd1)/365.2425;
-	*dec += N * cos(*ra) * nyrs;
-	*ra += (M + (N * sin(*ra) * tan(*dec))) * nyrs;
-	range (ra, 2.0*PI);
-}
-#endif
-
-/* For RCS Only -- Do Not Edit */
-static char *rcsid[2] = {(char *)rcsid, "@(#) $RCSfile: precess.c,v $ $Date: 2001/04/19 21:12:13 $ $Revision: 1.1.1.1 $ $Name:  $"};

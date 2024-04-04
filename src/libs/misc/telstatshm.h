@@ -168,8 +168,4 @@ extern void tel_ideal2realxy (TelAxes *tap, double *Xp, double *Yp);
 extern int tel_solve_axes (double H[], double D[], double X[], double Y[],
     int nstars, double ftol, TelAxes *tap, double fitp[]);
 
-/* For RCS Only -- Do Not Edit
- * @(#) $RCSfile: telstatshm.h,v $ $Date: 2002/10/23 21:47:47 $ $Revision: 1.3 $ $Name:  $
- */
-
 #endif // TELSTATSHM_H

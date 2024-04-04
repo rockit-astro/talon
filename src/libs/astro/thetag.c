@@ -74,17 +74,3 @@ thetag(double EP, double *DS50)
 
     return THETAG;
 }
-
-#if 0
-void main(int argc, char **argv) {
-    double ds50, gwa;
-
-    if(argc >= 2) {
-	gwa = thetag(atof(argv[1]), &ds50);
-	printf("%f, %f\n", gwa, ds50);
-    }
-}
-#endif
-
-/* For RCS Only -- Do Not Edit */
-static char *rcsid[2] = {(char *)rcsid, "@(#) $RCSfile: thetag.c,v $ $Date: 2001/04/19 21:12:14 $ $Revision: 1.1.1.1 $ $Name:  $"};

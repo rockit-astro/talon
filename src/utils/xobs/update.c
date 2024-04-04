@@ -330,6 +330,3 @@ showHL()
 	setLt(g_w[SHLT_W], ANY_HOMING   ? LTACTIVE : LTIDLE);
 	setLt(g_w[SLLT_W], ANY_LIMITING ? LTACTIVE : LTIDLE);
 }
-
-/* For RCS Only -- Do Not Edit */
-static char *rcsid[2] = {(char *)rcsid, "@(#) $RCSfile: update.c,v $ $Date: 2007/02/25 23:31:22 $ $Revision: 1.2 $ $Name:  $"};

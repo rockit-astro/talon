@@ -81,6 +81,3 @@ double *lpd, *psi, *rp, *rho, *lam, *bet;
 	range (lam, 2*PI);
         *bet = atan((rd*spsi*sin(*lam-*lpd))/(cpsi*re*sll));
 }
-
-/* For RCS Only -- Do Not Edit */
-static char *rcsid[2] = {(char *)rcsid, "@(#) $RCSfile: comet.c,v $ $Date: 2001/04/19 21:12:13 $ $Revision: 1.1.1.1 $ $Name:  $"};

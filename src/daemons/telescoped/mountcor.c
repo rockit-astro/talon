@@ -262,6 +262,3 @@ sortMPoints()
 {
     qsort ((void *)mpoints, nmpoints, sizeof(MeshPoint), cmpMP);
 }
-
-/* For RCS Only -- Do Not Edit */
-static char *rcsid[2] = {(char *)rcsid, "@(#) $RCSfile: mountcor.c,v $ $Date: 2001/04/19 21:12:09 $ $Revision: 1.1.1.1 $ $Name:  $"};

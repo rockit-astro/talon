@@ -188,6 +188,3 @@ aa2xy (double alt, double az, int *xp, int *yp)
 	*xp = SKYSZ/2.0*(1 + tmp*sin(az)/(PI/2));
 	*yp = SKYSZ/2.0*(1 - tmp*cos(az)/(PI/2));
 }
-
-/* For RCS Only -- Do Not Edit */
-static char *rcsid[2] = {(char *)rcsid, "@(#) $RCSfile: skymap.c,v $ $Date: 2001/04/19 21:12:06 $ $Revision: 1.1.1.1 $ $Name:  $"};
