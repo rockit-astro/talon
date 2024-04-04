@@ -69,7 +69,7 @@ static void tel_stop(int first, ...);
 static void tel_jog(int first, char jog_dir[], int velocity);
 static void offsetTracking(int first, double harcsecs, double darcsecs);
 static void tel_status(int first, ...); //IEEC
-static void tel_park(int first, ...); // RGW
+static void tel_park(int first, int ha_enc, int dec_enc); // RGW
 
 /* helped along by these... */
 static int dbformat(char *msg, Obj *op, double *drap, double *ddecp);
@@ -116,6 +116,7 @@ void tel_msg(msg)
 	char *msg;
 {
 	double a, b, c;
+	int d, e;
 	char jog_dir[8];
 	int vel;
 	Obj o;
@@ -138,8 +139,8 @@ void tel_msg(msg)
 		tel_limits(1, msg);
 	else if (strncasecmp(msg, "stow", 4) == 0)
 		tel_stow(1, msg);
-	else if (strncasecmp(msg, "park", 4) == 0)
-		tel_park(1, msg);
+	else if (sscanf(msg, "park %d %d", &d, &e) == 2)
+		tel_park(1, d, e);
 	else if (strncasecmp(msg, "status", 6) == 0) //IEEC
 		tel_status(1);                           //IEEC
 	else if (sscanf(msg, "RA:%lf Dec:%lf Epoch:%lf", &a, &b, &c) == 3)
@@ -501,24 +502,21 @@ static void tel_stow(int first, ...)
 
 /* Place the telescope in PARK position
  */
-static void tel_park(int first, ...)
+static void tel_park(int first, int ha_enc, int dec_enc)
 {
 	char buf[128];
 
 	fifoWrite(Tel_Id, 0, "Telescope park underway");
 	allstop();
-	//	sprintf(buf, "Alt:%g Az:%g", STOWALT, STOWAZ);
-	//	tel_msg(buf);
+
 	csi_w(MIPCFD(HMOT), "xdel=0;");
 	csi_w(MIPCFD(HMOT), "clock=0;");
-	//	csi_w(MIPCFD(HMOT), "maxvel=s;");
 	csi_w(MIPCFD(HMOT), "timeout=300000;");
-	csi_w(MIPCFD(HMOT), "etpos=%d;", 0);
+	csi_w(MIPCFD(HMOT), "etpos=%d;", ha_enc);
 	csi_w(MIPCFD(DMOT), "xdel=0;");
 	csi_w(MIPCFD(DMOT), "clock=0;");
-	//	csi_w(MIPCFD(DMOT), "maxvel=s;");
 	csi_w(MIPCFD(DMOT), "timeout=300000;");
-	csi_w(MIPCFD(DMOT), "etpos=%d;", -10475000);
+	csi_w(MIPCFD(DMOT), "etpos=%d;", dec_enc);
 }
 
 /* handle tracking an astrometric position */
