@@ -47,7 +47,6 @@
 #include "teled.h"
 
 TelStatShm *telstatshmp;	/* shared telescope info */
-int virtual_mode = 0;			/* non-zero for virtual mode enabled */
 
 char tscfn[] = "archive/config/telsched.cfg";
 char tdcfn[] = "archive/config/telescoped.cfg";
@@ -82,18 +81,6 @@ char *av[];
         char c;
         while ((c = *++str) != '\0')
             switch (c) {
-            case 'h':	/* no hardware: legacy syntax */
-            	//ICE
-            	virtual_mode = 0;
-            	printf("CSI Hardware Mode\n");
-            	//ICE
-            	break;
-            case 'v':	/* same thing, but mnemonic to new name */
-            	//ICE
-            	virtual_mode = 1;
-                printf("Virtual Mode\n");
-                //ICE
-                break;
             default:
                 usage();
                 break;

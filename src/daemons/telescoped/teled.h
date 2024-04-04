@@ -53,7 +53,6 @@ extern void tel_msg (char *msg);
 /* telescoped.c */
 extern double STOWALT, STOWAZ;
 extern TelStatShm *telstatshmp;
-extern int virtual_mode;
 extern char tscfn[];
 extern char tdcfn[];
 extern char hcfn[];

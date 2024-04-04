@@ -22,7 +22,6 @@
 #include "misc.h"
 #include "telenv.h"
 #include "csimc.h"
-#include "virmc.h"
 #include "cliserv.h"
 #include "tts.h"
 
@@ -164,15 +163,6 @@ void tel_msg(msg)
  */
 static void tel_poll()
 {
-	if (virtual_mode)
-	{
-		MotorInfo *mip;
-		FEM(mip)
-		{
-			if (mip->have)
-				vmcService(mip->axis);
-		}
-	}
 	if (active_func)
 		(*active_func)(0);
 	else
@@ -192,15 +182,8 @@ static void tel_reset(int first)
 
 	FEM(mip)
 	{
-		if (virtual_mode)
-		{
-			vmcReset(mip->axis);
-		}
-		else
-		{
-			if (mip->have)
-				csiiClose(mip);
-		}
+		if (mip->have)
+			csiiClose(mip);
 	}
 
 	initCfg();
@@ -208,21 +191,10 @@ static void tel_reset(int first)
 
 	FEM(mip)
 	{
-		if (virtual_mode)
+		if (mip->have)
 		{
-			if (vmcSetup(mip->axis, mip->maxvel, mip->maxacc, mip->step,
-					mip->esign))
-			{
-				mip->ishomed = 0;
-			}
-		}
-		else
-		{
-			if (mip->have)
-			{
-				csiiOpen(mip);
-				csiSetup(mip);
-			}
+			csiiOpen(mip);
+			csiSetup(mip);
 		}
 	}
 
@@ -701,30 +673,22 @@ static void tel_altaz(int first, ...)
 					return;
 				}
 
-				if (virtual_mode)
+				//ICE
+				csi_w(MIPCFD(mip), "xdel=0;");
+				csi_w(MIPCFD(mip), "clock=0;");
+				//					csi_w(MIPCFD(mip), "maxvel=s;");
+				csi_w(MIPCFD(mip), "timeout=300000;");
+				//ICE
+
+				if (mip->haveenc)
 				{
-					vmcSetTargetPosition(mip->axis,
-							mip->sign * mip->step * mip->dpos / (2 * PI));
+					csi_w(MIPCFD(mip), "etpos=%.0f;",
+							mip->esign * mip->estep * mip->dpos / (2 * PI));
 				}
 				else
 				{
-					//ICE
-					csi_w(MIPCFD(mip), "xdel=0;");
-					csi_w(MIPCFD(mip), "clock=0;");
-					//					csi_w(MIPCFD(mip), "maxvel=s;");
-					csi_w(MIPCFD(mip), "timeout=300000;");
-					//ICE
-
-					if (mip->haveenc)
-					{
-						csi_w(MIPCFD(mip), "etpos=%.0f;",
-								mip->esign * mip->estep * mip->dpos / (2 * PI));
-					}
-					else
-					{
-						csi_w(MIPCFD(mip), "mtpos=%.0f;",
-								mip->sign * mip->step * mip->dpos / (2 * PI));
-					}
+					csi_w(MIPCFD(mip), "mtpos=%.0f;",
+							mip->sign * mip->step * mip->dpos / (2 * PI));
 				}
 			}
 		}
@@ -822,30 +786,22 @@ static void tel_hadec(int first, ...)
 					return;
 				}
 
-				if (virtual_mode)
+				//ICE
+				csi_w(MIPCFD(mip), "xdel=0;");
+				csi_w(MIPCFD(mip), "clock=0;");
+				//				csi_w(MIPCFD(mip), "maxvel=s;");
+				csi_w(MIPCFD(mip), "timeout=300000;");
+				//ICE
+				
+				if (mip->haveenc)
 				{
-					vmcSetTargetPosition(mip->axis,
-							mip->sign * mip->step * mip->dpos / (2 * PI));
+					csi_w(MIPCFD(mip), "etpos=%.0f;",
+							mip->esign * mip->estep * mip->dpos / (2 * PI));
 				}
 				else
 				{
-					//ICE
-					csi_w(MIPCFD(mip), "xdel=0;");
-					csi_w(MIPCFD(mip), "clock=0;");
-					//				csi_w(MIPCFD(mip), "maxvel=s;");
-					csi_w(MIPCFD(mip), "timeout=300000;");
-					//ICE
-					
-					if (mip->haveenc)
-					{
-						csi_w(MIPCFD(mip), "etpos=%.0f;",
-								mip->esign * mip->estep * mip->dpos / (2 * PI));
-					}
-					else
-					{
-						csi_w(MIPCFD(mip), "mtpos=%.0f;",
-								mip->sign * mip->step * mip->dpos / (2 * PI));
-					}
+					csi_w(MIPCFD(mip), "mtpos=%.0f;",
+							mip->sign * mip->step * mip->dpos / (2 * PI));
 				}
 			}
 		}
@@ -887,16 +843,8 @@ static void tel_stop(int first, ...)
 	{
 		if (mip->have)
 		{
-			if (virtual_mode)
-			{
-				if (vmcGetVelocity(mip->axis) != 0)
-					return;
-			}
-			else
-			{
-				if (csi_rix(MIPCFD(mip), "=mvel;") != 0)
-					return;
-			}
+			if (csi_rix(MIPCFD(mip), "=mvel;") != 0)
+				return;
 		}
 	}
 
@@ -927,36 +875,27 @@ static void tel_status(int first, ...)
 
     readRaw();
     mkCook();
-    if(virtual_mode)
-    {
+    if (HMOT->have)
+        hstatus = csi_rix(MIPCFD(HMOT),"=isHomed();");
+    if (DMOT->have)
+        dstatus = csi_rix(MIPCFD(DMOT),"=isHomed();");
+
+    if(hstatus==1 && dstatus==1)
+	{
         fifoWrite(Tel_Id, 0, "Telescope equatorial position ( RA , Dec ): ( %g , %g )", 
                   telstatshmp->CJ2kRA,telstatshmp->CJ2kDec);
-        fifoWrite(Tel_Id, 0, "Telescope altazimutal position ( Az , Alt ):  (%g , %g )", 
+        fifoWrite(Tel_Id, 0, "Telescope altazimutal position ( Az , Alt ): ( %g , %g )", 
                   telstatshmp->Caz,telstatshmp->Calt);
     }
+    else if(hstatus==0 && dstatus==0)
+        fifoWrite (Tel_Id, 2, "Telescope position is completely unknown");
+	else if(hstatus==1 && dstatus==0)
+        fifoWrite (Tel_Id, 1, "Declination axis position is unknown");
+	else if(hstatus==0 && dstatus==1)
+        fifoWrite (Tel_Id, 1, "Hour angle axis position is unknown");
     else
-    {
-	    if (HMOT->have)
-            hstatus = csi_rix(MIPCFD(HMOT),"=isHomed();");
-	    if (DMOT->have)
-            dstatus = csi_rix(MIPCFD(DMOT),"=isHomed();");
+        fifoWrite(Tel_Id, -1, "Error reading telescope position");
 
-        if(hstatus==1 && dstatus==1)
-    	{
-            fifoWrite(Tel_Id, 0, "Telescope equatorial position ( RA , Dec ): ( %g , %g )", 
-                      telstatshmp->CJ2kRA,telstatshmp->CJ2kDec);
-            fifoWrite(Tel_Id, 0, "Telescope altazimutal position ( Az , Alt ): ( %g , %g )", 
-                      telstatshmp->Caz,telstatshmp->Calt);
-        }
-        else if(hstatus==0 && dstatus==0)
-            fifoWrite (Tel_Id, 2, "Telescope position is completely unknown");
-		else if(hstatus==1 && dstatus==0)
-            fifoWrite (Tel_Id, 1, "Declination axis position is unknown");
-		else if(hstatus==0 && dstatus==1)
-            fifoWrite (Tel_Id, 1, "Hour angle axis position is unknown");
-        else
-            fifoWrite(Tel_Id, -1, "Error reading telescope position");
-    }
     return;
 }
 
@@ -1016,40 +955,27 @@ static void buildTrack(Now *np, Obj *op)
 		if (!mip->have || mip->xtrack)
 			continue;
 
-		if (virtual_mode)
+		xyrp = xyr[mip - telstatshmp->minfo];
+		cfd = MIPCFD(mip);
+		//	    tdlog ("Creating track profile:");
+		if (mip->haveenc)
 		{
-
-			xyrp = xyr[mip - telstatshmp->minfo];
-			//	    tdlog ("Creating track profile:");
-			vmcSetTrackPath(mip->axis, PPTRACK, 0,
-					1000.0 * TRACKINT / PPTRACK + 0.5, xyrp);
-
+			scale = mip->esign * mip->estep / (2 * PI);
+			csi_w(cfd, "etrack");
 		}
 		else
 		{
+			scale = mip->sign * mip->step / (2 * PI);
+			csi_w(cfd, "mtrack");
+		}
+		csi_w(cfd, "(0,%.0f", 1000. * TRACKINT / PPTRACK + .5);
 
-			xyrp = xyr[mip - telstatshmp->minfo];
-			cfd = MIPCFD(mip);
-			//	    tdlog ("Creating track profile:");
-			if (mip->haveenc)
-			{
-				scale = mip->esign * mip->estep / (2 * PI);
-				csi_w(cfd, "etrack");
-			}
-			else
-			{
-				scale = mip->sign * mip->step / (2 * PI);
-				csi_w(cfd, "mtrack");
-			}
-			csi_w(cfd, "(0,%.0f", 1000. * TRACKINT / PPTRACK + .5);
-
-			/* TODO: pack into longer commands */
-			for (i = 0; i < PPTRACK; i++)
-			{
-				csi_w(cfd, ",%.0f", scale * xyrp[i] + .5);
-			}
-			csi_w(cfd, ");");
-		}// !virtual_mode
+		/* TODO: pack into longer commands */
+		for (i = 0; i < PPTRACK; i++)
+		{
+			csi_w(cfd, ",%.0f", scale * xyrp[i] + .5);
+		}
+		csi_w(cfd, ");");
 	}
 	fflush(stdout);
 
@@ -1219,7 +1145,7 @@ static int trackObj(Obj *op, int first)
 	}
 
 	//ICE
-	if (xtrack_mode && virtual_mode == 0)
+	if (xtrack_mode)
 	{
 		if (first)
 		{
@@ -1243,14 +1169,7 @@ static int trackObj(Obj *op, int first)
 			{
 				if (mip->have && !mip->xtrack)
 				{
-					if (virtual_mode)
-					{
-						vmcResetClock(mip->axis);
-					}
-					else
-					{
-						csi_w(MIPSFD(mip), "clock=0;");
-					}
+					csi_w(MIPSFD(mip), "clock=0;");
 				}
 			}
 
@@ -1262,14 +1181,7 @@ static int trackObj(Obj *op, int first)
 			{
 				if (mip->have && !mip->xtrack)
 				{
-					if (virtual_mode)
-					{
-						vmcSetTimeout(mip->axis, TRACKINT * 1000);
-					}
-					else
-					{
-						csi_w(MIPSFD(mip), "timeout=%d;", TRACKINT * 1000);
-					}
+					csi_w(MIPSFD(mip), "timeout=%d;", TRACKINT * 1000);
 				}
 			}
 
@@ -1291,14 +1203,7 @@ static int trackObj(Obj *op, int first)
 							return -1;
 						}
 
-						if (virtual_mode)
-						{
-							vmcSetTrackingOffset(mip->axis, 0);
-						}
-						else
-						{
-							csi_w(MIPSFD(mip), "toffset=0;");
-						}
+						csi_w(MIPSFD(mip), "toffset=0;");
 					}
 				}
 			}
@@ -1316,14 +1221,7 @@ static int trackObj(Obj *op, int first)
 	 * use this to compute desired to avoid host computer time jitter
 	 */
 	mip = HMOT->have ? HMOT : DMOT; /* surely we have one ! */
-	if (virtual_mode)
-	{
-		clocknow = vmcGetClock(mip->axis);
-	}
-	else
-	{
-		clocknow = csi_rix(MIPSFD(mip), "=clock;");
-	}
+	clocknow = csi_rix(MIPSFD(mip), "=clock;");
 
 	mkCook();
 
@@ -1335,7 +1233,7 @@ static int trackObj(Obj *op, int first)
 	}
 
 	/* find desired topocentric apparent place and axes @ clocknow */
-	if (mip->xtrack && !virtual_mode)
+	if (mip->xtrack)
 		now.n_mjd = xstrack + clocknow / (SPD * 1000.);
 	else
 		now.n_mjd = strack + clocknow / (SPD * 1000.);
@@ -1543,28 +1441,21 @@ static void readRaw()
 		if (!mip->have)
 			continue;
 
-		if (virtual_mode)
+		if (mip->haveenc)
 		{
-			mip->raw = vmcGetPosition(mip->axis);
-			mip->cpos = (2 * PI) * mip->sign * mip->raw / mip->step;
+			double draw;
+			int raw;
+			/* just change by half-step if encoder changed by 1 */
+			raw = csi_rix(MIPSFD(mip), "=epos;");
+			draw = abs(raw - mip->raw) == 1 ? (raw + mip->raw) / 2.0 : raw;
+			mip->raw = raw;
+			mip->cpos = (2 * PI) * mip->esign * draw / mip->estep;
 		}
 		else
 		{
-			if (mip->haveenc)
-			{
-				double draw;
-				int raw;
-				/* just change by half-step if encoder changed by 1 */
-				raw = csi_rix(MIPSFD(mip), "=epos;");
-				draw = abs(raw - mip->raw) == 1 ? (raw + mip->raw) / 2.0 : raw;
-				mip->raw = raw;
-				mip->cpos = (2 * PI) * mip->esign * draw / mip->estep;
-			}
-			else
-			{
-				mip->raw = csi_rix(MIPSFD(mip), "=mpos;");
-				mip->cpos = (2 * PI) * mip->sign * mip->raw / mip->step;
-			}
+			mip->raw = csi_rix(MIPSFD(mip), "=mpos;");
+			mip->cpos = (2 * PI) * mip->sign * mip->raw / mip->step;
+		
 		}
 	}
 }
@@ -1578,16 +1469,9 @@ static void stopTel(int fast)
 	{
 		if (mip->have)
 		{
-			if (virtual_mode)
-			{
-				vmcStop(mip->axis);
-			}
-			else
-			{
-				int cfd = MIPCFD(mip);
-				csi_intr(cfd);
-				csi_w(MIPSFD(mip), "mtvel=0;");
-			}
+			int cfd = MIPCFD(mip);
+			csi_intr(cfd);
+			csi_w(MIPSFD(mip), "mtvel=0;");
 			mip->cvel = 0;
 			mip->limiting = 0;
 			mip->homing = 0;
@@ -1797,16 +1681,13 @@ static void jogTrack(int first, char dircode, int velocity)
 		gvel = -FGUIDEVEL;
 		break;
 	case '0': /* hold current position */
-		if (!virtual_mode)
-		{
-			mip = HMOT;
-			if (mip->have)
-				csi_intr(MIPCFD(mip)); /* kill while() */
-			mip = DMOT;
-			if (mip->have)
-				csi_intr(MIPCFD(mip)); /* kill while() */
-			return;
-		}
+		mip = HMOT;
+		if (mip->have)
+			csi_intr(MIPCFD(mip)); /* kill while() */
+		mip = DMOT;
+		if (mip->have)
+			csi_intr(MIPCFD(mip)); /* kill while() */
+		return;
 	}
 
 	/* sanity checks */
@@ -1827,18 +1708,12 @@ static void jogTrack(int first, char dircode, int velocity)
 	else
 		scale = mip->sign * mip->step / (2 * PI);
 	stpv = floor(gvel * scale + .5);
-	if (virtual_mode)
-	{
-		vmcSetTrackingOffset(mip->axis, stpv);
-	}
+//ICE
+	if (mip->xtrack) csi_w(MIPCFD(mip), "while(1) {xdel += %d/5; pause(200);}", stpv);
 	else
-	{
 //ICE
-		if (mip->xtrack) csi_w(MIPCFD(mip), "while(1) {xdel += %d/5; pause(200);}", stpv);
-		else
-//ICE
-		 csi_w(MIPCFD(mip), "while(1) {toffset += %d/5; pause(200);}", stpv);
-	}
+	 csi_w(MIPCFD(mip), "while(1) {toffset += %d/5; pause(200);}", stpv);
+
 	telstatshmp->jogging_ison = 1;
 }
 
@@ -1924,19 +1799,13 @@ static void jogSlew(int first, char dircode, int velocity)
 	}
 
 	/* ok, issue the jog */
-	if (virtual_mode)
-	{
-		vmcJog(mip->axis, CVELStp(mip));
-	}
-	else
-	{
-		//ICE
-		csi_w(MIPCFD(mip), "clock=0;");
-		//		csi_w(MIPCFD(mip), "maxvel=s;");
-		csi_w(MIPCFD(mip), "timeout=300000;");
-		//ICE
-		csi_w(MIPCFD(mip), "mtvel=%d;", CVELStp(mip));
-	}
+	//ICE
+	csi_w(MIPCFD(mip), "clock=0;");
+	//		csi_w(MIPCFD(mip), "maxvel=s;");
+	csi_w(MIPCFD(mip), "timeout=300000;");
+	//ICE
+	csi_w(MIPCFD(mip), "mtvel=%d;", CVELStp(mip));
+
 	telstatshmp->telstate = TS_SLEWING;
 	telstatshmp->telstateidx++;
 	fifoWrite(Tel_Id, 5, "Paddle command %s", msg);
@@ -1960,16 +1829,8 @@ static void offsetTracking(int first, double harcsecs, double darcsecs)
 	dcounts = (long) (darcsecs * (DMOT->estep * DMOT->esign) / 1296000.0); // divide by 360, then by 60 then by 60 == steps per arcsecond
 
 	/* okay, issue the offsets */
-	if (virtual_mode)
-	{
-		vmcSetTrackingOffset(HMOT->axis, hcounts);
-		vmcSetTrackingOffset(DMOT->axis, dcounts);
-	}
-	else
-	{
-		csi_w(MIPCFD(HMOT), "toffset = %d;", hcounts);
-		csi_w(MIPCFD(DMOT), "toffset = %d;", dcounts);
-	}
+	csi_w(MIPCFD(HMOT), "toffset = %d;", hcounts);
+	csi_w(MIPCFD(DMOT), "toffset = %d;", dcounts);
 
 	// Turn on jogging ... this produces the offset and also serves as a flag that we have done this
 	telstatshmp->jogging_ison = 1;
@@ -2123,7 +1984,7 @@ static void initCfg()
 	mip->axis = HAXIS;
 	mip->have = HHAVE;
 	//ICE haveenc mode variable XTRACK at telescope.cfg
-	mip->xtrack = HXTRACK && !virtual_mode;
+	mip->xtrack = HXTRACK;
 	mip->haveenc = HHAVEENC;
 	//ICE
 	//ICEmip->haveenc = 1;
@@ -2178,7 +2039,7 @@ static void initCfg()
 	mip->axis = DAXIS;
 	mip->have = DHAVE;
 	//ICE haveenc mode variable XTRACK at telescope.cfg
-	mip->xtrack = DXTRACK && !virtual_mode;
+	mip->xtrack = DXTRACK;
 	mip->haveenc = DHAVEENC;
 	//ICE
 	//ICE mip->haveenc = 1;

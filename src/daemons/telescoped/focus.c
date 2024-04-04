@@ -21,7 +21,6 @@
 #include "running.h"
 #include "misc.h"
 #include "csimc.h"
-#include "virmc.h"
 #include "telenv.h"
 #include "cliserv.h"
 #include "tts.h"
@@ -77,11 +76,9 @@ char *msg;
     }
 
     /* setup? */
-    if (!virtual_mode) {
-        if (!MIPCFD(OMOT)) {
-            tdlog ("Focus command before initial Reset: %s", msg?msg:"(NULL)");
-            return;
-        }
+    if (!MIPCFD(OMOT)) {
+        tdlog ("Focus command before initial Reset: %s", msg?msg:"(NULL)");
+        return;
     }
 
     if (!msg)
@@ -106,13 +103,8 @@ char *msg;
 static void
 focus_poll()
 {
-    if (virtual_mode) {
-        MotorInfo *mip = OMOT;
-        vmcService(mip->axis);
-    }
     if (active_func)
         (*active_func)(0);
-    /* TODO: monitor while idle? */
 }
 
 /* stop and reread config files */
@@ -130,20 +122,15 @@ focus_reset(int first)
      * N.B. "had" relies on telstatshmp being zeroed when telescoped starts.
      */
     if (mip->have) {
-        if (virtual_mode) {
-            if (vmcSetup(mip->axis,mip->maxvel,mip->maxacc,mip->step,mip->sign)) {
-                mip->ishomed = 0;
-            }
-            vmcReset(mip->axis);
-        } else {
-            if (!had) csiiOpen (mip);
 
-            // STO 2007-01-20
-            // This is a concession to the implementation that places a dome on the
-            // same CSIMC board as the focuser.  If this is done, we must defer
-            // initialization until the dome code can handle it.
-            if (!OSHAREDNODE)    csiSetup(mip);
-        }
+        if (!had) csiiOpen (mip);
+
+        // STO 2007-01-20
+        // This is a concession to the implementation that places a dome on the
+        // same CSIMC board as the focuser.  If this is done, we must defer
+        // initialization until the dome code can handle it.
+        if (!OSHAREDNODE)    csiSetup(mip);
+
         if (!OSHAREDNODE)
         {
             stopFocus(0);
@@ -155,9 +142,7 @@ focus_reset(int first)
             fifoWrite(Focus_Id, 0, "Reset deferred on Dome shared node");
         }
     } else {
-        if (!virtual_mode) {
-            if (had) csiiClose (mip);
-        }
+        if (had) csiiClose (mip);
         fifoWrite (Focus_Id, 0, "Not installed");
     }
 }
@@ -259,11 +244,7 @@ focus_stop(int first, ...)
     }
 
     /* wait for really stopped */
-    if (virtual_mode) {
-        if (vmcGetVelocity(mip->axis) != 0) return;
-    } else {
-        if (csi_rix (cfd, "=mvel;") != 0) return;
-    }
+    if (csi_rix (cfd, "=mvel;") != 0) return;
 
     /* if get here, it has really stopped */
     active_func = NULL;
@@ -282,18 +263,13 @@ focus_status(void)
 
     readFocus();
     upos = (mip->cpos*mip->step) / (2*PI*mip->focscale);
-    if(virtual_mode)
+    status = csi_rix(cfd,"=isHomed();");
+	if(status==1)
         fifoWrite(Focus_Id, 0, "Focus position is %g um", upos);
+    else if(status==0)
+        fifoWrite (Focus_Id, 0, "Focus position is unknown");
     else
-    {
-        status = csi_rix(cfd,"=isHomed();");
-		if(status==1)
-            fifoWrite(Focus_Id, 0, "Focus position is %g um", upos);
-        else if(status==0)
-            fifoWrite (Focus_Id, 0, "Focus position is unknown");
-        else
-            fifoWrite(Focus_Id, -1, "Error reading focus status");
-    }
+        fifoWrite(Focus_Id, -1, "Error reading focus status");
     return;
 }
 
@@ -342,27 +318,19 @@ focus_offset(int first, ...)
         }
 
         /* ok, go for the gold, er, goal */
-        if (virtual_mode) {
-            rawgoal = (int)floor(mip->sign*mip->step*goal/(2*PI) + 0.5);
-            vmcSetTargetPosition(mip->axis, rawgoal);
+        if (mip->haveenc) {
+            rawgoal = (int)floor(mip->esign*mip->estep*goal/(2*PI) + 0.5);
+            csi_w (cfd, "etpos=%d;", rawgoal);
         } else {
-            if (mip->haveenc) {
-                rawgoal = (int)floor(mip->esign*mip->estep*goal/(2*PI) + 0.5);
-                csi_w (cfd, "etpos=%d;", rawgoal);
-            } else {
-                rawgoal = (int)floor(mip->sign*mip->step*goal/(2*PI) + 0.5);
-                csi_w (cfd, "mtpos=%d;", rawgoal);
-            }
+            rawgoal = (int)floor(mip->sign*mip->step*goal/(2*PI) + 0.5);
+            csi_w (cfd, "mtpos=%d;", rawgoal);
         }
         mip->cvel = mip->maxvel;
         mip->dpos = goal;
         active_func = focus_offset;
     }
 
-// ICE added for not to send csimc commands on virtual mode
-    int isworking = 0;
-    if (!virtual_mode) isworking = csi_rix(cfd,"=working;");
-// ICE added for not to send csimc commands on virtual mode
+    int isworking = csi_rix(cfd,"=working;");
 
     /* done when we reach goal */
     if ((mip->haveenc && abs(mip->raw-rawgoal) < 1 && isworking==0 )
@@ -407,11 +375,7 @@ focus_jog(int first, ...)
                 fifoWrite (Focus_Id, -4, "At positive limit");
                 return;
             }
-            if (virtual_mode) {
-                vmcJog(mip->axis,(long)(mip->sign*MAXVELStp(mip)*OJOGF));
-            } else {
-                csi_w (cfd, "mtvel=%.0f;", mip->sign*MAXVELStp(mip)*OJOGF);
-            }
+            csi_w (cfd, "mtvel=%.0f;", mip->sign*MAXVELStp(mip)*OJOGF);
             mip->cvel = mip->maxvel*OJOGF;
             active_func = focus_jog;
             fifoWrite (Focus_Id, 1, "Paddle command in");
@@ -422,11 +386,7 @@ focus_jog(int first, ...)
                 fifoWrite (Focus_Id, -5, "At negative limit");
                 return;
             }
-            if (virtual_mode) {
-                vmcJog(mip->axis,0 - (long) (mip->sign*MAXVELStp(mip)*OJOGF));
-            } else {
-                csi_w (cfd, "mtvel=%.0f;", -mip->sign*MAXVELStp(mip)*OJOGF);
-            }
+            csi_w (cfd, "mtvel=%.0f;", -mip->sign*MAXVELStp(mip)*OJOGF);
             mip->cvel = -mip->maxvel*OJOGF;
             active_func = focus_jog;
             fifoWrite (Focus_Id, 2, "Paddle command out");
@@ -587,11 +547,7 @@ stopFocus(int fast)
 {
     MotorInfo *mip = OMOT;
 
-    if (virtual_mode) {
-        vmcStop(mip->axis);
-    } else {
-        csiStop (mip, fast);
-    }
+    csiStop (mip, fast);
 
     OMOT->homing = 0;
     OMOT->limiting = 0;
@@ -610,22 +566,17 @@ readFocus ()
     if (!mip->have)
         return;
 
-    if (virtual_mode) {
-        mip->raw = vmc_rix (mip->axis, "=mpos;");
-        mip->cpos = (2*PI) * mip->sign * mip->raw / mip->step;
-    } else {
-        if (mip->haveenc) {
-            double draw;
-            int    raw;
+    if (mip->haveenc) {
+        double draw;
+        int    raw;
 
-            /* just change by half-step if encoder changed by 1 */
-            raw = csi_rix (MIPSFD(mip), "=epos;");
-            draw = abs(raw - mip->raw)==1 ? (raw + mip->raw)/2.0 : raw;
-            mip->raw = raw;
-            mip->cpos = (2*PI) * mip->esign * draw / mip->estep;
-        } else {
-            mip->raw = csi_rix (MIPSFD(mip), "=mpos;");
-            mip->cpos = (2*PI) * mip->sign * mip->raw / mip->step;
-        }
+        /* just change by half-step if encoder changed by 1 */
+        raw = csi_rix (MIPSFD(mip), "=epos;");
+        draw = abs(raw - mip->raw)==1 ? (raw + mip->raw)/2.0 : raw;
+        mip->raw = raw;
+        mip->cpos = (2*PI) * mip->esign * draw / mip->estep;
+    } else {
+        mip->raw = csi_rix (MIPSFD(mip), "=mpos;");
+        mip->cpos = (2*PI) * mip->sign * mip->raw / mip->step;
     }
 }
