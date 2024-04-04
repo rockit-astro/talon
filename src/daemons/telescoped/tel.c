@@ -28,16 +28,6 @@
 
 #include "teled.h"
 
-//ICE
-#undef TELESCOPED_DEBUG
-#if defined(TELESCOPED_DEBUG)
-#define debug_printf printf
-#define debug_fflush fflush
-#else
-#define debug_printf {}
-#define debug_fflush {}
-#endif /* NDEBUG */
-
 int xtrack_mode;
 static double xstrack; /* when current xtrack started */
 static double xttrack;
@@ -163,11 +153,7 @@ void tel_msg(msg)
 		offsetTracking(1, a, b);
 	//ICE
 	else if (sscanf(msg, "xdelta(%lf,%lf)", &a, &b) == 2)
-	{
-		debug_printf("HA = %lf DEC = %lf\n", a, b);
-		debug_fflush(stdout);
 		tel_set_xdelta(a, b);
-	}
 	//ICE
 	else
 		tel_stop(1);
@@ -733,19 +719,11 @@ static void tel_altaz(int first, ...)
 					{
 						csi_w(MIPCFD(mip), "etpos=%.0f;",
 								mip->esign * mip->estep * mip->dpos / (2 * PI));
-						//ICE
-						debug_printf("Slew to etpos=%.0f\n",
-								mip->esign * mip->estep * mip->dpos / (2 * PI));
-						//ICE
 					}
 					else
 					{
 						csi_w(MIPCFD(mip), "mtpos=%.0f;",
 								mip->sign * mip->step * mip->dpos / (2 * PI));
-						//ICE
-						debug_printf("Slew to mtpos=%.0f\n",
-								mip->sign * mip->step * mip->dpos / (2 * PI));
-						//ICE
 					}
 				}
 			}
@@ -769,9 +747,6 @@ static void tel_altaz(int first, ...)
 		toTTS("The telescope slew is complete");
 		active_func = NULL;
 	}
-	//ICE
-	debug_printf("AMOT=%d\tZMOT=%d\n", HMOT->raw, DMOT->raw);
-	//ICE
 }
 
 /* handle slewing to an equatorial location */
@@ -865,19 +840,11 @@ static void tel_hadec(int first, ...)
 					{
 						csi_w(MIPCFD(mip), "etpos=%.0f;",
 								mip->esign * mip->estep * mip->dpos / (2 * PI));
-						//ICE
-						debug_printf("Slew to etpos=%.0f\n",
-								mip->esign * mip->estep * mip->dpos / (2 * PI));
-						//ICE
 					}
 					else
 					{
 						csi_w(MIPCFD(mip), "mtpos=%.0f;",
 								mip->sign * mip->step * mip->dpos / (2 * PI));
-						//ICE
-						debug_printf("Slew to mtpos=%.0f\n",
-								mip->sign * mip->step * mip->dpos / (2 * PI));
-						//ICE								
 					}
 				}
 			}
@@ -901,9 +868,6 @@ static void tel_hadec(int first, ...)
 		toTTS("The telescope slew is complete");
 		active_func = NULL;
 	}
-	//ICE
-	debug_printf("HMOT=%d\tDMOT=%d\n", HMOT->raw, DMOT->raw);
-	//ICE
 }
 
 /* politely stop all axes */
@@ -1071,30 +1035,20 @@ static void buildTrack(Now *np, Obj *op)
 			{
 				scale = mip->esign * mip->estep / (2 * PI);
 				csi_w(cfd, "etrack");
-				debug_printf("etrack");
 			}
 			else
 			{
 				scale = mip->sign * mip->step / (2 * PI);
 				csi_w(cfd, "mtrack");
-				debug_printf("mtrack");
 			}
 			csi_w(cfd, "(0,%.0f", 1000. * TRACKINT / PPTRACK + .5);
-			debug_printf("(0,%.0f", 1000. * TRACKINT / PPTRACK + .5);
 
 			/* TODO: pack into longer commands */
 			for (i = 0; i < PPTRACK; i++)
 			{
 				csi_w(cfd, ",%.0f", scale * xyrp[i] + .5);
-				debug_printf(",%.0f", scale * xyrp[i] + .5);
 			}
 			csi_w(cfd, ");");
-			debug_printf(");\n");
-
-			//			debug_printf ("mip->esign = %d\tmip->estep = %d\n", mip->esign, mip->estep);
-			//			debug_printf ("scale = %.10f\txyrp = %.10f\n", scale, xyrp[0]);
-
-
 		}// !virtual_mode
 	}
 	fflush(stdout);
@@ -1116,12 +1070,10 @@ static void tel_set_xdelta(double HA, double DEC)
 		double radsHA = HA * (2 * PI) / 360.0;
 		stepsHA = HMOT->esign * HMOT->estep * radsHA / (2 * PI);
 		csi_w(MIPCFD(HMOT), "xdel=%d;", stepsHA);
-		debug_printf("HA xdelta %d encoder steps\n", stepsHA);
 		fifoWrite(Tel_Id, 0, "HA xdelta %d encoder steps\n", stepsHA);
 	}
 	else
 	{
-		debug_printf("HA axis not present or not in xtrack mode\n");
 		fifoWrite(Tel_Id, -1, "HA axis not present or not in xtrack mode");
 	}
 
@@ -1130,13 +1082,10 @@ static void tel_set_xdelta(double HA, double DEC)
 		double radsDEC = DEC * (2 * PI) / 360.0;
 		stepsDEC = DMOT->esign * DMOT->estep * radsDEC / (2 * PI);
 		csi_w(MIPCFD(DMOT), "xdel=%d;", stepsDEC);
-		debug_printf("DEC xdelta %d encoder steps\n", stepsDEC);
 		fifoWrite(Tel_Id, 0, "DEC xdelta %d encoder steps\n", stepsDEC);
-
 	}
 	else
 	{
-		debug_printf("DEC axis not present or not in xtrack mode\n");
 		fifoWrite(Tel_Id, -1, "DEC axis not present or not in xtrack mode");
 	}
 
@@ -1216,16 +1165,10 @@ static int buildXTrack(Now *np, Obj *op)
 					csi_w(cfd, "xtrack(%d,%.0f,%.0f,%.0f,%.0f,%.0f);",
 					      mip->haveenc ? 1 : 0, 0.0, round(xttrack),
 					      rpos, 0.0, 0.0);
-					debug_printf(
-						     "axis=%d time=%.0f -> xtrack(%d,%.0f,%.0f,%.0f,%.0f,%.0f)\n",
-						     axis, tnow, mip->haveenc ? 1 : 0, 0.0,
-						     round(xttrack), rpos, 0.0, 0.0);
 				}
 				else
 				{
 					csi_w(cfd, "xpos(%.0f,%.0f);", round(xttrack), rpos);
-					debug_printf("axis=%d time=%.0f -> xpos(%.0f,%.0f);\n", axis,
-							tnow, round(xttrack), rpos);
 				}
 				axrelax[axis]/=2;
 				axjit[axis]=-axjit[axis];
@@ -1247,10 +1190,7 @@ double xgetvar(int sfd, int index)
 	csi_wr(sfd, str, sizeof(str), msg);
 	str[strlen(str) - 1] = 0;
 	if (sscanf(str, "%lf", &value) == 1)
-	{
 		return value;
-	}
-	debug_printf("%s\n", str);
 
 	return 0;
 }
@@ -1468,46 +1408,6 @@ static int trackObj(Obj *op, int first)
 		break;
 	}
 
-	//ICE
-#ifdef TELESCOPED_DEBUG
-	if (xtrack_mode && virtual_mode == 0)
-	{
-		if (HMOT->xtrack)
-		{
-			debug_printf("clock = %lf\t", clocknow/1000.0);
-
-
-			// double HApos = xxgetpos(MIPSFD(HMOT));
-			long HApos=HMOT->raw;
-			debug_printf("HApos = %ld\t", HApos);
-			double HAVel = xgetvar(MIPSFD(HMOT), 3);
-			debug_printf("HAvel = %lf\t", HAVel);
-			double HAVg = xgetvar(MIPSFD(HMOT), 1);
-			debug_printf("HAvg = %lf\t", HAVg);
-			double HAerr = xgetvar(MIPSFD(HMOT), 2);
-			debug_printf("HAerr = %lf\t", HAerr);
-		}
-		debug_printf("\t");
-
-		if (DMOT->xtrack)
-		{
-		  //			double DECpos = xxgetpos(MIPSFD(DMOT));
-		  long DECpos=DMOT->raw;
-			debug_printf("DECpos = %ld\t", DECpos);
-			double DECVel = xgetvar(MIPSFD(DMOT), 3);
-			debug_printf("DECvel = %lf\t", DECVel);
-			double DECVg = xgetvar(MIPSFD(DMOT), 1);
-			debug_printf("DECvg = %lf\t", DECVg);
-			double DECerr = xgetvar(MIPSFD(DMOT), 2);
-			debug_printf("DECerr = %lf\t", DECerr);
-		}
-		debug_printf("\n");
-	}
-
-	debug_fflush(stdout);
-#endif
-	//ICE
-
 	/* ok */
 	return (0);
 }
@@ -1653,20 +1553,6 @@ static void readRaw()
 			mip->raw = vmcGetPosition(mip->axis);
 			mip->cpos = (2 * PI) * mip->sign * mip->raw / mip->step;
 		}
-//		else if (mip->xtrack)
-//		{
-//			mip->raw = (int) xgetvar(MIPSFD(mip), 0);
-//			if (mip->haveenc)
-//			{
-//				mip->cpos = (2 * PI) * mip->esign * mip->raw / mip->estep;
-//			}
-//			else
-//			{
-//				mip->cpos = (2 * PI) * mip->sign  * mip->raw / mip->step;
-//			}
-////			debug_printf("mip->raw[%d] = %d\t", MIPSFD(mip), mip->raw);
-////			debug_printf("mip->cpos[%d] = %lf\n", MIPSFD(mip), mip->cpos);
-//		}
 		else
 		{
 			if (mip->haveenc)

@@ -224,12 +224,6 @@ double TSINCE;
 	X7THM1 = 7.0 * THETA2 - 1.0;
 /*   90 IFLAG=0 */
 
-#ifdef SDP_DEEP_DEBUG
-	printf("calling dpinit\n");
-	printf("%f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f\n",
-	       EOSQ,SINIO,COSIO,BETAO,AODP,THETA2,
-	       SING,COSG,BETAO2,XMDOT,OMGDOT,XNODOT,XNODP);
-#endif
 	dpinit(sat, EOSQ, SINIO, COSIO, BETAO, AODP, THETA2,
 	       SING, COSG, BETAO2, XMDOT, OMGDOT, XNODOT, XNODP);
 
@@ -289,18 +283,8 @@ double TSINCE;
 
     A = pow(XKE/XN, TOTHRD) * TEMPA * TEMPA;
     E = EM - TEMPE;
-#ifdef SDP_DEEP_DEBUG
-    printf("*** E = %f\n", E);
-#endif
     XMAM = XMDF + XNODP * TEMPL;
 /*      CALL DPPER(E,XINC,OMGADF,XNODE,XMAM) */
-
-#ifdef SDP_DEEP_DEBUG
-    printf("%12s %12s %12s %12s %12s\n",
-	   "E", "XINC", "OMGADF", "XNODE", "XMAM");
-    printf("%12f %12f %12f %12f %12f\n",
-	   E, XINC, OMGADF, XNODE, XMAM);
-#endif
 
     if(TSINCE == 0.0) {
 	E_pero      = E;

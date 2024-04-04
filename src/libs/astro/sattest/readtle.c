@@ -177,9 +177,6 @@ static int tle_checksum(char *str) {
 	sum += v;
     }
 
-#ifdef TLE_DEBUG
-    printf("Sum = %d\n", sum % 10);
-#endif
     if(sum % 10 == (str[68] - '0'))
 	return 0;
 
@@ -269,28 +266,6 @@ int readtle(char *line1, char *line2, SatElem *elem) {
     extract(line2, ma, 43, 8);
     extract(line2, mm, 52, 11);
     extract(line2, rev, 63, 5);
-
-#ifdef TLE_DEBUG
-    printf("catno_s1   = \"%s\"\n", catno_s1);
-    printf("catno_s2   = \"%s\"\n", catno_s2);
-    printf("classif    = \"%s\"\n", classif);
-    printf("epoch_yr   = \"%s\"\n", epoch_yr);
-    printf("epoch_frac = \"%s\"\n", epoch_frac);
-    printf("dt2        = \"%s\"\n", dt2);
-    printf("ddt6       = \"%s\"\n", ddt6);
-    printf("ddt6exp    = \"%s\"\n", ddt6exp);
-    printf("bstar      = \"%s\"\n", bstar);
-    printf("bstarexp   = \"%s\"\n", bstarexp);
-    printf("et         = \"%s\"\n", et);
-    printf("eln        = \"%s\"\n", eln);
-    printf("inclin     = \"%s\"\n", inclin);
-    printf("raan       = \"%s\"\n", raan);
-    printf("ecc        = \"%s\"\n", ecc);
-    printf("aop        = \"%s\"\n", aop);
-    printf("ma         = \"%s\"\n", ma);
-    printf("mm         = \"%s\"\n", mm);
-    printf("rev        = \"%s\"\n", rev);
-#endif
 
     if((classif[0] < 'A' || classif[0] > 'Z') && classif[0] != ' ')
 	fel |= 0x00008000;
