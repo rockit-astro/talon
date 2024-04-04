@@ -47,7 +47,6 @@ static void stopFocus(int fast);
 void readFocus (void);
 
 static double OJOGF;
-static int OSHAREDNODE;
 static double ONOMINALF;
 
 static int last_rawgoal;
@@ -125,22 +124,12 @@ focus_reset(int first)
 
         if (!had) csiiOpen (mip);
 
-        // STO 2007-01-20
-        // This is a concession to the implementation that places a dome on the
-        // same CSIMC board as the focuser.  If this is done, we must defer
-        // initialization until the dome code can handle it.
-        if (!OSHAREDNODE)    csiSetup(mip);
+        csiSetup(mip);
 
-        if (!OSHAREDNODE)
-        {
-            stopFocus(0);
-            readFocus ();
-            fifoWrite (Focus_Id, 0, "Reset complete");
-        }
-        else
-        {
-            fifoWrite(Focus_Id, 0, "Reset deferred on Dome shared node");
-        }
+        stopFocus(0);
+        readFocus ();
+        fifoWrite (Focus_Id, 0, "Reset complete");
+
     } else {
         if (had) csiiClose (mip);
         fifoWrite (Focus_Id, 0, "Not installed");
@@ -418,7 +407,6 @@ initCfg()
     static int OHAVE, OHASLIM, OAXIS;
     static int OSTEP, OSIGN, OPOSSIDE, OHOMELOW;
     static int OHAVEENC, OESIGN, OESTEP;
-    //static int OSHAREDNODE;
     // defined above for direct access by init code
     static double OMAXVEL, OMAXACC, OSLIMACC, OSCALE;
 
@@ -440,10 +428,6 @@ initCfg()
 
     static CfgEntry ocfg3[] = {
         {"OHAVEENC",	CFG_INT,  &OHAVEENC},
-    };
-
-    static CfgEntry ocfg4[] = {
-        {"OSHAREDNODE", CFG_INT, &OSHAREDNODE},
     };
 
     static double OPOSLIM, ONEGLIM;
@@ -489,17 +473,6 @@ initCfg()
         // on error, defaults will == encoder value
         // subsequent Find Limits operation will write correct values
         n = readCfgFile(1,hcfn,hcfg2,sizeof(hcfg2)/sizeof(hcfg2[0]));
-    }
-
-    // read the optional OSHAREDNODE keyword, meaning we share this csimc board with the dome control
-    // Note that this is incompatible with OHAVEENC
-    OSHAREDNODE = 0;
-    readCfgFile(1, ocfn, ocfg4, 1);
-    if (OSHAREDNODE && OHAVEENC)
-    {
-        fifoWrite(Focus_Id,-1,"Configuration error -- See Log");
-        tdlog("OSHAREDNODE is not compatible with OHAVEENC\n");
-        die();
     }
 
     memset ((void *)mip, 0, sizeof(*mip));
