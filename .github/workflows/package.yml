@@ -7,27 +7,26 @@ on:
 
 jobs:
   linux:
-    name: RPM Packaging
+    name: RPM Packaging (x86_64)
     runs-on: ubuntu-22.04
     container: rockylinux:9
     steps:
       - name: Install Dependencies
         run: |
           cat /etc/redhat-release
-          dnf -y install 'dnf-command(config-manager)'
-          dnf -y config-manager --set-enabled crb
-          dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm https://dl.fedoraproject.org/pub/epel/epel-next-release-latest-9.noarch.rpm
+          yum -y install epel-release
+          /usr/bin/crb enable
           yum -y install git rpm-build rpm-sign make gcc gcc-c++ motif-devel libXpm-devel cmake systemd-rpm-macros
 
       - name: Clone Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Package RPMs
         run:
           make
 
       - name: Clone Package Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: rockit-astro/packages
           token: ${{ secrets.DEPLOY_TOKEN }}
@@ -38,4 +37,40 @@ jobs:
           RPM_SIGNING_KEY: ${{ secrets.RPM_SIGNING_KEY }}
         run:
           packages/sign-and-push-packages.sh *.rpm
+  linux-arm64:
+    runs-on: ubuntu-20.04
+    name: RPM Packaging (aarch64)
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v4
 
+      - name: Package RPMs
+        uses: uraimo/run-on-arch-action@v2
+        with:
+          arch: none
+          distro: none
+          base_image: arm64v8/rockylinux:9.2
+          shell: /bin/bash
+          setup: |
+            mkdir -p "${PWD}/artifacts"
+          dockerRunArgs: |
+            --volume "${PWD}/artifacts:/artifacts"
+          run: |
+            cat /etc/redhat-release
+            yum -y install epel-release
+            /usr/bin/crb enable
+            yum -y install git rpm-build rpm-sign make gcc gcc-c++ motif-devel libXpm-devel cmake systemd-rpm-macros
+            make
+            mv *.aarch64.rpm /artifacts
+
+      - name: Clone Package Repository
+        uses: actions/checkout@v4
+        with:
+          repository: rockit-astro/packages
+          token: ${{ secrets.DEPLOY_TOKEN }}
+          path: packages
+      - name: Push Packages
+        env:
+          RPM_SIGNING_KEY: ${{ secrets.RPM_SIGNING_KEY }}
+        run: |
+          packages/sign-and-push-packages.sh artifacts/*.rpm

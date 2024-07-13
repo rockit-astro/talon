@@ -4,7 +4,7 @@ Release:   1
 Summary:   Stripped down Talon installation for the W1m and NGTS telescopes
 License:   proprietary
 Group:     Unspecified
-BuildArch: x86_64
+BuildArch: x86_64 aarch64
 BuildRequires: motif-devel
 Requires: tcsh
 
@@ -18,6 +18,7 @@ make
 make DESTDIR=%{buildroot} install
 mkdir -p %{buildroot}%{_udevrulesdir}
 %{__install} %{_sourcedir}/10-ngts-m06-mount.rules %{buildroot}%{_udevrulesdir}
+%{__install} %{_sourcedir}/10-onemetre-mount.rules %{buildroot}%{_udevrulesdir}
 
 %files
 %defattr(0644,root,root,-)
@@ -41,6 +42,7 @@ RemovePathPostfixes: .onemetre
 
 %files data-onemetre
 %defattr(0644,root,root,-)
+%{_udevrulesdir}/10-onemetre-mount.rules
 /usr/local/telescope/archive/config/*.cmc
 %defattr(0666,root,root,-)
 /usr/local/telescope/archive/config/*.cfg.onemetre
