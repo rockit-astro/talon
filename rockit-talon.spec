@@ -44,6 +44,7 @@ RemovePathPostfixes: .onemetre
 /usr/local/telescope/archive/config/*.cmc
 %defattr(0666,root,root,-)
 /usr/local/telescope/archive/config/*.cfg.onemetre
+/usr/local/telescope/archive/config/telescoped.mesh.onemetre
 
 %package data-ngts
 Summary: Talon config data for the NGTS telescopes
@@ -58,5 +59,6 @@ RemovePathPostfixes: .ngts
 /usr/local/telescope/archive/config/*.cmc
 %defattr(0666,root,root,-)
 /usr/local/telescope/archive/config/*.cfg.ngts
+/usr/local/telescope/archive/config/telescoped.mesh.ngts
 
 %changelog
