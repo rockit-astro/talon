@@ -38,59 +38,18 @@ DSIGN		-1		! steps [1=inc -1=dec] with lat
 
 ! end of initial manual guesses -- following are added automatically
 
-!HPOSLIM         1.120880        ! Updated UTC Mon Jun 27 19:03:12 2011
-!HNEGLIM         -1.705454       ! Updated UTC Mon Jun 27 19:04:25 2011
-!HSTEP           8004347         ! Updated UTC Mon Jun 27 19:04:25 2011
-!HSIGN           1               ! Updated UTC Mon Jun 27 19:04:25 2011
-!DPOSLIM         1.445358        ! Updated UTC Mon Jun 27 19:05:18 2011
-!DNEGLIM         -0.881140       ! Updated UTC Mon Jun 27 19:06:18 2011
-!DSTEP           8018209         ! Updated UTC Mon Jun 27 19:06:18 2011
-!DSIGN           -1              ! Updated UTC Mon Jun 27 19:06:18 2011
-!OPOSLIM         1966.851415     ! Updated UTC Mon Jun 27 19:08:00 2011
-!ONEGLIM         -1477.026855    ! Updated UTC Mon Jun 27 19:10:56 2011
-!HT             -3.0718370       !
-!DT              1.4371852       !
-!XP              6.0874470       !
-!YC              0.2260335       !
-!NP              0.1465288       !
-
-HT              -1.3384902      ! Updated UTC Thu Jul 14 00:25:56 2011
-DT               1.5648420      ! Updated UTC Thu Jul 14 00:25:56 2011
-XP               4.2975816      ! Updated UTC Thu Jul 14 00:25:56 2011
-YC              -5.9849752      ! Updated UTC Thu Jul 14 00:25:56 2011
-NP              -0.0000440      ! Updated UTC Thu Jul 14 00:25:56 2011
-
-OPOSLIM         197.590627      ! Updated UTC Thu Jul 14 20:04:43 2011
-ONEGLIM         -147.495812     ! Updated UTC Thu Jul 14 20:05:54 2011
-
-HT               0.0145098      ! Updated UTC Tue Jan 10 21:48:56 2012
-DT               1.5677450      ! Updated UTC Tue Jan 10 21:48:56 2012
-XP               2.9442358      ! Updated UTC Tue Jan 10 21:48:56 2012
-YC              -5.9816265      ! Updated UTC Tue Jan 10 21:48:56 2012
-NP               0.0032145      ! Updated UTC Tue Jan 10 21:48:56 2012
-DPOSLIM         1.455493        ! Updated UTC Fri Jun 13 00:34:27 2014
-DNEGLIM         -0.878909       ! Updated UTC Fri Jun 13 00:35:15 2014
-DSTEP           8013666         ! Updated UTC Fri Jun 13 00:35:15 2014
-DSIGN           -1              ! Updated UTC Fri Jun 13 00:35:15 2014
-HPOSLIM         1.126327        ! Updated UTC Fri Jun 13 00:36:47 2014
-HNEGLIM         -1.713072       ! Updated UTC Fri Jun 13 00:37:45 2014
-HSTEP           7997766         ! Updated UTC Fri Jun 13 00:37:45 2014
-HSIGN           1               ! Updated UTC Fri Jun 13 00:37:45 2014
-HPOSLIM         1.121154        ! Updated UTC Fri Jun 20 20:25:40 2014
-HNEGLIM         -1.709792       ! Updated UTC Fri Jun 20 20:26:38 2014
-HSTEP           7991855         ! Updated UTC Fri Jun 20 20:26:38 2014
-HSIGN           1               ! Updated UTC Fri Jun 20 20:26:38 2014
-DPOSLIM         1.447870        ! Updated UTC Fri Jun 20 20:27:15 2014
-DNEGLIM         -0.880028       ! Updated UTC Fri Jun 20 20:28:03 2014
-DSTEP           8029892         ! Updated UTC Fri Jun 20 20:28:03 2014
-DSIGN           -1              ! Updated UTC Fri Jun 20 20:28:03 2014
-HT              -0.9774431      ! Updated UTC Fri Jun 20 21:18:58 2014
-DT               1.5685897      ! Updated UTC Fri Jun 20 21:18:58 2014
-XP               3.9369069      ! Updated UTC Fri Jun 20 21:18:58 2014
-YC              -5.9847974      ! Updated UTC Fri Jun 20 21:18:58 2014
-NP               0.0000000      ! Updated UTC Fri Jun 20 21:18:58 2014
 HT              -0.9767956      ! Updated UTC Fri Jun 20 22:43:04 2014
 DT               1.5701852      ! Updated UTC Fri Jun 20 22:43:04 2014
 XP               3.9362973      ! Updated UTC Fri Jun 20 22:43:04 2014
 YC              -5.9850968      ! Updated UTC Fri Jun 20 22:43:04 2014
 NP               0.0019688      ! Updated UTC Fri Jun 20 22:43:04 2014
+HPOSLIM         1.042331        ! Updated UTC Tue Dec  3 11:02:27 2024
+HNEGLIM         -1.347408       ! Updated UTC Tue Dec  3 11:03:17 2024
+HSTEP           8016584         ! Updated UTC Tue Dec  3 11:03:17 2024
+HSIGN           1               ! Updated UTC Tue Dec  3 11:03:17 2024
+DPOSLIM         1.448805        ! Updated UTC Tue Dec  3 11:06:04 2024
+DNEGLIM         -0.663320       ! Updated UTC Tue Dec  3 11:06:47 2024
+DSTEP           8003635         ! Updated UTC Tue Dec  3 11:06:47 2024
+DSIGN           -1              ! Updated UTC Tue Dec  3 11:06:47 2024
+OPOSLIM         18.957061       ! Updated UTC Tue Dec  3 11:16:00 2024
+ONEGLIM         0.293488        ! Updated UTC Tue Dec  3 11:16:15 2024
