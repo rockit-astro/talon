@@ -39,7 +39,7 @@ static void closeCB (Widget w, XtPointer client, XtPointer call);
 /* give ability to home or limit each axis */
 /* name for each fifo */
 typedef enum {
-    H_AX, D_AX, R_AX, O_AX, M_AX, N_AX
+    H_AX, D_AX, O_AX, N_AX
 } HLAxis;
 typedef struct {
     char *name;		/* descriptive name on button */
@@ -51,7 +51,6 @@ typedef struct {
 static HLInfo hl_info[N_AX] = {
     {"Scope HA/Az",   Tel_Id,    'H'},
     {"Scope Dec/Alt", Tel_Id,    'D'},
-    {"Rotator",       Tel_Id,    'R'},
     {"Focus",         Focus_Id}
 };
 
@@ -274,12 +273,10 @@ hlSetup()
 {
 	XtSetSensitive (hl_info[H_AX].hpbw, !!HMOT->have);
 	XtSetSensitive (hl_info[D_AX].hpbw, !!DMOT->have);
-	XtSetSensitive (hl_info[R_AX].hpbw, !!RMOT->have);
 	XtSetSensitive (hl_info[O_AX].hpbw, !!OMOT->have);
 
 	XtSetSensitive (hl_info[H_AX].lpbw, !!HMOT->have && !!HMOT->havelim);
 	XtSetSensitive (hl_info[D_AX].lpbw, !!DMOT->have && !!DMOT->havelim);
-	XtSetSensitive (hl_info[R_AX].lpbw, !!RMOT->have && !!RMOT->havelim);
 	XtSetSensitive (hl_info[O_AX].lpbw, !!OMOT->have && !!OMOT->havelim);
 }
 
