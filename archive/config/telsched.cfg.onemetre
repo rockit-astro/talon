@@ -7,7 +7,7 @@ SERVICEAZ = 0		! service azimuth, rads E of N
 BANNER = 'Warwick one-metre Telescope'
 
 ! Settings for the all-sky pointing mesh
-PTGRAD	 	.5	! pointing mesh interpolation radius, rads
+PTGRAD	 	.25	! pointing mesh interpolation radius, rads
 
 ! Local conditions -- updated dynamically is have gpsd/wxd installed
 LONGITUDE	.3120581821548925 ! site longitude, +W rads
