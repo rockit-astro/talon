@@ -10,6 +10,12 @@ else(PREFIX)
     set(CMAKE_INSTALL_PREFIX /usr/local/telescope)
 endif(PREFIX)
 
+execute_process(
+  COMMAND bash -c "grep '^VERSION_ID=' /etc/os-release | cut -d'=' -f2 | cut -d'\"' -f2"
+  OUTPUT_VARIABLE HOST_OS_VERSION
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
 set(CORE_DIR ${CMAKE_SOURCE_DIR})
 set(CORE_INSTALL_DIR ${CMAKE_INSTALL_PREFIX})
 set(CORE_BIN_INSTALL_DIR ${CORE_INSTALL_DIR}/bin)

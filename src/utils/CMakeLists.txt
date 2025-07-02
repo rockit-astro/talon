@@ -1,4 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 add_subdirectory (csimc)
-add_subdirectory (xobs)
 add_subdirectory (getshm)
+if (HOST_OS_VERSION MATCHES "9.*")
+add_subdirectory (xobs)
+endif(HOST_OS_VERSION MATCHES "9.*")

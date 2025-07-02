@@ -4,8 +4,14 @@ Release:   1
 Summary:   Stripped down Talon installation for the W1m and NGTS telescopes
 License:   proprietary
 Group:     Unspecified
-BuildArch: x86_64
+BuildArch: x86_64 aarch64
+
+%if 0%{?el10} == 0
 BuildRequires: motif-devel
+%else
+BuildRequires: rpm-devel
+%endif
+
 Requires: tcsh
 
 %description
