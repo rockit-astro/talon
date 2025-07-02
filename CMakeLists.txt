@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.5)
+
 project (core)
 
 set(CORE_64_BITS 1)
@@ -7,12 +9,6 @@ if(PREFIX)
 else(PREFIX)
     set(CMAKE_INSTALL_PREFIX /usr/local/telescope)
 endif(PREFIX)
-
-IF(${CORE_64_BITS} EQUAL 1)
-    set(CMAKE_C_FLAGS -m64)
-ELSE(${CORE_64_BITS} EQUAL 1)
-    set(CMAKE_C_FLAGS -m32)
-ENDIF(${CORE_64_BITS} EQUAL 1)
 
 set(CORE_DIR ${CMAKE_SOURCE_DIR})
 set(CORE_INSTALL_DIR ${CMAKE_INSTALL_PREFIX})

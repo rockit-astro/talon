@@ -1,11 +1,11 @@
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required (VERSION 3.5)
 project (scripts)
 
-set(SCRIPTS startTel killTel killp)
+set (SCRIPTS startTel killTel killp)
 
-set(SCRIPTS_DIR ${CORE_INSTALL_DIR}/bin)
+set (SCRIPTS_DIR ${CORE_INSTALL_DIR}/bin)
 
-install(FILES ${SCRIPTS} DESTINATION ${SCRIPTS_DIR} PERMISSIONS 
+install (FILES ${SCRIPTS} DESTINATION ${SCRIPTS_DIR} PERMISSIONS
 OWNER_READ OWNER_WRITE OWNER_EXECUTE
 GROUP_READ GROUP_EXECUTE
 WORLD_READ WORLD_EXECUTE)

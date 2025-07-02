@@ -1,12 +1,12 @@
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required (VERSION 3.5)
 project (rund)
 
-set(RUND_SRC rund.c) 
+set (RUND_SRC rund.c)
 
 include_directories ("${CORE_LIBS_DIR}/astro")
 include_directories ("${CORE_LIBS_DIR}/misc")
 
-add_executable(rund ${RUND_SRC})
+add_executable (rund ${RUND_SRC})
 
 target_link_libraries (rund astro m misc)
 

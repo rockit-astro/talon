@@ -1,7 +1,7 @@
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required (VERSION 3.5)
 project (xobs)
 
-set(XOBS_SRC 
+set (XOBS_SRC
         xobs.c 
         config.c 
         control.c 
@@ -18,7 +18,7 @@ include_directories ("${CORE_LIBS_DIR}/astro")
 include_directories ("${CORE_LIBS_DIR}/misc")
 include_directories ("${CORE_LIBS_DIR}/xmisc")
 
-add_executable(xobs ${XOBS_SRC})
+add_executable (xobs ${XOBS_SRC})
 
 target_link_libraries (xobs astro m misc xmisc Xm Xt X11)
 

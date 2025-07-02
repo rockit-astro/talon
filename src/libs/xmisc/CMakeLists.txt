@@ -1,12 +1,12 @@
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required (VERSION 3.5)
 project (xmisc)
 
-set(XMISC_SRC xtools.c)
+set (XMISC_SRC xtools.c)
 
 include_directories ("${CORE_LIBS_DIR}/astro")
 include_directories ("${CORE_LIBS_DIR}/misc")
 
 
-add_library(xmisc SHARED ${XMISC_SRC})
+add_library (xmisc SHARED ${XMISC_SRC})
 
 install (TARGETS xmisc DESTINATION lib)

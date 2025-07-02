@@ -1,3 +1,4 @@
+cmake_minimum_required(VERSION 3.5)
 add_subdirectory (daemons)
 add_subdirectory (libs)
 add_subdirectory (scripts)
