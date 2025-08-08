@@ -18,7 +18,7 @@ jobs:
         run: |
           microdnf -y install dnf epel-release
           /usr/bin/crb enable
-          dnf -y install git rpm-devel rpm-build rpm-sign make gcc gcc-c++ cmake systemd-rpm-macros
+          dnf -y install git rpm-devel rpm-build rpm-sign gpg make gcc gcc-c++ cmake systemd-rpm-macros
 
       - name: Clone Repository
         uses: actions/checkout@v4
