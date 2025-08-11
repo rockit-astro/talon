@@ -23,7 +23,6 @@
 #include "telenv.h"
 #include "csimc.h"
 #include "cliserv.h"
-#include "tts.h"
 
 #include "teled.h"
 
@@ -277,7 +276,6 @@ static void tel_home(int first, ...)
 		active_func = tel_home;
 		telstatshmp->telstate = TS_HOMING;
 		telstatshmp->telstateidx++;
-		toTTS("The telescope is seeking the home position.");
 	}
 
 	/* continue to seek home on each axis still not done */
@@ -312,7 +310,6 @@ static void tel_home(int first, ...)
 		telstatshmp->telstateidx++;
 		active_func = NULL;
 		fifoWrite(Tel_Id, 0, "Scope homing complete");
-		toTTS("The telescope has found the home position.");
 	}
 }
 
@@ -393,7 +390,6 @@ static void tel_limits(int first, ...)
 		active_func = tel_limits;
 		telstatshmp->telstate = TS_LIMITING;
 		telstatshmp->telstateidx++;
-		toTTS("The telescope is seeking the limit positions.");
 	}
 
 	/* continue to seek limits on each axis still not done */
@@ -431,7 +427,6 @@ static void tel_limits(int first, ...)
 		initCfg(); /* read new limits */
 		active_func = NULL;
 		fifoWrite(Tel_Id, 0, "All Scope limits are complete.");
-		toTTS("The telescope has found the limit positions.");
 
 		/* N.B. save TEL_HM limits in tax */
 		telstatshmp->tax.hneglim = HMOT->neglim;
@@ -514,7 +509,6 @@ static void tel_radecep(int first, ...)
 		r_offset = d_offset = 0;
 
 		obj_cir(np, op); /* just for sayWhere */
-		toTTS("The telescope is slewing %s.", sayWhere(op->s_alt, op->s_az));
 	}
 
 	if (trackObj(&o, first) < 0)
@@ -557,7 +551,6 @@ static void tel_radeceod(int first, ...)
 		r_offset = d_offset = 0;
 
 		obj_cir(np, op); /* just for sayWhere */
-		toTTS("The telescope is slewing %s.", sayWhere(op->s_alt, op->s_az));
 	}
 
 	if (trackObj(&o, first) < 0)
@@ -589,8 +582,6 @@ static void tel_op(int first, ...)
 		telstatshmp->jogging_ison = 0;
 
 		obj_cir(np, op); /* just for sayWhere */
-		toTTS("The telescope is slewing towards %s, %s.", op->o_name,
-				sayWhere(op->s_alt, op->s_az));
 	}
 
 	if (trackObj(&o, first) < 0)
@@ -652,10 +643,6 @@ static void tel_altaz(int first, ...)
 		telstatshmp->DJ2kRA = ra;
 		telstatshmp->DJ2kDec = dec;
 
-		toTTS(
-				"The telescope is slewing towards the %s, at %.0f degrees altitude.",
-				cardDirLName(az), raddeg(alt));
-
 		/* issue move command to each axis */
 		FEM (mip)
 		{
@@ -669,7 +656,6 @@ static void tel_altaz(int first, ...)
 					active_func = NULL;
 					stopTel(0);
 					fifoWrite(Tel_Id, -1, "Error: %s", buf);
-					toTTS("Error: %s", buf);
 					return;
 				}
 
@@ -708,7 +694,6 @@ static void tel_altaz(int first, ...)
 	{
 		stopTel(0);
 		fifoWrite(Tel_Id, 0, "Slew complete");
-		toTTS("The telescope slew is complete");
 		active_func = NULL;
 	}
 }
@@ -767,8 +752,6 @@ static void tel_hadec(int first, ...)
 		telstatshmp->DJ2kRA = ra;
 		telstatshmp->DJ2kDec = dec;
 
-		toTTS("The telescope is slewing %s.", sayWhere(alt, az));
-
 		/* issue move command to each axis */
 		FEM (mip)
 		{
@@ -782,7 +765,6 @@ static void tel_hadec(int first, ...)
 					active_func = NULL;
 					stopTel(0);
 					fifoWrite(Tel_Id, -1, "Error: %s", buf);
-					toTTS("Error: %s", buf);
 					return;
 				}
 
@@ -821,7 +803,6 @@ static void tel_hadec(int first, ...)
 	{
 		stopTel(0);
 		fifoWrite(Tel_Id, 0, "Slew complete");
-		toTTS("The telescope slew is complete");
 		active_func = NULL;
 	}
 }
@@ -853,7 +834,6 @@ static void tel_stop(int first, ...)
 	telstatshmp->telstateidx++;
 	active_func = NULL;
 	fifoWrite(Tel_Id, 0, "Stop complete");
-	toTTS("The telescope is now stopped.");
 	readRaw();
 }
 
@@ -1066,7 +1046,6 @@ static int buildXTrack(Now *np, Obj *op)
 					active_func = NULL;
 					stopTel(0);
 					fifoWrite(Tel_Id, -1, "Error: %s", buf);
-					toTTS("Error: %s", buf);
 					return -1;
 				}
 
@@ -1199,7 +1178,6 @@ static int trackObj(Obj *op, int first)
 							active_func = NULL;
 							stopTel(0);
 							fifoWrite(Tel_Id, -1, "Error: %s", buf);
-							toTTS("Error: %s", buf);
 							return -1;
 						}
 
@@ -1278,7 +1256,6 @@ static int trackObj(Obj *op, int first)
 		{
 			fifoWrite(Tel_Id, 3, "All axes have tracking lock");
 			fifoWrite(Tel_Id, 0, "Now tracking");
-			toTTS("The telescope is now tracking.");
 			telstatshmp->telstate = TS_TRACKING;
 			telstatshmp->telstateidx++;
 		}
@@ -1291,7 +1268,6 @@ static int trackObj(Obj *op, int first)
 					4,
 					"Axis %d lost tracking lock deltaradians=%f (set TRACKACC telescope.cfg)",
 					mip->axis, delra(mip->cpos - mip->dpos));
-			toTTS("The telescope has lost tracking lock.");
 			telstatshmp->telstate = TS_HUNTING;
 			telstatshmp->telstateidx++;
 		}
