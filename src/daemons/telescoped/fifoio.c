@@ -43,7 +43,6 @@ typedef struct {
  */
 static FifoInfo fifo[] = {
     {Tel_Id,	"Tel",        tel_msg},
-    {Focus_Id,	"Focus",      focus_msg}
 };
 #define	N_F	(sizeof(fifo)/sizeof(fifo[0]))
 

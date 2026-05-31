@@ -1,5 +1,5 @@
 /* This process listens to several FIFO pairs for generic telescope
- * and focus commands and manipulates CSIMCs accordingly.
+ * commands and manipulates CSIMCs accordingly.
  * The fifo names all end with ".in" and ".out" which are with respect to us,
  * the server. Several config files establish several options and parameters.
  *
@@ -13,7 +13,6 @@
  *
  * FIFO pairs:
  *   Tel	telescope axes, field rotator
- *   Focus	desired focus motion, microns as per focus.cfg
  *
  * v0.1	10/28/93 First draft: Elwood C. Downey
  */
@@ -22,26 +21,21 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
-#include <math.h>
 #include <unistd.h>
 #include <signal.h>
 #include <errno.h>
-#include <fcntl.h>
 #include <time.h>
-#include <sys/time.h>
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
 
 #include "P_.h"
-#include "astro.h"
 #include "circum.h"
 #include "configfile.h"
 #include "strops.h"
 #include "telstatshm.h"
 #include "running.h"
 #include "csimc.h"
-#include "misc.h"
 #include "telenv.h"
 
 #include "teled.h"
@@ -51,7 +45,6 @@ TelStatShm *telstatshmp;	/* shared telescope info */
 char tscfn[] = "archive/config/telsched.cfg";
 char tdcfn[] = "archive/config/telescoped.cfg";
 char hcfn[] = "archive/config/home.cfg";
-char ocfn[] = "archive/config/focus.cfg";
 
 static void usage (void);
 static void init_all(void);
@@ -152,7 +145,6 @@ void
 allstop()
 {
     tel_msg ("Stop");
-    focus_msg ("Stop");
 }
 
 /* read the config files for variables we use here */
@@ -203,7 +195,6 @@ static void
 allreset()
 {
     tel_msg ("Reset");
-    focus_msg ("Reset");
     init_cfg();	/* even us */
 }
 

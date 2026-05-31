@@ -99,15 +99,6 @@ int main (int argc, char **argv)
     printf("/ HA encoder at MJD-OBS (radians)\n");
     printf("RAWDENC = %lf ", telstatshmp->minfo[TEL_DM].cpos);
     printf("/ Dec encoder at MJD-OBS (radians)\n");
-	if (telstatshmp->minfo[TEL_OM].have) 
-    {
-	    MotorInfo *mip = &telstatshmp->minfo[TEL_OM];
-        printf("RAWOSTP = %lf ", mip->cpos);
-        printf("/ Focus encoder at MJD-OBS (radians)\n");
-	    fupos = mip->step/((2*PI)*mip->focscale)*mip->cpos;
-        printf("FOCUSPOS = %lf ", fupos);
-        printf("/ Focus position from home (microns)\n");
-	}
 
     exit(EXIT_SUCCESS);
 }

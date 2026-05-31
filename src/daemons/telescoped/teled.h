@@ -3,7 +3,7 @@
  * N.B. see fifos[] in telescoped.c
  */
 typedef enum {
-    Tel_Id, Focus_Id
+    Tel_Id
 } FifoId;
 
 /* CSIMC info */
@@ -39,9 +39,6 @@ extern void fifoWrite (FifoId f, int code, char *fmt, ...);
 extern void init_fifos(void);
 extern void chk_fifos(void);
 extern void close_fifos(void);
-
-/* focus.c */
-extern void focus_msg (char *msg);
 
 /* mountcor.c */
 extern void init_mount_cor(void);

@@ -5,7 +5,6 @@
 ! "H" refers to the longitudinal axis, ie, ha or az.
 ! "D" refers to the latitudinal axis, ie, dec or alt.
 ! "R" refers to the field rotator -- must be present but ignored if don't have.
-! "O" refers to focus motor -- must be present but ignored if don't have.
 
 ! initial guesses -- fill these in once by hand for a new installation
 
@@ -28,13 +27,10 @@ DPOSLIM		19.8		! angle from home to positive limit, rads
 DNEGLIM		-19.80		! angle from home to negative limit, rads
 RNEGLIM		-1		! angle from home to negative limit, rads
 RPOSLIM		1		! angle from home to positive limit, rads
-ONEGLIM		-50		! angle from home to negative limit, rads
-OPOSLIM		50		! angle from home to positive limit, rads
 
 HHOMEDIR	1		! 1 if start positive to find home, 0 if neg
 DHOMEDIR	0		! 1 if start positive to find home, 0 if neg
 RHOMEDIR	1		! 1 if start positive to find home, 0 if neg
-OHOMEDIR	1		! 1 if start positive to find home, 0 if neg
 
 ! end of initial manual guesses -- following are added automatically
 

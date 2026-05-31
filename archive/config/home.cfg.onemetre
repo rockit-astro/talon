@@ -5,7 +5,6 @@
 ! "H" refers to the longitudinal axis, ie, ha or az.
 ! "D" refers to the latitudinal axis, ie, dec or alt.
 ! "R" refers to the field rotator -- must be present but ignored if don't have.
-! "O" refers to focus motor -- must be present but ignored if don't have.
 
 ! initial guesses -- fill these in once by hand for a new installation
 
@@ -23,13 +22,10 @@ DPOSLIM		 3.0		! angle from home to positive limit, rads
 DNEGLIM		-1.0		! angle from home to negative limit, rads
 RNEGLIM		-1		! angle from home to negative limit, rads
 RPOSLIM		1		! angle from home to positive limit, rads
-ONEGLIM		-4000		! angle from home to negative limit, rads
-OPOSLIM		4000		! angle from home to positive limit, rads
 
 HHOMEDIR	0		! 1 if start positive to find home, 0 if neg
 DHOMEDIR	1		! 1 if start positive to find home, 0 if neg
 RHOMEDIR	1		! 1 if start positive to find home, 0 if neg
-OHOMEDIR	0		! 1 if start positive to find home, 0 if neg
 
 HSTEP	        8000000		! motor usteps/rev
 HSIGN		1		! cnts [1=incr -1=decr] ccw looking down from N
@@ -51,5 +47,3 @@ DPOSLIM         1.448805        ! Updated UTC Tue Dec  3 11:06:04 2024
 DNEGLIM         -0.663320       ! Updated UTC Tue Dec  3 11:06:47 2024
 DSTEP           8003635         ! Updated UTC Tue Dec  3 11:06:47 2024
 DSIGN           -1              ! Updated UTC Tue Dec  3 11:06:47 2024
-OPOSLIM         18.957061       ! Updated UTC Tue Dec  3 11:16:00 2024
-ONEGLIM         0.293488        ! Updated UTC Tue Dec  3 11:16:15 2024

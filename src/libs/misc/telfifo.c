@@ -21,8 +21,7 @@ static TelStatShm *telstatshmp; /* to shared memory segment */
 
 
 FifoInfo fifos[] = {
-    {"Tel",     Tel_Id},
-    {"Focus",   Focus_Id}
+    {"Tel",     Tel_Id}
 };
 
 FifoInfo getFIFO(int id)
@@ -148,8 +147,6 @@ stopAllDevices()
     }
     
     fifoMsg (Tel_Id, "Stop");
-    if (OMOT->have)
-        fifoMsg (Focus_Id, "Stop");
 }
 
 /* make connections to daemons.

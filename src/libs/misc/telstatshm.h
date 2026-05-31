@@ -56,7 +56,6 @@ typedef struct {
     double poslim, neglim;	/* Pos and neg limit switch locations, rads */
     double trencwt;		/* tracking encoder weight: 0-motor .. 1-enc */
     double df;			/* feedback damping factor, 0..1 */
-    				/* N.B. focus uses this for steps/micron */
 
     /* motion info */
     double cvel;		/* commanded velocity, rads/sec */
@@ -72,15 +71,12 @@ typedef struct {
 #define	MAXACCStp(mip)	((int)floor((mip)->step*(mip)->maxacc/(2*PI)+.5))
 #define	MAXLACCStp(mip)	((int)floor((mip)->step*(mip)->slimacc/(2*PI)+.5))
 
-#define	focscale	df	/* overload df for focus' use */
-
 /* N.B. telescoped relies on first three being for the mount proper */
 /* N.B. xobs relies on all in this order for selective home control */
 typedef enum {
     TEL_HM,			/* longitudinal motor, "ha" or "az" */
     TEL_DM,			/* latitudinal motor, "dec" or "alt" */
     TEL_RM,			/* field rotator motor */
-    TEL_OM,			/* focus motor */
     TEL_NM			/* total number of potential motors */
 } MotorId;			/* index into minfo[] */
 
@@ -135,26 +131,21 @@ typedef struct {
 } TelStatShm;
 
 /* handy shortcuts that check things for being ready for normal observing */
-#define	FOCUS_READY	(!telstatshmp->minfo[TEL_OM].have	\
-				    || telstatshmp->minfo[TEL_OM].cvel == 0)
 
 #define	ANY_HOMING	( 					\
 			telstatshmp->minfo[TEL_HM].homing ||	\
 			telstatshmp->minfo[TEL_DM].homing ||	\
-			telstatshmp->minfo[TEL_RM].homing ||	\
-			telstatshmp->minfo[TEL_OM].homing)
+			telstatshmp->minfo[TEL_RM].homing)
 
 #define	ANY_LIMITING	( 					\
 			telstatshmp->minfo[TEL_HM].limiting ||	\
 			telstatshmp->minfo[TEL_DM].limiting ||	\
-			telstatshmp->minfo[TEL_RM].limiting ||	\
-			telstatshmp->minfo[TEL_OM].limiting)
+			telstatshmp->minfo[TEL_RM].limiting)
 
 /* handy shortcuts to motor info */
 #define HMOT    (&telstatshmp->minfo[TEL_HM])
 #define DMOT    (&telstatshmp->minfo[TEL_DM])
 #define RMOT    (&telstatshmp->minfo[TEL_RM])
-#define OMOT    (&telstatshmp->minfo[TEL_OM])
 
 /* telaxes.c */
 extern void tel_hadec2xy (double H, double D, TelAxes *tap, double *X,

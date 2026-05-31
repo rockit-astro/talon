@@ -29,9 +29,6 @@
 static void recordLimit (MotorInfo *mip, char dir);
 static void recordStep (MotorInfo *mip, int motdiff, int encdiff);
 
-// external access to read code for focus for allowing read to work during limits
-extern void readFocus();
-
 /* find home, direction as per POSSIDE.
  * return 1 if in-progress, 0 done, else -1.
  * status logged to fid.
@@ -311,13 +308,6 @@ axis_limits (MotorInfo *mip, FifoId fid, int first)
         return (1);
     }
 
-    // HACK TO ALLOW READING WITH LIMITS
-    if (mip->enchome) {
-        if (mip == &telstatshmp->minfo[TEL_OM]) {
-            readFocus();
-        }
-    }
-
     /* found a limit */
     if (!found[i]) {
         /* this is the first limit we have "run into" (sorry) */
@@ -391,8 +381,6 @@ recordLimit (MotorInfo *mip, char dir)
         name[0] = 'D';
     else if (mip == &telstatshmp->minfo[TEL_RM])
         name[0] = 'R';
-    else if (mip == &telstatshmp->minfo[TEL_OM])
-        name[0] = 'O';
     else {
         /* who could it be?? */
         tdlog ("Bogus mip passed to recordLimit: %ld", (long)mip);
@@ -428,8 +416,6 @@ recordStep (MotorInfo *mip, int motdiff, int encdiff)
         name[0] = 'H';
     else if (mip == &telstatshmp->minfo[TEL_DM])
         name[0] = 'D';
-    else if (mip == &telstatshmp->minfo[TEL_OM])
-        name[0] = 'O';
     else {
         tdlog ("Bogus mip passed to recordStep: %ld", (long)mip);
         return;
